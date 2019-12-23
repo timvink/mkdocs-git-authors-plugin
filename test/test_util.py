@@ -23,8 +23,6 @@ def test_empty_file(tmp_path):
     
 def test_retrieve_authors(tmp_path):
 
-    tmp_path = "/Users/ue86yw/workspace/testrepo"
-    
     # Create file
     file_name = os.path.join(tmp_path, 'new-file')
     with open(file_name, 'w') as the_file:
