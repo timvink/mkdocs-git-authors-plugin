@@ -1,4 +1,4 @@
-name: Workflow for Codecov
+name: pytest
 on: [push]
 jobs:
   run:
@@ -17,6 +17,10 @@ jobs:
         pip install -r test/test_requirements.txt
         pip install -e .
         pytest --cov=./ --cov-report=xml
+    - name: Static code checking with pyflakes
+      run: |
+        pip install pyflakes
+        pyflakes mkdocs_git_authors_plugin
     - name: Upload coverage to Codecov  
       uses: codecov/codecov-action@v1
       with:
