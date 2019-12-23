@@ -4,7 +4,9 @@
  
 # mkdocs-git-authors-plugin
 
-[MkDocs](https://www.mkdocs.org/) plugin 
+[MkDocs](https://www.mkdocs.org/) plugin to display git authors of a page. Only considers authors of the current lines in the page ('surviving code' using `git blame`).
+
+If you want to display authors' github user profiles, see [mkdocs-git-committers-plugin](https://github.com/byrnereese/mkdocs-git-committers-plugin).
 
 ## Setup
 
@@ -25,33 +27,40 @@ plugins:
 
 ### In supported themes
 
-**no supported themes yet**
-
-### In theme templates
-
-TODO
+no supported themes *yet*
 
 ### In markdown pages
 
-TODO
+You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. 
 
-## Options
+Example output:
 
-### `type`
+> [John Doe](mailto:#), [Jane Doe](mailto:#) 
 
-Set this option to one of:
+### In theme templates
 
-- `authors`. Default
-- `contributors`. TODO
-- `current`. via git blame. TODO.
+In theme template you will have access to the jinja2 variable `git_authors`, which contains a list of authors (as dicts), f.e.:
 
-### Example
-
-Example of setting both options:
-
-```yaml
-# mkdocs.yml
-plugins:
-  - git-authors:
-    type: contributers
+```python
+[{
+    'name' : 'John Doe',
+    'email' : 'abc@abc.com',
+    'last_datetime' : datetime.datetime(),
+    'lines' : 100,
+    'contribution' : '100.0%'
+}]
 ```
+
+An example of how to use in your templates:
+
+```django hljs
+{% if git_authors %}
+  {%- for author in git_authors -%}
+    <a href="{{ author.email }}" title="{{ author.name }}">
+      {{ author.name }}
+    </a>,
+  {%- endfor -%}
+{% endif %}
+```
+
+Alternatively, you could use the simple ``{{ git_authors_summary }}`` to insert a summary of the authors.
