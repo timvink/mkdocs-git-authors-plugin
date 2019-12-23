@@ -1,6 +1,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mkdocs-git-authors-plugin)
 ![PyPI](https://img.shields.io/pypi/v/mkdocs-git-authors-plugin)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-git-authors-plugin)
+[![codecov](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin)
  
 # mkdocs-git-authors-plugin
 
