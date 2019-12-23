@@ -8,7 +8,10 @@
 
 [MkDocs](https://www.mkdocs.org/) plugin to display git authors of a page. Only considers authors of the current lines in the page ('surviving code' using `git blame`).
 
-If you want to display authors' github user profiles, see [mkdocs-git-committers-plugin](https://github.com/byrnereese/mkdocs-git-committers-plugin).
+Other MkDocs plugins that use information from git:
+
+- [mkdocs-git-committers-plugin](https://github.com/byrnereese/mkdocs-git-committers-plugin) for displaying authors' github user profiles
+- [mkdocs-git-revision-date-localized-plugin](https://github.com/timvink/mkdocs-git-revision-date-localized-plugin) for displaying the last revision date
 
 ## Setup
 

@@ -34,7 +34,7 @@ class Util:
             
             # Update existing author
             if authors.get(key):
-                authors[key]['lines'] += len(lines)
+                authors[key]['lines'] = authors[key]['lines'] + len(lines)
                 current_dt = authors.get(key,{}).get('last_datetime')
                 if commit.committed_datetime > current_dt:
                     authors[key]['last_datetime'] = commit.committed_datetime 
