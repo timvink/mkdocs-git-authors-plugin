@@ -36,23 +36,36 @@ no supported themes *yet*
 
 ### In markdown pages
 
-You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. 
+You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email. 
 
-Example output:
+An example output:
 
-> [John Doe](mailto:#), [Jane Doe](mailto:#) 
+```html
+<span class='git-authors'><a href='mailto:jane@abc.com'>Jane Doe</a><a href='mailto:john@abc.com'>John Doe</a></span>
+```
+
+Which renders as:
+
+> [Jane Doe](mailto:#), [John Doe](mailto:#)
 
 ### In theme templates
 
-In theme template you will have access to the jinja2 variable `git_authors`, which contains a list of authors (as dicts), f.e.:
+In theme templates you will have access to the jinja2 variable `git_authors`, which contains a list of authors dicts, like the following example:
 
 ```python
 [{
-    'name' : 'John Doe',
-    'email' : 'abc@abc.com',
+    'name' : 'Jane Doe',
+    'email' : 'jane@abc.com',
     'last_datetime' : datetime.datetime(),
-    'lines' : 100,
-    'contribution' : '100.0%'
+    'lines' : 200,
+    'contribution' : '40.0%'
+},
+{
+    'name' : 'John Doe',
+    'email' : 'john@abc.com',
+    'last_datetime' : datetime.datetime(),
+    'lines' : 300,
+    'contribution' : '60.0%'
 }]
 ```
 
@@ -68,4 +81,4 @@ An example of how to use in your templates:
 {% endif %}
 ```
 
-Alternatively, you could use the simple ``{{ git_authors_summary }}`` to insert a summary of the authors.
+Alternatively, you could use the simple preformatted ``{{ git_authors_summary }}`` to insert a summary of the authors.
