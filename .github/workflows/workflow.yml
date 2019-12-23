@@ -16,7 +16,7 @@ jobs:
       run: |
         pip install -r test/test_requirements.txt
         pip install -e .
-        pytest --cov=./ --cov-report=xml
+        pytest --cov=mkdocs_git_authors_plugin --cov-report=xml
     - name: Static code checking with pyflakes
       run: |
         pip install pyflakes
