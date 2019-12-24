@@ -1,3 +1,4 @@
+import re
 import yaml
 from click.testing import CliRunner
 from mkdocs.__main__ import build_command
@@ -22,6 +23,5 @@ def test_basic_working(tmp_path):
     index_file = tmp_path/'index.html'
     assert index_file.exists(),  f"{index_file} does not exist"
     
-    #contents = index_file.read_text()
-    #assert f"Hi there, {customer.get('name')}" in contents, f"customer.name is not in index"
-    #assert f"Welcome to {customer.get('web_url')}" in contents, f"customer.web_url is not in index"
+    contents = index_file.read_text()
+    assert re.search("<span class='git-authors'>", contents)
