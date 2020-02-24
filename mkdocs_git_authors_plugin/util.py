@@ -5,6 +5,8 @@ class Util:
 
     def __init__(self, path = "."):
         self.repo = Repo(path)
+        # Cache authors entries by path
+        self._authors = {}
 
     def get_authors(self, path: str, type: str = 'authors'):
         """
@@ -15,44 +17,54 @@ class Util:
             type (str, optional): How to determine authors. Defaults to 'en'.
 
         Returns:
-            list (str): unique authors, or empty list
+            list: unique authors
         """
 
-        try:
-            blame = self.repo.blame('HEAD',path)
-        except:
-            print("WARNING - %s has no commits" % path)
+        authors = self._authors.get(path, [])
+
+        if authors == False:
             return []
 
-        if len(Path(path).read_text()) == 0:
-            print("WARNING - %s has no lines" % path)
-            return []
+        if not authors:
+            try:
+                blame = self.repo.blame('HEAD',path)
+            except:
+                print("WARNING - %s has no commits" % path)
+                self._authors[path] = False
+                return []
 
-        authors = {}
-        for commit, lines in blame:
-            key = commit.author.email
+            if len(Path(path).read_text()) == 0:
+                print("WARNING - %s has no lines" % path)
+                self._authors[path] = False
+                return []
 
-            # Update existing author
-            if authors.get(key):
-                authors[key]['lines'] = authors[key]['lines'] + len(lines)
-                current_dt = authors.get(key,{}).get('last_datetime')
-                if commit.committed_datetime > current_dt:
-                    authors[key]['last_datetime'] = commit.committed_datetime
-            # Add new author
-            else:
-                authors[key] = {
-                    'name' : commit.author.name,
-                    'email' : key,
-                    'last_datetime' : commit.committed_datetime,
-                    'lines' : len(lines)
-                }
+            authors = {}
+            for commit, lines in blame:
+                key = commit.author.email
 
-        authors = [authors[key] for key in authors]
-        authors = sorted(authors, key = lambda i: i['name'])
+                # Update existing author
+                if authors.get(key):
+                    authors[key]['lines'] = authors[key]['lines'] + len(lines)
+                    current_dt = authors.get(key,{}).get('last_datetime')
+                    if commit.committed_datetime > current_dt:
+                        authors[key]['last_datetime'] = commit.committed_datetime
+                # Add new author
+                else:
+                    authors[key] = {
+                        'name' : commit.author.name,
+                        'email' : key,
+                        'last_datetime' : commit.committed_datetime,
+                        'lines' : len(lines)
+                    }
 
-        total_lines = sum([x.get('lines') for x in authors])
-        for author in authors:
-            author['contribution'] = self._format_perc(author['lines'] / total_lines)
+            authors = [authors[key] for key in authors]
+            authors = sorted(authors, key = lambda i: i['name'])
+
+            total_lines = sum([x.get('lines') for x in authors])
+            for author in authors:
+                author['contribution'] = self._format_perc(author['lines'] / total_lines)
+
+            self._authors[path] = authors
 
         return authors
 
