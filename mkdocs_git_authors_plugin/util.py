@@ -15,18 +15,18 @@ class Util:
             type (str, optional): How to determine authors. Defaults to 'en'.
 
         Returns:
-            str: unique authors
+            list (str): unique authors, or empty list
         """
 
         try:
             blame = self.repo.blame('HEAD',path)
         except:
             print("WARNING - %s has no commits" % path)
-            return ""
+            return []
 
         if len(Path(path).read_text()) == 0:
             print("WARNING - %s has no lines" % path)
-            return ""
+            return []
 
         authors = {}
         for commit, lines in blame:
