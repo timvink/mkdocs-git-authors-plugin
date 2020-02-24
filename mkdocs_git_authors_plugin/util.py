@@ -4,7 +4,7 @@ from pathlib import Path
 class Util:
 
     def __init__(self, path = "."):
-        self.repo = Repo(path)
+        self.repo = Repo(path, search_parent_directories=True)
         # Cache authors entries by path
         self._authors = {}
 
