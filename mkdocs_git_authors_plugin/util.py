@@ -17,7 +17,7 @@ class Util:
             type (str, optional): How to determine authors. Defaults to 'en'.
 
         Returns:
-            list: unique authors
+            list (str): unique authors, or empty list
         """
 
         authors = self._authors.get(path, [])
