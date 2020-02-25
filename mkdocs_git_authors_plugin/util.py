@@ -40,24 +40,26 @@ class Util:
 
             authors = {}
             for commit, lines in blame:
-                key = commit.author.email
+                name = commit.author.name
+                email = commit.author.email
 
                 # Update existing author
-                if authors.get(key):
-                    authors[key]['lines'] = authors[key]['lines'] + len(lines)
-                    current_dt = authors.get(key,{}).get('last_datetime')
+                if authors.get(name):
+                    author = authors[name]
+                    author['lines'] = author['lines'] + len(lines)
+                    current_dt = author.get('last_datetime')
                     if commit.committed_datetime > current_dt:
-                        authors[key]['last_datetime'] = commit.committed_datetime
+                        author['last_datetime'] = commit.committed_datetime
                 # Add new author
                 else:
-                    authors[key] = {
-                        'name' : commit.author.name,
-                        'email' : key,
+                    authors[name] = {
+                        'name' : name,
+                        'email' : email,
                         'last_datetime' : commit.committed_datetime,
                         'lines' : len(lines)
                     }
 
-            authors = [authors[key] for key in authors]
+            authors = [authors[name] for name in authors]
             authors = sorted(authors, key = lambda i: i['name'])
 
             total_lines = sum([x.get('lines') for x in authors])
@@ -91,6 +93,19 @@ class Util:
             str: HTML text with authors
         """
 
-        authors_summary = ["<a href='mailto:%s'>%s</a>" % (x['email'] ,x['name']) for x in authors]
+        authors_summary = []
+        for author in authors:
+            contribution = (
+                ' (%s)' % author['contribution']
+                if len(authors) > 1
+                else ''
+            )
+            authors_summary.append(
+                "<a href='mailto:%s'>%s</a>%s" % (
+                    author['email'],
+                    author['name'],
+                    contribution
+                )
+            )
         authors_summary = ', '.join(authors_summary)
-        return "<span class='git-authors'>" + authors_summary + "</span>"
+        return "<span class='git-authors'>%s</span>" % authors_summary
