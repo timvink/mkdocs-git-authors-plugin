@@ -21,12 +21,15 @@ Install the plugin using pip:
 pip install mkdocs-git-authors-plugin
 ```
 
-Activate the plugin in `mkdocs.yml`:
+Next, add the following lines to your `mkdocs.yml`:
 
-```yaml
+```yml
 plugins:
+  - search
   - git-authors
 ```
+
+> If you have no `plugins` entry in your config file yet, you'll likely also want to add the `search` plugin. MkDocs enables it by default if there is no `plugins` entry set.
 
 ## Usage
 
