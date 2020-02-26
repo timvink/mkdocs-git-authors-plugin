@@ -12,7 +12,16 @@ pip install -e .
 pytest --cov=mkdocs_git_authors_plugin --cov-report term-missing test 
 ```
 
+In addition, this project uses pyflakes for static code checking:
+
+```python
+pip install pyflakes
+pyflakes tests/ mkdocs_git_authors_plugin/
+```
+
 ## Submitting Changes
+
+Make sure to discuss changes in an issue before putting in the work.
 
 To get changes merged, create a pull request. 
 

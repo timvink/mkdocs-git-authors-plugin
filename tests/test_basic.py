@@ -17,7 +17,7 @@ def build_docs_setup(mkdocs_path, output_path):
     
 def test_basic_working(tmp_path):
 
-    result = build_docs_setup('test/basic_setup/mkdocs.yml', tmp_path)
+    result = build_docs_setup('tests/basic_setup/mkdocs.yml', tmp_path)
     assert result.exit_code == 0, "'mkdocs build' command failed"
 
     index_file = tmp_path/'index.html'
