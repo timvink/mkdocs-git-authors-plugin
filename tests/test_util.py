@@ -109,9 +109,15 @@ def test_summarize_authors():
 
     authors = [
         {'name' : 'Tim',
-         'email' : 'abc@abc.com'
+         'email' : 'abc@abc.com',
+         'contribution' : '64.23%'
         }
     ]
-    
-    summary = util.Util().summarize(authors)
+
+    config = { 'show_contribution' : False }
+    summary = util.Util().summarize(authors, config)
     assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a></span>"
+
+    config = { 'show_contribution' : True }
+    summary = util.Util().summarize(authors, config)
+    assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%)</span>"
