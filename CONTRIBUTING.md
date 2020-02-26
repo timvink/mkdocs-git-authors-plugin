@@ -9,7 +9,7 @@ Make sure to install an editable version before running tests:
 ```python
 pip install -r tests/test_requirements.txt
 pip install -e .
-pytest --cov=mkdocs_git_authors_plugin --cov-report term-missing test 
+pytest --cov=mkdocs_git_authors_plugin --cov-report term-missing tests
 ```
 
 In addition, this project uses pyflakes for static code checking:
