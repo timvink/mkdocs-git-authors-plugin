@@ -12,16 +12,28 @@ def test_empty_file(tmp_path):
     r = Repo.init(tmp_path)
     instance = util.Util(tmp_path)
     authors = instance.get_authors(path = file_name)
-    assert authors == ""
+    assert authors == []
     
     # Get authors of empty, committed file
     r.index.add([file_name])
     author = Actor('Tim', 'abc@abc.com')
     r.index.commit("initial commit", author = author)
     authors = instance.get_authors(path = file_name)
-    assert authors == "" 
+    assert authors == []
     
 def test_retrieve_authors(tmp_path):
+    """
+    Builds a fake git project with some commits.
+    
+    pytest offers a `tmp_path`. You can reproduce locally with
+    >>> import tempfile
+    >>> from pathlib import Path
+    >>> tmp_path = Path(tempfile.gettempdir()) / 'pytest-retrieve-authors'
+    >>> os.mkdir(tmp_path)
+    
+    Args:
+        tmp_path (PosixPath): Directory of a tempdir
+    """
 
     # Create file
     file_name = os.path.join(tmp_path, 'new-file')
@@ -36,6 +48,7 @@ def test_retrieve_authors(tmp_path):
     
     instance = util.Util(tmp_path)
     authors = instance.get_authors(path = file_name)
+    # We don't want to test datetime
     authors[0]['last_datetime'] = None
      
     assert authors == [{
@@ -53,7 +66,8 @@ def test_retrieve_authors(tmp_path):
     r.index.add([file_name])
     author = Actor('Tim2', 'abc@abc.com')
     r.index.commit("another commit", author = author) 
-   
+    
+    instance = util.Util(tmp_path)
     authors = instance.get_authors(path = file_name)
     authors[0]['last_datetime'] = None 
     
@@ -71,7 +85,8 @@ def test_retrieve_authors(tmp_path):
     r.index.add([file_name])
     author = Actor('John', 'john@abc.com')
     r.index.commit("third commit", author = author)  
-    
+   
+    instance = util.Util(tmp_path) 
     authors = instance.get_authors(path = file_name)
     authors[0]['last_datetime'] = None 
     authors[1]['last_datetime'] = None 
