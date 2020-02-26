@@ -1,8 +1,13 @@
 import re
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .util import Util
 
 class GitAuthorsPlugin(BasePlugin):
+    config_scheme = (
+        ('show_contribution', config_options.Type(bool, default=False)),
+    )
+
     def __init__(self):
         self.util = Util()
 
@@ -35,7 +40,7 @@ class GitAuthorsPlugin(BasePlugin):
         authors = self.util.get_authors(
             path = page.file.abs_src_path
         )
-        authors_summary = self.util.summarize(authors)
+        authors_summary = self.util.summarize(authors, self.config)
 
         return re.sub(pattern,
                       authors_summary,
@@ -65,7 +70,7 @@ class GitAuthorsPlugin(BasePlugin):
         authors = self.util.get_authors(
             path = page.file.abs_src_path
         )
-        authors_summary = self.util.summarize(authors)
+        authors_summary = self.util.summarize(authors, self.config)
 
         context['git_authors'] = authors
         context['git_authors_summary'] = authors_summary

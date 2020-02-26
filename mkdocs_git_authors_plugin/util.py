@@ -27,7 +27,7 @@ class Util:
 
         if authors:
             return authors
-        
+
         try:
             blame = self.repo.blame('HEAD',path)
         except:
@@ -82,7 +82,7 @@ class Util:
         return str(round(n * 100, decimals)) + '%'
 
     @staticmethod
-    def summarize(authors):
+    def summarize(authors, config):
         """
         Summarized list of authors to a HTML string
 
@@ -93,6 +93,18 @@ class Util:
             str: HTML text with authors
         """
 
-        authors_summary = ["<a href='mailto:%s'>%s</a>" % (x['email'] ,x['name']) for x in authors]
+        def format_author(author):
+            contrib = (
+                ' (%s)' % author['contribution']
+                if config['show_contribution']
+                else ''
+            )
+            return "<a href='mailto:%s'>%s</a>%s" % (
+                author['email'],
+                author['name'],
+                contrib
+            )
+
+        authors_summary = [format_author(author) for author in authors]
         authors_summary = ', '.join(authors_summary)
         return "<span class='git-authors'>" + authors_summary + "</span>"
