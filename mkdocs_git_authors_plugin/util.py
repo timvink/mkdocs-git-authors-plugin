@@ -1,4 +1,5 @@
 from git import Repo
+import logging
 from pathlib import Path
 
 class Util:
@@ -28,12 +29,12 @@ class Util:
             try:
                 blame = self.repo.blame('HEAD',path)
             except:
-                print("WARNING - %s has no commits" % path)
+                logging.warning("%s has no commits" % path)
                 self._authors[path] = False
                 return []
 
             if len(Path(path).read_text()) == 0:
-                print("WARNING - %s has no lines" % path)
+                logging.warning("%s has no lines" % path)
                 self._authors[path] = False
                 return []
 
