@@ -1,13 +1,8 @@
 import re
-from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .util import Util
 
 class GitAuthorsPlugin(BasePlugin):
-    config_scheme = (
-        ('type', config_options.Type(str, default='')),
-    )
-
     def __init__(self):
         self.util = Util()
 
@@ -38,8 +33,7 @@ class GitAuthorsPlugin(BasePlugin):
            return markdown
 
         authors = self.util.get_authors(
-            path = page.file.abs_src_path,
-            type = self.config['type']
+            path = page.file.abs_src_path
         )
         authors_summary = self.util.summarize(authors)
 
@@ -69,8 +63,7 @@ class GitAuthorsPlugin(BasePlugin):
 
 
         authors = self.util.get_authors(
-            path = page.file.abs_src_path,
-            type = self.config['type']
+            path = page.file.abs_src_path
         )
         authors_summary = self.util.summarize(authors)
 

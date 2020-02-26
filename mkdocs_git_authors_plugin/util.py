@@ -8,13 +8,12 @@ class Util:
         # Cache authors entries by path
         self._authors = {}
 
-    def get_authors(self, path: str, type: str = 'authors'):
+    def get_authors(self, path):
         """
         Determine git authors for a given file
 
         Args:
             path (str): Location of a file that is part of a GIT repository
-            type (str, optional): How to determine authors. Defaults to 'en'.
 
         Returns:
             list (str): unique authors, or empty list
