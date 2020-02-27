@@ -96,7 +96,10 @@ class Util:
         def format_author(author):
             contrib = (
                 ' (%s)' % author['contribution']
-                if config['show_contribution']
+                if (
+                    config['show_contribution']
+                    and len(authors) > 1
+                )
                 else ''
             )
             return "<a href='mailto:%s'>%s</a>%s" % (
