@@ -85,3 +85,17 @@ An example of how to use in your templates:
 ```
 
 Alternatively, you could use the simple preformatted ``{{ git_authors_summary }}`` to insert a summary of the authors.
+
+## Options
+
+### `show_contribution`
+
+If this option is set to `true` (default: `false`) The contribution to a page is
+printed as a percentage of (source file) lines per author. The output is
+suppressed if there is only *one* author for a page.
+
+Example output:
+
+* Authors: [John Doe](#) (33.33%), [Jane Doe](#) (66.67%) *(more than one author)*
+* Authors: [John Doe](#) *(one author)*
+
