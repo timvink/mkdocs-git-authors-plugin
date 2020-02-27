@@ -114,10 +114,22 @@ def test_summarize_authors():
         }
     ]
 
+    # Default case: don't show contribution
     config = { 'show_contribution' : False }
     summary = util.Util().summarize(authors, config)
     assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a></span>"
 
+    # Do show contribution, but hide it because there's only one author
     config = { 'show_contribution' : True }
     summary = util.Util().summarize(authors, config)
-    assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%)</span>"
+    assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a></span>"
+
+    # Add another author
+    authors.append({
+        'name' : 'Tom',
+        'email' : 'efg@efg.org',
+        'contribution' : '35.77%'
+    })
+    # Now contribution is displayed
+    summary = util.Util().summarize(authors, config)
+    assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%), <a href='mailto:efg@efg.org'>Tom</a> (35.77%)</span>"
