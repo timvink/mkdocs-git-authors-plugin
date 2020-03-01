@@ -53,7 +53,7 @@ Which renders as:
 
 ### In theme templates
 
-In theme templates you will have access to the jinja2 variable `git_authors`, which contains a list of authors dicts, like the following example:
+To add more detailed author information to your theme you can [customize a mkdocs theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) or even [develop your own](https://www.mkdocs.org/user-guide/custom-themes/). When enabling this plugin, you will have access to the jinja2 variable `git_authors`, which contains a list of authors dicts, like the following example:
 
 ```python
 [{
