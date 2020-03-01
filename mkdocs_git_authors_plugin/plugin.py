@@ -5,6 +5,7 @@ from .util import Util
 class GitAuthorsPlugin(BasePlugin):
     def __init__(self):
         self.util = Util()
+#        self._book = Book()
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -30,7 +31,7 @@ class GitAuthorsPlugin(BasePlugin):
         pattern = r"\{\{\s*git_authors_summary\s*\}\}"
 
         if not re.search(pattern, markdown, flags=re.IGNORECASE):
-           return markdown
+            return markdown
 
         authors = self.util.get_authors(
             path = page.file.abs_src_path
@@ -60,7 +61,6 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             dict: template context variables
         """
-
 
         authors = self.util.get_authors(
             path = page.file.abs_src_path

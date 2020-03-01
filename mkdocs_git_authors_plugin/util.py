@@ -1,11 +1,13 @@
-from git import Repo
 import logging
 from pathlib import Path
 
+from .repo import Repo
+
+
 class Util:
 
-    def __init__(self, path = "."):
-        self.repo = Repo(path, search_parent_directories=True)
+    def __init__(self):
+        self.repo = Repo()
         # Cache authors entries by path
         self._authors = {}
 
@@ -27,9 +29,9 @@ class Util:
 
         if authors:
             return authors
-        
+
         try:
-            blame = self.repo.blame('HEAD',path)
+            blame = self.repo.blame(path)
         except:
             logging.warning("%s has no commits" % path)
             self._authors[path] = False
@@ -42,20 +44,20 @@ class Util:
 
         authors = {}
         for commit, lines in blame:
-            key = commit.author.email
+            key = commit.author_email()
 
             # Update existing author
             if authors.get(key):
                 authors[key]['lines'] = authors[key]['lines'] + len(lines)
                 current_dt = authors.get(key,{}).get('last_datetime')
-                if commit.committed_datetime > current_dt:
-                    authors[key]['last_datetime'] = commit.committed_datetime
+                if commit.datetime() > current_dt:
+                    authors[key]['last_datetime'] = commit.datetime()
             # Add new author
             else:
                 authors[key] = {
-                    'name' : commit.author.name,
+                    'name' : commit.author_name(),
                     'email' : key,
-                    'last_datetime' : commit.committed_datetime,
+                    'last_datetime' : commit.datetime(),
                     'lines' : len(lines)
                 }
 
