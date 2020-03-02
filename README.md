@@ -8,7 +8,7 @@
 
 [MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
 
-> Authors: John Doe, Jane Doe
+> Authors: Jane Doe, John Doe
 
 The plugin only considers authors of the current lines in the page ('surviving code' using `git blame`).
 
@@ -55,11 +55,11 @@ Which renders as:
 
 no supported themes *yet*.
 
-### Customizing existing themes
+### In theme customization
 
 [MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme).
 
-As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can easily implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
+As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
 
 1) Create a new file `base.html` in `docs/assets/theme`:
 
