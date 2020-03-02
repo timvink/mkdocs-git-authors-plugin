@@ -1,10 +1,24 @@
 import re
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .repo import Repo
 
 class GitAuthorsPlugin(BasePlugin):
+    config_scheme = (
+        ('show_contribution', config_options.Type(bool, default=False)),
+    )
+
     def __init__(self):
         self._repo = Repo()
+
+    def on_config(self, config, **kwargs):
+        """
+        Store the plugin configuration in the Repo object.
+
+        This is only the dictionary with the plugin configuration,
+        not the global config which is passed to the various event handlers.
+        """
+        self.repo().set_config(self.config)
 
     def on_files(self, files, **kwargs):
         """

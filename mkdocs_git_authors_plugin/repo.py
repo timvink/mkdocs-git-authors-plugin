@@ -188,6 +188,15 @@ class Repo(object):
             self._commits[sha] = Commit(self, sha)
         return self._commits.get(sha)
 
+    def config(self, key: str = ''):
+        """
+        Return the plugin configuration dictionary or a single config value.
+
+        Args:
+            key: lookup key or an empty string.
+        """
+        return self._config.get(key) if key else self._config
+
     def find_repo_root(self):
         """
         Determine the root directory of the Git repository,
@@ -234,6 +243,15 @@ class Repo(object):
             str
         """
         return self._root
+
+    def set_config(self, plugin_config):
+        """
+        Store the plugin configuration in the Repo instance.
+
+        Args:
+            - plugin_config: dictionary
+        """
+        self._config = plugin_config
 
     def total_lines(self):
         """
@@ -428,13 +446,20 @@ class Page(AbstractRepoObject):
         """
 
         authors = self.authors()
-        authors_summary = [
-            "<a href='mailto:%s'>%s</a>" % (
-                author.email(),
-                author.name()
+        authors_summary = []
+        for author in authors:
+            contrib = (
+                ' (%s)' % author.contribution(self.path(), str)
+                if self.repo().config('show_contribution')
+                and len(self.authors()) > 1
+                else ''
             )
-            for author in authors
-        ]
+            authors_summary.append(
+                "<a href='mailto:%s'>%s</a>%s" % (
+                    author.email(),
+                    author.name(),
+                    contrib
+                ))
         authors_summary = ', '.join(authors_summary)
         return "<span class='git-authors'>%s</span>" % authors_summary
 
