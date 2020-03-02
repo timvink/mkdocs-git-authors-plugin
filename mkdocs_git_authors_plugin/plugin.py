@@ -6,6 +6,22 @@ class GitAuthorsPlugin(BasePlugin):
     def __init__(self):
         self._repo = Repo()
 
+    def on_files(self, files, **kwargs):
+        """
+        Preprocess all markdown pages in the project
+
+        This populates all the lines and total_lines properties
+        of the pages and the repository, so the total
+        contribution of an author to the repository can be
+        retrieved on *any* Markdown page.
+        """
+        cnt = 0
+        for file in files:
+            path = file.abs_src_path
+            if path.endswith('.md'):
+                cnt += 1
+                _ = self.repo().page(path)
+
     def on_page_markdown(self, markdown, page, config, files):
         """
         Replace jinja tag {{ git_authors_summary }} in markdown.
