@@ -1,11 +1,10 @@
 import re
 from mkdocs.plugins import BasePlugin
-from .util import Util
+from .repo import Repo
 
 class GitAuthorsPlugin(BasePlugin):
     def __init__(self):
-        self.util = Util()
-#        self._book = Book()
+        self._repo = Repo()
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -33,15 +32,14 @@ class GitAuthorsPlugin(BasePlugin):
         if not re.search(pattern, markdown, flags=re.IGNORECASE):
             return markdown
 
-        authors = self.util.get_authors(
-            path = page.file.abs_src_path
-        )
-        authors_summary = self.util.summarize(authors)
+        page_obj = self.repo().page(page.file.abs_src_path)
 
-        return re.sub(pattern,
-                      authors_summary,
-                      markdown,
-                      flags=re.IGNORECASE)
+        return re.sub(
+            pattern,
+            page_obj.authors_summary(),
+            markdown,
+            flags=re.IGNORECASE
+        )
 
     def on_page_context(self, context, page, **kwargs):
         """
@@ -62,12 +60,32 @@ class GitAuthorsPlugin(BasePlugin):
             dict: template context variables
         """
 
-        authors = self.util.get_authors(
-            path = page.file.abs_src_path
-        )
-        authors_summary = self.util.summarize(authors)
+        path = page.file.abs_src_path
+        page_obj = self.repo().page(path)
+        authors = page_obj.authors()
 
-        context['git_authors'] = authors
-        context['git_authors_summary'] = authors_summary
+        # NOTE: last_datetime is currently given as a
+        # string in the format
+        # '2020-02-24 17:49:14 +0100'
+        # omitting the 'str' argument would result in a
+        # datetime.datetime object with tzinfo instead.
+        # Should this be formatted differently?
+        context['git_authors'] = [
+            {
+                'name' : author.name(),
+                'email' : author.email(),
+                'last_datetime' : author.datetime(path, str),
+                'lines' : author.lines(path),
+                'contribution' : author.contribution(path, str)
+            }
+            for author in authors
+        ]
+        context['git_authors_summary'] = page_obj.authors_summary()
 
         return context
+
+    def repo(self):
+        """
+        Reference to the Repo object of the current project.
+        """
+        return self._repo
