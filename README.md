@@ -39,7 +39,7 @@ plugins:
 
 ### In markdown pages
 
-You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email. 
+You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email.
 
 An example output:
 
@@ -57,7 +57,7 @@ no supported themes *yet*.
 
 ### Customizing existing themes
 
-[MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme). 
+[MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme).
 
 As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can easily implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
 
@@ -134,6 +134,13 @@ Example output:
 * Authors: [John Doe](#) (33.33%), [Jane Doe](#) (66.67%) *(more than one author)*
 * Authors: [John Doe](#) *(one author)*
 
+### `uncommitted_name` and `uncommitted_email`
+
+Lines that `git blame` consideres uncommitted can't be attributed to an author,
+therefore they are assigned to a virtual author `Uncommitted` with a pseudo
+email address of `#`. These values can be changed with the options
+`uncommitted_name` (default “Uncommitted”) and `uncommitted_email` (default “#”).
+
 ### Aggregating Authors
 
 In some repositories authors may have committed with differing name/email combinations.
@@ -150,4 +157,3 @@ Jane Doe <jane.doe@company.com> <jane.doe@private-email.com>
 This will map commits made with the `private-email.com` to the company address. For more details
 and further options (e.g. mapping between different names or misspellings etc. see the
 [git-blame documentation](https://git-scm.com/docs/git-blame#_mapping_authors).
-
