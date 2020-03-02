@@ -6,6 +6,8 @@ from .repo import Repo
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ('show_contribution', config_options.Type(bool, default=False)),
+        ('uncommitted_name', config_options.Type(str, default='Uncommitted')),
+        ('uncommitted_email', config_options.Type(str, default='#'))
     )
 
     def __init__(self):

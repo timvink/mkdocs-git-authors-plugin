@@ -307,7 +307,16 @@ class Commit(AbstractRepoObject):
 
         super().__init__(repo)
         self._sha = sha
-        self._populate()
+        if sha == '0000000000000000000000000000000000000000':
+            # Create fake commit for uncommitted changes
+            self._author = self.repo().author(
+                self.repo().config('uncommitted_name'),
+                self.repo().config('uncommitted_email')
+            )
+            self._datetime = None
+            self._datetime_string = '---'
+        else:
+            self._populate()
 
     def author(self):
         """

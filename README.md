@@ -3,7 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/mkdocs-git-authors-plugin)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-git-authors-plugin)
 [![codecov](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin)
- 
+
 # mkdocs-git-authors-plugin
 
 [MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
