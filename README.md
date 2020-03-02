@@ -6,7 +6,11 @@
  
 # mkdocs-git-authors-plugin
 
-[MkDocs](https://www.mkdocs.org/) plugin to display git authors of a page. Only considers authors of the current lines in the page ('surviving code' using `git blame`).
+[MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
+
+> Authors: John Doe, Jane Doe
+
+The plugin only considers authors of the current lines in the page ('surviving code' using `git blame`).
 
 Other MkDocs plugins that use information from git:
 
@@ -33,10 +37,6 @@ plugins:
 
 ## Usage
 
-### In supported themes
-
-no supported themes *yet*
-
 ### In markdown pages
 
 You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email. 
@@ -51,9 +51,42 @@ Which renders as:
 
 > [Jane Doe](mailto:#), [John Doe](mailto:#)
 
+### In supported themes
+
+no supported themes *yet*.
+
+### Customizing existing themes
+
+[MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme). 
+
+As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can easily implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
+
+1) Create a new file `base.html` in `docs/assets/theme`:
+
+```html
+{% extends "base.html" %}
+
+{% block disqus %}
+    <div class="md-source-date">
+    <small>
+        Authors: {{ git_authors_summary }}
+    </small>
+  </div>
+    {% include "partials/integrations/disqus.html" %}
+{% endblock %}
+```
+
+2) In `mkdocs.yml` make sure to specify the custom directory with the theme overrides:
+
+```yml
+theme:
+    name: material
+    custom_dir: docs/assets/theme/
+```
+
 ### In theme templates
 
-To add more detailed author information to your theme you can [customize a mkdocs theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) or even [develop your own](https://www.mkdocs.org/user-guide/custom-themes/). When enabling this plugin, you will have access to the jinja2 variable `git_authors`, which contains a list of authors dicts, like the following example:
+To add more detailed author information to your theme you can [customize a MkDocs theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) or even [develop your own](https://www.mkdocs.org/user-guide/custom-themes/). When enabling this plugin, you will have access to the jinja2 variable `git_authors`, which contains a list of authors dicts, like the following example:
 
 ```python
 [{
@@ -71,6 +104,8 @@ To add more detailed author information to your theme you can [customize a mkdoc
     'contribution' : '60.0%'
 }]
 ```
+
+#### Example usage in theme development
 
 An example of how to use in your templates:
 
