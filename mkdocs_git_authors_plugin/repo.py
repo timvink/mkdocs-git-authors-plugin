@@ -472,7 +472,7 @@ class Page(AbstractRepoObject):
         self._total_lines = 0
         self._authors = []
         try:
-            self._execute()
+            self._process_git_blame()
         except GitCommandError:
             logging.warning(
                 '%s has not been committed yet. Lines are not counted' % path
@@ -536,7 +536,7 @@ class Page(AbstractRepoObject):
         authors_summary = ', '.join(authors_summary)
         return "<span class='git-authors'>%s</span>" % authors_summary
 
-    def _execute(self):
+    def _process_git_blame(self):
         """
         Execute git blame and parse the results.
         """
