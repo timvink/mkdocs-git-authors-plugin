@@ -245,23 +245,6 @@ class Repo(object):
         """
         return result
 
-    def commit(self, sha: str):
-        """
-        Return the (cached) Commit object for given sha.
-
-        Implicitly creates a new Commit object upon first request,
-        which will trigger the git show processing.
-
-        Args:
-            40-byte SHA string
-
-        Returns:
-            Commit object
-        """
-        if not self._commits.get(sha):
-            self._commits[sha] = Commit(self, sha)
-        return self._commits.get(sha)
-
     def config(self, key: str = ''):
         """
         Return the plugin configuration dictionary or a single config value.
@@ -287,6 +270,23 @@ class Repo(object):
         cmd = GitCommand('rev-parse', ['--show-toplevel'])
         cmd.run()
         return cmd.stdout()[0]
+
+    def get_commit(self, sha: str):
+        """
+        Return the (cached) Commit object for given sha.
+
+        Implicitly creates a new Commit object upon first request,
+        which will trigger the git show processing.
+
+        Args:
+            40-byte SHA string
+
+        Returns:
+            Commit object
+        """
+        if not self._commits.get(sha):
+            self._commits[sha] = Commit(self, sha)
+        return self._commits.get(sha)
 
     def page(self, path):
         """
@@ -556,7 +556,7 @@ class Page(AbstractRepoObject):
 
                 if content or self.repo().config('count_empty_lines'):
                     # assign the line to a commit and count it
-                    commit = self.repo().commit(sha)
+                    commit = self.repo().get_commit(sha)
                     author = commit.author()
                     if author not in self._authors:
                         self._authors.append(author)
