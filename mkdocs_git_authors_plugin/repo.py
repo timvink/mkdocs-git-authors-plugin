@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 import os
 import subprocess
 
@@ -498,7 +499,12 @@ class Page(AbstractRepoObject):
         self._sorted = False
         self._total_lines = 0
         self._authors = []
-        self._execute()
+        try:
+            self._execute()
+        except GitCommandError:
+            logging.warning(
+                '%s has not been committed yet. Lines are not counted' % path
+            )
 
     def add_total_lines(self, cnt: int = 1):
         """
@@ -563,7 +569,7 @@ class Page(AbstractRepoObject):
         Execute git blame and parse the results.
         """
 
-        cmd = GitCommand('blame', ['-lts', self._path])
+        cmd = GitCommand('blame', ['-lts', str(self._path)])
         cmd.run()
 
         for line in cmd.stdout():
