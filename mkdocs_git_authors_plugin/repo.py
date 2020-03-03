@@ -336,9 +336,9 @@ class Repo(object):
 
         Returns:
             comparison key for the sorted() function,
-            determined by the 'sort_by' configuration option
+            determined by the 'sort_authors_by' configuration option
         """
-        func = getattr(author, self.config('sort_by'))
+        func = getattr(author, self.config('sort_authors_by'))
         return func()
 
     def total_lines(self):
