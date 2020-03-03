@@ -173,7 +173,7 @@ class Repo(object):
             self._authors[email] = Author(self, name, email)
         return self._authors[email]
 
-    def authors(self):
+    def get_authors(self):
         """
         Sorted list of authors in the repository.
 
@@ -220,7 +220,7 @@ class Repo(object):
         result = """
     <ul class='git-authors'>
         """
-        for author in self.authors():
+        for author in self.get_authors():
             contribution = (
                 ' (%s)' % author.contribution(None, str)
                 if show_contribution
@@ -516,7 +516,7 @@ class Page(AbstractRepoObject):
         """
         self._total_lines += cnt
 
-    def authors(self):
+    def get_authors(self):
         """
         Return a sorted list of authors for the page
 
@@ -547,13 +547,13 @@ class Page(AbstractRepoObject):
             str: HTML text with authors
         """
 
-        authors = self.authors()
+        authors = self.get_authors()
         authors_summary = []
         for author in authors:
             contrib = (
                 ' (%s)' % author.contribution(self.path(), str)
                 if self.repo().config('show_contribution')
-                and len(self.authors()) > 1
+                and len(self.get_authors()) > 1
                 else ''
             )
             authors_summary.append(

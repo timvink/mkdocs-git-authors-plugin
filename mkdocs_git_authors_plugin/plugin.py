@@ -164,7 +164,7 @@ class GitAuthorsPlugin(BasePlugin):
 
         path = page.file.abs_src_path
         page_obj = self.repo().page(path)
-        authors = page_obj.authors()
+        authors = page_obj.get_authors()
 
         # NOTE: last_datetime is currently given as a
         # string in the format
