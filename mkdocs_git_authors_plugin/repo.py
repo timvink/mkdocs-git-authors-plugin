@@ -215,7 +215,7 @@ class Repo(object):
             Unordered HTML list as a string.
         """
         show_contribution = self.config('show_contribution')
-        show_lines = show_contribution and self.config('show_lines')
+        show_line_count = show_contribution and self.config('show_line_count')
         label_lines = self.config('label_lines')
         result = """
     <ul class='git-authors'>
@@ -228,7 +228,7 @@ class Repo(object):
             )
             lines = (
                 '%s %s' % (author.lines(), label_lines)
-                if show_lines
+                if show_line_count
                 else ''
             )
             result += """
