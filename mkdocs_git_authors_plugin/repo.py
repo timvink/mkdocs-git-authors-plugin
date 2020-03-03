@@ -175,7 +175,8 @@ class Repo(object):
         """
         Sorted list of authors in the repository.
 
-        NOTE: Currently sorting is hard-coded to be by name.
+        Default sort order is by ascending names, which can be changed
+        to descending and/or by contribution
 
         Args:
 
@@ -183,8 +184,11 @@ class Repo(object):
             List of Author objects
         """
         return sorted([
-            author for author in self._authors.values()
-        ], key = lambda author: author.name())
+                author for author in self._authors.values()
+            ],
+            key=self._sort_key,
+            reverse=self.config('sort_reverse')
+        )
 
     def authors_summary(self):
         """
@@ -320,6 +324,20 @@ class Repo(object):
             - plugin_config: dictionary
         """
         self._config = plugin_config
+
+    def _sort_key(self, author):
+        """
+        Return a sort key for an author.
+
+        Args:
+            author: an Author object
+
+        Returns:
+            comparison key for the sorted() function,
+            determined by the 'sort_by' configuration option
+        """
+        func = getattr(author, self.config('sort_by'))
+        return func()
 
     def total_lines(self):
         """
@@ -498,17 +516,17 @@ class Page(AbstractRepoObject):
         The list is sorted once upon first request.
         Sorting is done by author name.
 
-        NOTE: Sorting should be made configurable and at least
-        offer sorting by contribution (ASC/DESC).
-
         Args:
 
         Returns:
             sorted list with Author objects
         """
         if not self._sorted:
+            repo = self.repo()
             self._authors = sorted(
-                self._authors, key = lambda author: author.name()
+                self._authors,
+                key=repo._sort_key,
+                reverse=repo.config('sort_reverse')
             )
             self._sorted = True
         return self._authors
