@@ -24,19 +24,46 @@ class GitAuthorsPlugin(BasePlugin):
         """
         Store the plugin configuration in the Repo object.
 
-        This is only the dictionary with the plugin configuration,
+        The config event is the first event called on build and is run
+        immediately after the user configuration is loaded and validated. Any
+        alterations to the config should be made here.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_config
+
+        NOTE: This is only the dictionary with the plugin configuration,
         not the global config which is passed to the various event handlers.
+
+        Args:
+            config: global configuration object
+
+        Returns:
+            (updated) configuration object
         """
         self.repo().set_config(self.config)
 
-    def on_files(self, files, **kwargs):
+    def on_files(self, files, config, **kwargs):
         """
-        Preprocess all markdown pages in the project
+        Preprocess all markdown pages in the project.
+
+        The files event is called after the files collection is populated from
+        the docs_dir. Use this event to add, remove, or alter files in the
+        collection. Note that Page objects have not yet been associated with the
+        file objects in the collection. Use Page Events to manipulate page
+        specific data.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_files
 
         This populates all the lines and total_lines properties
         of the pages and the repository, so the total
         contribution of an author to the repository can be
         retrieved on *any* Markdown page.
+
+        Args:
+            files: global files collection
+            config: global configuration object
+
+        Returns:
+            global files collection
         """
         for file in files:
             path = file.abs_src_path
@@ -112,7 +139,7 @@ class GitAuthorsPlugin(BasePlugin):
             markdown
         )
 
-    def on_page_context(self, context, page, **kwargs):
+    def on_page_context(self, context, page, config, nav, **kwargs):
         """
         Add 'git_authors' and 'git_authors_summary' variables
         to template context.
@@ -121,11 +148,15 @@ class GitAuthorsPlugin(BasePlugin):
         is created and can be used to alter the context for that
         specific page only.
 
+        https://www.mkdocs.org/user-guide/plugins/#on_page_context
+
         Note this is called *after* on_page_markdown()
 
         Args:
             context (dict): template context variables
             page (class): mkdocs.nav.Page instance
+            config: global configuration object
+            nav: global navigation object
 
         Returns:
             dict: template context variables
