@@ -134,13 +134,6 @@ Example output:
 * Authors: [John Doe](#) (33.33%), [Jane Doe](#) (66.67%) *(more than one author)*
 * Authors: [John Doe](#) *(one author)*
 
-### `uncommitted_name` and `uncommitted_email`
-
-Lines that `git blame` consideres uncommitted can't be attributed to an author,
-therefore they are assigned to a virtual author `Uncommitted` with a pseudo
-email address of `#`. These values can be changed with the options
-`uncommitted_name` (default “Uncommitted”) and `uncommitted_email` (default “#”).
-
 ### Aggregating Authors
 
 In some repositories authors may have committed with differing name/email combinations.

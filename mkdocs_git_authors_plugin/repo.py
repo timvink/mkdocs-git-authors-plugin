@@ -216,7 +216,6 @@ class Repo(object):
         """
         show_contribution = self.config('show_contribution')
         show_line_count = show_contribution and self.config('show_line_count')
-        label_lines = self.config('label_lines')
         result = """
     <ul class='git-authors'>
         """
@@ -227,7 +226,7 @@ class Repo(object):
                 else ''
             )
             lines = (
-                '%s %s' % (author.lines(), label_lines)
+                '%s lines' % author.lines()
                 if show_line_count
                 else ''
             )
@@ -424,10 +423,7 @@ class Commit(AbstractRepoObject):
             # This indicates an uncommitted line, so there's
             # no actual Git commit to inspect. Instead we
             # populate the Commit object wtih a fake Author.
-            self._author = repo.author(
-                repo.config('uncommitted_name'),
-                repo.config('uncommitted_email')
-            )
+            self._author = repo.author('Uncommitted', '#')
             self._datetime = None
             self._datetime_string = '---'
             return
