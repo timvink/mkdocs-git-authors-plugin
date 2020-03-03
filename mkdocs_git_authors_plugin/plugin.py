@@ -7,6 +7,7 @@ class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ('show_contribution', config_options.Type(bool, default=False)),
         ('show_lines', config_options.Type(bool, default=False)),
+        ('count_empty_lines', config_options.Type(bool, default=True)),
         ('label_lines', config_options.Type(str, default='lines')),
         ('sort_by', config_options.Choice(
             ['name', 'contribution'], default='name')

@@ -1,6 +1,7 @@
 from pathlib import Path
 import logging
 import os
+import re
 import subprocess
 
 from datetime import datetime, timedelta, timezone
@@ -572,17 +573,25 @@ class Page(AbstractRepoObject):
         cmd = GitCommand('blame', ['-lts', str(self._path)])
         cmd.run()
 
+        # Retrieve SHA and content from the line, discarding
+        # file path and line number
+        line_pattern = re.compile('(.*?)\s.*\s*\d\)(\s*.*)')
+
         for line in cmd.stdout():
-            sha = line[:40]
-            if sha:
-                # assign the line to a commit and count it
-                commit = self.repo().commit(sha)
-                author = commit.author()
-                if author not in self._authors:
-                    self._authors.append(author)
-                author.add_lines(self, commit)
-                self.add_total_lines()
-                self.repo().add_total_lines()
+            m = line_pattern.match(line)
+            if m:
+                sha = m.group(1)
+                content = m.group(2).strip()
+
+                if content or self.repo().config('count_empty_lines'):
+                    # assign the line to a commit and count it
+                    commit = self.repo().commit(sha)
+                    author = commit.author()
+                    if author not in self._authors:
+                        self._authors.append(author)
+                    author.add_lines(self, commit)
+                    self.add_total_lines()
+                    self.repo().add_total_lines()
 
     def path(self):
         """
