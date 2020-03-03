@@ -307,17 +307,6 @@ class Repo(object):
             self._pages[path] = Page(self, path)
         return self._pages[path]
 
-    def root(self):
-        """
-        Returns the repository root.
-
-        Args:
-
-        Returns:
-            str
-        """
-        return self._root
-
     def set_config(self, plugin_config):
         """
         Store the plugin configuration in the Repo instance.
