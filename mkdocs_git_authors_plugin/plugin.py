@@ -6,6 +6,8 @@ from .repo import Repo
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ('show_contribution', config_options.Type(bool, default=False)),
+        ('show_lines', config_options.Type(bool, default=False)),
+        ('label_lines', config_options.Type(str, default='lines')),
         ('uncommitted_name', config_options.Type(str, default='Uncommitted')),
         ('uncommitted_email', config_options.Type(str, default='#'))
     )
@@ -38,6 +40,40 @@ class GitAuthorsPlugin(BasePlugin):
                 cnt += 1
                 _ = self.repo().page(path)
 
+    def on_page_content(self, html, page, config, files, **kwargs):
+        """
+        Replace jinja tag {{ git_authors_list }} in HTML.
+
+        The page_content event is called after the Markdown text is
+        rendered to HTML (but before being passed to a template) and
+        can be used to alter the HTML body of the page.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_page_content
+
+        We replace the authors list in this event in order to be able
+        to replace it with arbitrary HTML content (which might otherwise
+        end up in styled HTML in a code block).
+
+        Args:
+            html: the processed HTML of the page
+            page: mkdocs.nav.Page instance
+            config: global configuration object
+            site_navigation: global navigation object
+
+        Returns:
+            str: HTML text of page as string
+        """
+        list_pattern = re.compile(
+            r"\{\{\s*git_authors_list\s*\}\}",
+            flags=re.IGNORECASE
+        )
+        if list_pattern.search(html):
+            html = list_pattern.sub(
+                self.repo().authors_summary(),
+                html
+            )
+        return html
+
     def on_page_markdown(self, markdown, page, config, files):
         """
         Replace jinja tag {{ git_authors_summary }} in markdown.
@@ -59,18 +95,18 @@ class GitAuthorsPlugin(BasePlugin):
             str: Markdown source text of page as string
         """
 
-        pattern = r"\{\{\s*git_authors_summary\s*\}\}"
+        summary_pattern = re.compile(
+            r"\{\{\s*git_authors_summary\s*\}\}",
+            flags=re.IGNORECASE
+        )
 
-        if not re.search(pattern, markdown, flags=re.IGNORECASE):
+        if not summary_pattern.search(markdown):
             return markdown
 
         page_obj = self.repo().page(page.file.abs_src_path)
-
-        return re.sub(
-            pattern,
+        return summary_pattern.sub(
             page_obj.authors_summary(),
-            markdown,
-            flags=re.IGNORECASE
+            markdown
         )
 
     def on_page_context(self, context, page, **kwargs):

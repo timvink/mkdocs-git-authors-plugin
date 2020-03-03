@@ -171,6 +171,74 @@ class Repo(object):
             self._authors[email] = Author(self, name, email)
         return self._authors[email]
 
+    def authors(self):
+        """
+        Sorted list of authors in the repository.
+
+        NOTE: Currently sorting is hard-coded to be by name.
+
+        Args:
+
+        Returns:
+            List of Author objects
+        """
+        return sorted([
+            author for author in self._authors.values()
+        ], key = lambda author: author.name())
+
+    def authors_summary(self):
+        """
+        A summary list of the authors' contributions on book level.
+
+        Iterates over all authors and produces an HTML list with
+        their names and overall contribution details (lines/percentage).
+
+        TODO:
+        - The output should be configurable or at least localizable
+          (suggestions:
+            - load a template with named fields for the values
+              (user may provide alternative template)
+            - provide plugin configuration options for the various labels
+          )
+        - Make this sortable (probably with a global plugin option that
+          also affects the page's authors_summary).
+
+        Args:
+
+        Returns:
+            Unordered HTML list as a string.
+        """
+        show_contribution = self.config('show_contribution')
+        show_lines = show_contribution and self.config('show_lines')
+        label_lines = self.config('label_lines')
+        result = """
+    <ul class='git-authors'>
+        """
+        for author in self.authors():
+            contribution = (
+                ' (%s)' % author.contribution(None, str)
+                if show_contribution
+                else ''
+            )
+            lines = (
+                '%s %s' % (author.lines(), label_lines)
+                if show_lines
+                else ''
+            )
+            result += """
+        <li><a href='mailto:{author_email}'>{author_name}</a>:
+        {lines}{contribution}</li>
+        """.format(
+            author_email=author.email(),
+            author_name=author.name(),
+            lines=lines,
+            contribution=contribution
+        )
+        result += """
+    </ul>
+        """
+        return result
+
     def commit(self, sha: str):
         """
         Return the (cached) Commit object for given sha.
