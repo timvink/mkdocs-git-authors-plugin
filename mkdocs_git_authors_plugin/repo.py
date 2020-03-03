@@ -4,7 +4,7 @@ import os
 import re
 import subprocess
 
-from datetime import datetime, timedelta, timezone
+from . import util
 
 class GitCommandError(Exception):
     """
@@ -445,22 +445,8 @@ class Commit(AbstractRepoObject):
         self._author = self.repo().author(result[0], result[1])
 
         # Third line includes formatted date/time info
-        self._datetime_string = dt = result[2]
-        d, t, tz = dt.split(' ')
-        d = [int(v) for v in d.split('-')]
-        t = [int(v) for v in t.split(':')]
-        # timezone info looks like +hhmm or -hhmm
-        tz_hours = int(tz[:3])
-        th_minutes = int(tz[0] + tz[3:])
-
-        # Construct 'aware' datetime.datetime object
-        self._datetime = datetime(
-            d[0], d[1], d[2],
-            hour=t[0],
-            minute=t[1],
-            second=t[2],
-            tzinfo=timezone(timedelta(hours=tz_hours,minutes=th_minutes))
-        )
+        self._datetime_string = result[2]
+        self._datetime = util.commit_datetime(self._datetime_string)
 
 
 class Page(AbstractRepoObject):
