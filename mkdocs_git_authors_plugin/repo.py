@@ -385,7 +385,9 @@ class Commit(AbstractRepoObject):
         super().__init__(repo)
         self._sha = sha
         if sha == '0000000000000000000000000000000000000000':
-            # Create fake commit for uncommitted changes
+            # This indicates an uncommitted line, so there's
+            # no actual Git commit to inspect. Instead we
+            # populate the Commit object wtih a fake Author.
             self._author = repo.author(
                 repo.config('uncommitted_name'),
                 repo.config('uncommitted_email')
