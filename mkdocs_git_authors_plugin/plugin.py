@@ -38,11 +38,9 @@ class GitAuthorsPlugin(BasePlugin):
         contribution of an author to the repository can be
         retrieved on *any* Markdown page.
         """
-        cnt = 0
         for file in files:
             path = file.abs_src_path
             if path.endswith('.md'):
-                cnt += 1
                 _ = self.repo().page(path)
 
     def on_page_content(self, html, page, config, files, **kwargs):
