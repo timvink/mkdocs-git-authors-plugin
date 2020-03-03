@@ -383,19 +383,7 @@ class Commit(AbstractRepoObject):
         """
 
         super().__init__(repo)
-        self._sha = sha
-        if sha == '0000000000000000000000000000000000000000':
-            # This indicates an uncommitted line, so there's
-            # no actual Git commit to inspect. Instead we
-            # populate the Commit object wtih a fake Author.
-            self._author = repo.author(
-                repo.config('uncommitted_name'),
-                repo.config('uncommitted_email')
-            )
-            self._datetime = None
-            self._datetime_string = '---'
-        else:
-            self._populate()
+        self._populate(sha)
 
     def author(self):
         """
@@ -423,15 +411,32 @@ class Commit(AbstractRepoObject):
         """
         return self._datetime_string if _type == str else self._datetime
 
-    def _populate(self):
+    def _populate(self, sha: str):
         """
         Retrieve information about the commit.
+
+        Args:
+            sha: 40-byte SHA string of the commit
+        Returns:
+
         """
+        if sha == '0000000000000000000000000000000000000000':
+            # This indicates an uncommitted line, so there's
+            # no actual Git commit to inspect. Instead we
+            # populate the Commit object wtih a fake Author.
+            self._author = repo.author(
+                repo.config('uncommitted_name'),
+                repo.config('uncommitted_email')
+            )
+            self._datetime = None
+            self._datetime_string = '---'
+            return
+
         cmd = GitCommand('show', [
             '-t',
             '--quiet',
             "--format='%aN%n%aE%n%ai'",
-            self.sha()
+            sha
         ])
         cmd.run()
         result = cmd.stdout()
@@ -456,17 +461,6 @@ class Commit(AbstractRepoObject):
             second=t[2],
             tzinfo=timezone(timedelta(hours=tz_hours,minutes=th_minutes))
         )
-
-    def sha(self):
-        """
-        Return the commit's 40 byte SHA.
-
-        Args:
-
-        Returns:
-            40-byte SHA string
-        """
-        return self._sha
 
 
 class Page(AbstractRepoObject):
