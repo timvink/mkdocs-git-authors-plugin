@@ -178,7 +178,9 @@ class GitAuthorsPlugin(BasePlugin):
                 'email' : author.email(),
                 'last_datetime' : author.datetime(path, str),
                 'lines' : author.lines(path),
-                'contribution' : author.contribution(path, str)
+                'lines_all_pages' : author.lines(),
+                'contribution' : author.contribution(path, str),
+                'contribution_all_pages' : author.contribution(None, str)
             }
             for author in authors
         ]
