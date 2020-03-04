@@ -1,0 +1,24 @@
+name: Unit tests
+on: [pull_request]
+jobs:
+  run:
+    name: Run unit tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: 
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Python  
+      uses: actions/setup-python@master
+      with:
+        python-version: 3.7
+    - name: Static code checking with pyflakes
+      run: |
+        pip install pyflakes
+        pyflakes mkdocs_git_authors_plugin
+    - name: Generate coverage report
+      run: |
+        pip install -r tests/test_requirements.txt
+        pip install -e .
+        pytest --cov=mkdocs_git_authors_plugin --cov-report=xml

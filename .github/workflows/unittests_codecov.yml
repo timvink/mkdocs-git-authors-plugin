@@ -1,7 +1,8 @@
-name: pytest
-on: [push, pull_request]
+name: Unit tests
+on: [push]
 jobs:
   run:
+    name: Run unit tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
@@ -12,15 +13,15 @@ jobs:
       uses: actions/setup-python@master
       with:
         python-version: 3.7
+    - name: Static code checking with pyflakes
+      run: |
+        pip install pyflakes
+        pyflakes mkdocs_git_authors_plugin
     - name: Generate coverage report
       run: |
         pip install -r tests/test_requirements.txt
         pip install -e .
         pytest --cov=mkdocs_git_authors_plugin --cov-report=xml
-    - name: Static code checking with pyflakes
-      run: |
-        pip install pyflakes
-        pyflakes mkdocs_git_authors_plugin
     - name: Upload coverage to Codecov  
       uses: codecov/codecov-action@v1
       with:
