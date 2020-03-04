@@ -51,9 +51,12 @@ class GitAuthorsPlugin(BasePlugin):
         https://www.mkdocs.org/user-guide/plugins/#on_files
 
         This populates all the lines and total_lines properties
-        of the pages and the repository, so the total
-        contribution of an author to the repository can be
-        retrieved on *any* Markdown page.
+        of the pages and the repository. The event is executed after on_config,
+        but before all other events. When any page or template event
+        is called, all pages have already been parsed and their statistics
+        been aggregated.
+        So in any on_page_XXX event the contributions of an author
+        to the current page *and* the repository as a whole are available.
 
         Args:
             files: global files collection
