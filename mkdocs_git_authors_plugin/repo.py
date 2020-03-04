@@ -217,29 +217,31 @@ class Repo(object):
         show_contribution = self.config('show_contribution')
         show_line_count = show_contribution and self.config('show_line_count')
         result = """
-    <ul class='git-authors'>
-        """
-        for author in self.get_authors():
-            contribution = (
-                ' (%s)' % author.contribution(None, str)
-                if show_contribution
-                else ''
-            )
-            lines = (
-                '%s lines' % author.lines()
-                if show_line_count
-                else ''
+    <span class='git-authors'>
+        <ul>
+            """
+            for author in self.get_authors():
+                contribution = (
+                    ' (%s)' % author.contribution(None, str)
+                    if show_contribution
+                    else ''
+                )
+                lines = (
+                    '%s lines' % author.lines()
+                    if show_line_count
+                    else ''
+                )
+                result += """
+            <li><a href='mailto:{author_email}'>{author_name}</a>:
+            {lines}{contribution}</li>
+            """.format(
+                author_email=author.email(),
+                author_name=author.name(),
+                lines=lines,
+                contribution=contribution
             )
             result += """
-        <li><a href='mailto:{author_email}'>{author_name}</a>:
-        {lines}{contribution}</li>
-        """.format(
-            author_email=author.email(),
-            author_name=author.name(),
-            lines=lines,
-            contribution=contribution
-        )
-        result += """
+        </span>
     </ul>
         """
         return result
