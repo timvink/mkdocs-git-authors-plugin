@@ -192,60 +192,6 @@ class Repo(object):
             reverse=self.config('sort_reverse')
         )
 
-    def authors_summary(self):
-        """
-        A summary list of the authors' contributions on book level.
-
-        Iterates over all authors and produces an HTML list with
-        their names and overall contribution details (lines/percentage).
-
-        TODO:
-        - The output should be configurable or at least localizable
-          (suggestions:
-            - load a template with named fields for the values
-              (user may provide alternative template)
-            - provide plugin configuration options for the various labels
-          )
-        - Make this sortable (probably with a global plugin option that
-          also affects the page's authors_summary).
-
-        Args:
-
-        Returns:
-            Unordered HTML list as a string.
-        """
-        show_contribution = self.config('show_contribution')
-        show_line_count = show_contribution and self.config('show_line_count')
-        result = """
-    <span class='git-authors'>
-        <ul>
-            """
-            for author in self.get_authors():
-                contribution = (
-                    ' (%s)' % author.contribution(None, str)
-                    if show_contribution
-                    else ''
-                )
-                lines = (
-                    '%s lines' % author.lines()
-                    if show_line_count
-                    else ''
-                )
-                result += """
-            <li><a href='mailto:{author_email}'>{author_name}</a>:
-            {lines}{contribution}</li>
-            """.format(
-                author_email=author.email(),
-                author_name=author.name(),
-                lines=lines,
-                contribution=contribution
-            )
-            result += """
-        </span>
-    </ul>
-        """
-        return result
-
     def config(self, key: str = ''):
         """
         Return the plugin configuration dictionary or a single config value.

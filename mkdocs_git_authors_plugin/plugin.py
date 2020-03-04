@@ -2,6 +2,7 @@ import re
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .repo import Repo
+from . import util
 
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
@@ -99,7 +100,10 @@ class GitAuthorsPlugin(BasePlugin):
         )
         if list_pattern.search(html):
             html = list_pattern.sub(
-                self.repo().authors_summary(),
+                util.repo_authors_summary(
+                    self.repo().get_authors(),
+                    self.config
+                ),
                 html
             )
         return html
