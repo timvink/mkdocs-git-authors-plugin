@@ -150,3 +150,7 @@ Jane Doe <jane.doe@company.com> <jane.doe@private-email.com>
 This will map commits made with the `private-email.com` to the company address. For more details
 and further options (e.g. mapping between different names or misspellings etc. see the
 [git-blame documentation](https://git-scm.com/docs/git-blame#_mapping_authors).
+
+## Contributing
+
+Very much open to contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before putting in any work.
