@@ -1,8 +1,9 @@
 import re
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-from .repo import Repo
 from . import util
+from .git.repo import Repo
+
 
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
