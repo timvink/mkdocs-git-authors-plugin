@@ -21,8 +21,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'mkdocs>=0.17',
-        'GitPython'
+        'mkdocs>=0.17'
     ],
     packages=find_packages(),
     entry_points={

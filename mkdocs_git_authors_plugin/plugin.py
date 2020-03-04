@@ -1,15 +1,112 @@
 import re
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-from .util import Util
+from .repo import Repo
+from . import util
 
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ('show_contribution', config_options.Type(bool, default=False)),
+        ('show_line_count', config_options.Type(bool, default=False)),
+        ('count_empty_lines', config_options.Type(bool, default=True)),
+        ('sort_authors_by', config_options.Choice(
+            ['name', 'contribution'], default='name')
+        ),
+        ('sort_reverse', config_options.Type(bool, default=False))
     )
 
     def __init__(self):
-        self.util = Util()
+        self._repo = Repo()
+
+    def on_config(self, config, **kwargs):
+        """
+        Store the plugin configuration in the Repo object.
+
+        The config event is the first event called on build and is run
+        immediately after the user configuration is loaded and validated. Any
+        alterations to the config should be made here.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_config
+
+        NOTE: This is only the dictionary with the plugin configuration,
+        not the global config which is passed to the various event handlers.
+
+        Args:
+            config: global configuration object
+
+        Returns:
+            (updated) configuration object
+        """
+        self.repo().set_config(self.config)
+
+    def on_files(self, files, config, **kwargs):
+        """
+        Preprocess all markdown pages in the project.
+
+        The files event is called after the files collection is populated from
+        the docs_dir. Use this event to add, remove, or alter files in the
+        collection. Note that Page objects have not yet been associated with the
+        file objects in the collection. Use Page Events to manipulate page
+        specific data.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_files
+
+        This populates all the lines and total_lines properties
+        of the pages and the repository. The event is executed after on_config,
+        but before all other events. When any page or template event
+        is called, all pages have already been parsed and their statistics
+        been aggregated.
+        So in any on_page_XXX event the contributions of an author
+        to the current page *and* the repository as a whole are available.
+
+        Args:
+            files: global files collection
+            config: global configuration object
+
+        Returns:
+            global files collection
+        """
+        for file in files:
+            path = file.abs_src_path
+            if path.endswith('.md'):
+                _ = self.repo().page(path)
+
+    def on_page_content(self, html, page, config, files, **kwargs):
+        """
+        Replace jinja tag {{ git_authors_list }} in HTML.
+
+        The page_content event is called after the Markdown text is
+        rendered to HTML (but before being passed to a template) and
+        can be used to alter the HTML body of the page.
+
+        https://www.mkdocs.org/user-guide/plugins/#on_page_content
+
+        We replace the authors list in this event in order to be able
+        to replace it with arbitrary HTML content (which might otherwise
+        end up in styled HTML in a code block).
+
+        Args:
+            html: the processed HTML of the page
+            page: mkdocs.nav.Page instance
+            config: global configuration object
+            site_navigation: global navigation object
+
+        Returns:
+            str: HTML text of page as string
+        """
+        list_pattern = re.compile(
+            r"\{\{\s*git_authors_list\s*\}\}",
+            flags=re.IGNORECASE
+        )
+        if list_pattern.search(html):
+            html = list_pattern.sub(
+                util.repo_authors_summary(
+                    self.repo().get_authors(),
+                    self.config
+                ),
+                html
+            )
+        return html
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -32,22 +129,21 @@ class GitAuthorsPlugin(BasePlugin):
             str: Markdown source text of page as string
         """
 
-        pattern = r"\{\{\s*git_authors_summary\s*\}\}"
-
-        if not re.search(pattern, markdown, flags=re.IGNORECASE):
-           return markdown
-
-        authors = self.util.get_authors(
-            path = page.file.abs_src_path
+        summary_pattern = re.compile(
+            r"\{\{\s*git_authors_summary\s*\}\}",
+            flags=re.IGNORECASE
         )
-        authors_summary = self.util.summarize(authors, self.config)
 
-        return re.sub(pattern,
-                      authors_summary,
-                      markdown,
-                      flags=re.IGNORECASE)
+        if not summary_pattern.search(markdown):
+            return markdown
 
-    def on_page_context(self, context, page, **kwargs):
+        page_obj = self.repo().page(page.file.abs_src_path)
+        return summary_pattern.sub(
+            page_obj.authors_summary(),
+            markdown
+        )
+
+    def on_page_context(self, context, page, config, nav, **kwargs):
         """
         Add 'git_authors' and 'git_authors_summary' variables
         to template context.
@@ -56,23 +152,48 @@ class GitAuthorsPlugin(BasePlugin):
         is created and can be used to alter the context for that
         specific page only.
 
+        https://www.mkdocs.org/user-guide/plugins/#on_page_context
+
         Note this is called *after* on_page_markdown()
 
         Args:
             context (dict): template context variables
             page (class): mkdocs.nav.Page instance
+            config: global configuration object
+            nav: global navigation object
 
         Returns:
             dict: template context variables
         """
 
+        path = page.file.abs_src_path
+        page_obj = self.repo().page(path)
+        authors = page_obj.get_authors()
 
-        authors = self.util.get_authors(
-            path = page.file.abs_src_path
-        )
-        authors_summary = self.util.summarize(authors, self.config)
-
-        context['git_authors'] = authors
-        context['git_authors_summary'] = authors_summary
+        # NOTE: last_datetime is currently given as a
+        # string in the format
+        # '2020-02-24 17:49:14 +0100'
+        # omitting the 'str' argument would result in a
+        # datetime.datetime object with tzinfo instead.
+        # Should this be formatted differently?
+        context['git_authors'] = [
+            {
+                'name' : author.name(),
+                'email' : author.email(),
+                'last_datetime' : author.datetime(path, str),
+                'lines' : author.lines(path),
+                'lines_all_pages' : author.lines(),
+                'contribution' : author.contribution(path, str),
+                'contribution_all_pages' : author.contribution(None, str)
+            }
+            for author in authors
+        ]
+        context['git_authors_summary'] = page_obj.authors_summary()
 
         return context
+
+    def repo(self):
+        """
+        Reference to the Repo object of the current project.
+        """
+        return self._repo

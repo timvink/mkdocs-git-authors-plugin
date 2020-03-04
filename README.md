@@ -3,7 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/mkdocs-git-authors-plugin)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-git-authors-plugin)
 [![codecov](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/timvink/mkdocs-git-authors-plugin)
- 
+
 # mkdocs-git-authors-plugin
 
 [MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
@@ -39,7 +39,7 @@ plugins:
 
 ### In markdown pages
 
-You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email. 
+You can use ``{{ git_authors_summary }}`` to insert a summary of the authors of a page. Authors are sorted by their name and have a `mailto:` link with their email.
 
 An example output:
 
@@ -57,7 +57,7 @@ no supported themes *yet*.
 
 ### Customizing existing themes
 
-[MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme). 
+[MkDocs](https://www.mkdocs.org/) offers possibilities to [customize an existing theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme).
 
 As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can easily implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
 
@@ -150,4 +150,3 @@ Jane Doe <jane.doe@company.com> <jane.doe@private-email.com>
 This will map commits made with the `private-email.com` to the company address. For more details
 and further options (e.g. mapping between different names or misspellings etc. see the
 [git-blame documentation](https://git-scm.com/docs/git-blame#_mapping_authors).
-
