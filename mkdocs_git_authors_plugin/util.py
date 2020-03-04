@@ -1,32 +1,38 @@
 from datetime import datetime, timezone, timedelta
 
-def commit_datetime(dt: str):
+def commit_datetime(author_time: str, author_tz: str):
     """
-    Convert a commit's datetime string to a
-    datetime.datetime object with timezone info.
+    Convert a commit's timestamp to an aware datetime object.
 
     Args:
-        A string returned from the %ai formatting argument
-        in a git show command.
+        author_time: Unix timestamp string
+        author_tz: string in the format +hhmm
 
     Returns:
         datetime.datetime object with tzinfo
     """
-    d, t, tz = dt.split(' ')
-    d = [int(v) for v in d.split('-')]
-    t = [int(v) for v in t.split(':')]
-    # timezone info looks like +hhmm or -hhmm
-    tz_hours = int(tz[:3])
-    th_minutes = int(tz[0] + tz[3:])
 
-    # Construct 'aware' datetime.datetime object
-    return datetime(
-        d[0], d[1], d[2],
-        hour=t[0],
-        minute=t[1],
-        second=t[2],
-        tzinfo=timezone(timedelta(hours=tz_hours,minutes=th_minutes))
+    # timezone info looks like +hhmm or -hhmm
+    tz_hours = int(author_tz[:3])
+    th_minutes = int(author_tz[0] + author_tz[3:])
+
+    return datetime.fromtimestamp(
+        int(author_time),
+        timezone(timedelta(hours=tz_hours,minutes=th_minutes))
     )
+
+
+def commit_datetime_string(dt: datetime):
+    """
+    Return a string representation for a commit's timestamp.
+
+    Args:
+        dt: datetime object with tzinfo
+
+    Returns:
+        string representation (should be localized)
+    """
+    return dt.strftime('%c %z')
 
 
 def repo_authors_summary(authors, config: dict):

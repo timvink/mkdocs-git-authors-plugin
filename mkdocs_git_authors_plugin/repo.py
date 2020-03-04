@@ -218,7 +218,7 @@ class Repo(object):
         cmd.run()
         return cmd.stdout()[0]
 
-    def get_commit(self, sha: str):
+    def get_commit(self, sha: str, **kwargs):
         """
         Return the (cached) Commit object for given sha.
 
@@ -232,7 +232,7 @@ class Repo(object):
             Commit object
         """
         if not self._commits.get(sha):
-            self._commits[sha] = Commit(self, sha)
+            self._commits[sha] = Commit(self, sha, **kwargs)
         return self._commits.get(sha)
 
     def page(self, path):
@@ -317,9 +317,19 @@ class Commit(AbstractRepoObject):
     Stores only information relevant to our plugin:
     - author name and email,
     - date/time
+    - summary (not used at this point)
     """
 
-    def __init__(self, repo: Repo, sha: str):
+    def __init__(
+        self,
+        repo: Repo,
+        sha: str,
+        author_name: str,
+        author_email: str,
+        author_time: str,
+        author_tz: str,
+        summary: str
+    ):
         """Initialize a commit from its SHA.
 
         Populates the object running git show.
@@ -330,7 +340,14 @@ class Commit(AbstractRepoObject):
         """
 
         super().__init__(repo)
-        self._populate(sha)
+
+        self._author = self.repo().author(
+            author_name,
+            author_email
+        )
+        self._datetime = util.commit_datetime(author_time, author_tz)
+        self._datetime_string = util.commit_datetime_string(self._datetime)
+        self._summary = summary
 
     def author(self):
         """
@@ -357,40 +374,6 @@ class Commit(AbstractRepoObject):
             or as a datetime.datetime expression with tzinfo
         """
         return self._datetime_string if _type == str else self._datetime
-
-    def _populate(self, sha: str):
-        """
-        Retrieve information about the commit.
-
-        Args:
-            sha: 40-byte SHA string of the commit
-        Returns:
-
-        """
-        if sha == '0000000000000000000000000000000000000000':
-            # This indicates an uncommitted line, so there's
-            # no actual Git commit to inspect. Instead we
-            # populate the Commit object wtih a fake Author.
-            self._author = repo.author('Uncommitted', '#')
-            self._datetime = None
-            self._datetime_string = '---'
-            return
-
-        cmd = GitCommand('show', [
-            '-t',
-            '--quiet',
-            "--format='%aN%n%aE%n%ai'",
-            sha
-        ])
-        cmd.run()
-        result = cmd.stdout()
-
-        # Author name and email are returned on single lines.
-        self._author = self.repo().author(result[0], result[1])
-
-        # Third line includes formatted date/time info
-        self._datetime_string = result[2]
-        self._datetime = util.commit_datetime(self._datetime_string)
 
 
 class Page(AbstractRepoObject):
@@ -483,24 +466,97 @@ class Page(AbstractRepoObject):
     def _process_git_blame(self):
         """
         Execute git blame and parse the results.
+
+        This retrieves all data we need, also for the Commit object.
+        Each line will be associated with a Commit object and counted
+        to its author's "account".
+        Whether empty lines are counted is determined by the
+        count_empty_lines configuration option.
+
+        git blame --porcelain will produce output like the following
+        for each line in a file:
+
+        When a commit is first seen in that file:
+            30ed8daf1c48e4a7302de23b6ed262ab13122d31 1 2 1
+            author John Doe
+            author-mail <j.doe@example.com>
+            author-time 1580742131
+            author-tz +0100
+            committer John Doe
+            committer-mail <j.doe@example.com>
+            committer-time 1580742131
+            summary Fancy commit message title
+            filename home/docs/README.md
+                    line content (indicated by TAB. May be empty after that)
+
+        When a commit has already been seen *in that file*:
+            82a3e5021b7131e31fc5b110194a77ebee907955 4 5
+                    line content
+
+        In this case the metadata is not repeated, but it is guaranteed that
+        a Commit object with that SHA has already been created so we don't
+        need that information anymore.
+
+        When a line has not been committed yet:
+            0000000000000000000000000000000000000000 1 1 1
+            author Not Committed Yet
+            author-mail <not.committed.yet>
+            author-time 1583342617
+            author-tz +0100
+            committer Not Committed Yet
+            committer-mail <not.committed.yet>
+            committer-time 1583342617
+            committer-tz +0100
+            summary Version of books/main/docs/index.md from books/main/docs/index.md
+            previous 1f0c3455841488fe0f010e5f56226026b5c5d0b3 books/main/docs/index.md
+            filename books/main/docs/index.md
+                    uncommitted line content
+
+        In this case exactly one Commit object with the special SHA and fake
+        author will be created and counted.
+
+        Args:
+            ---
+        Returns:
+            --- (this method works through side effects)
         """
 
-        cmd = GitCommand('blame', ['-lts', str(self._path)])
+        re_sha = re.compile('^\w{40}')
+
+        cmd = GitCommand('blame', ['--porcelain', str(self._path)])
         cmd.run()
 
-        # Retrieve SHA and content from the line, discarding
-        # file path and line number
-        line_pattern = re.compile('(.*?)\s.*\s*\d\)(\s*.*)')
-
+        commit_data = {}
         for line in cmd.stdout():
-            m = line_pattern.match(line)
+            key = line.split(' ')[0]
+            m = re_sha.match(key)
             if m:
-                sha = m.group(1)
-                content = m.group(2).strip()
-
-                if content or self.repo().config('count_empty_lines'):
-                    # assign the line to a commit and count it
-                    commit = self.repo().get_commit(sha)
+                commit_data = {
+                    'sha': key
+                }
+            elif key in [
+                'author',
+                'author-mail',
+                'author-time',
+                'author-tz',
+                'summary'
+            ]:
+                commit_data[key] = line[len(key)+1:]
+            elif line.startswith('\t'):
+                # assign the line to a commit
+                # and create the Commit object if necessary
+                commit = self.repo().get_commit(
+                    commit_data.get('sha'),
+                    # The following values are guaranteed to be present
+                    # when a commit is seen for the first time,
+                    # so they can be used for creating a Commit object.
+                    author_name=commit_data.get('author'),
+                    author_email=commit_data.get('author-mail'),
+                    author_time=commit_data.get('author-time'),
+                    author_tz=commit_data.get('author-tz'),
+                    summary=commit_data.get('summary')
+                )
+                if len(line) > 1 or self.repo().config('count_empty_lines'):
                     author = commit.author()
                     if author not in self._authors:
                         self._authors.append(author)
