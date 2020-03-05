@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import logging
 from .repo import Repo, AbstractRepoObject
 from .command import GitCommand, GitCommandError
 
@@ -66,6 +67,7 @@ class Page(AbstractRepoObject):
     def authors_summary(self):
         """
         Summarized list of authors to a HTML string
+        TODO: move to util
 
         Args:
         Returns:
