@@ -64,7 +64,7 @@ class GitCommand(object):
         )
         try:
             p.check_returncode()
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             msg = ['GitCommand error:']
             msg.append('Command "%s" failed' % ' '.join(args))
             msg.append('Return code: %s' % p.returncode)
