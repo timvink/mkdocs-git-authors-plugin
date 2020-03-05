@@ -1,4 +1,4 @@
-name: Unit tests
+name: Unit tests with codecov upload
 on: [push]
 jobs:
   run:
