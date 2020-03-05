@@ -21,10 +21,10 @@ Other MkDocs plugins that use information from git:
 
 ## Setup
 
-Install the plugin using pip:
+Install the plugin using pip3:
 
 ```bash
-pip install mkdocs-git-authors-plugin
+pip3 install mkdocs-git-authors-plugin
 ```
 
 Next, add the following lines to your `mkdocs.yml`:
