@@ -1,4 +1,5 @@
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 
 def commit_datetime(author_time: str, author_tz: str):
     """
@@ -88,3 +89,24 @@ def repo_authors_summary(authors, config: dict):
 </ul>
     """
     return result
+
+
+def page_authors(authors, path):
+    """List of dicts with info on page authors
+    
+    Args:
+        authors (list): list with Author classes
+        path (str): path to page
+    """
+    if type(path) == str:
+        path = Path(path)
+    return [{
+            'name' : author.name(),
+            'email' : author.email(),
+            'last_datetime' : author.datetime(path, str),
+            'lines' : author.lines(path),
+            'lines_all_pages' : author.lines(),
+            'contribution' : author.contribution(path, str),
+            'contribution_all_pages' : author.contribution(None, str)
+        }
+        for author in authors]
