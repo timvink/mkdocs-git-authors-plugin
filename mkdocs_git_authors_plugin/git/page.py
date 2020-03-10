@@ -151,7 +151,7 @@ class Page(AbstractRepoObject):
             --- (this method works through side effects)
         """
 
-        re_sha = re.compile('^\w{40}')
+        re_sha = re.compile(r'^\w{40}')
 
         cmd = GitCommand('blame', ['--porcelain', str(self._path)])
         cmd.run()
