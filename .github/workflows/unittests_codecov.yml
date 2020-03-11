@@ -1,5 +1,13 @@
-name: Unit tests
-on: [push]
+name: Unit tests with codecov upload
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    branches:
+      - master
+    pull_request:
+      branches:
+        - master
 jobs:
   run:
     name: Run unit tests

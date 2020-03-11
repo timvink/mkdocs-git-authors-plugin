@@ -177,18 +177,7 @@ class GitAuthorsPlugin(BasePlugin):
         # omitting the 'str' argument would result in a
         # datetime.datetime object with tzinfo instead.
         # Should this be formatted differently?
-        context['git_authors'] = [
-            {
-                'name' : author.name(),
-                'email' : author.email(),
-                'last_datetime' : author.datetime(path, str),
-                'lines' : author.lines(path),
-                'lines_all_pages' : author.lines(),
-                'contribution' : author.contribution(path, str),
-                'contribution_all_pages' : author.contribution(None, str)
-            }
-            for author in authors
-        ]
+        context['git_authors'] = util.page_authors(authors, path)
         context['git_authors_summary'] = page_obj.authors_summary()
 
         return context

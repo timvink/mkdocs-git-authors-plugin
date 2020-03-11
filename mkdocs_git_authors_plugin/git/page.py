@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import logging
 from .repo import Repo, AbstractRepoObject
 from .command import GitCommand, GitCommandError
 
@@ -66,6 +67,7 @@ class Page(AbstractRepoObject):
     def authors_summary(self):
         """
         Summarized list of authors to a HTML string
+        TODO: move to util
 
         Args:
         Returns:
@@ -148,7 +150,7 @@ class Page(AbstractRepoObject):
             --- (this method works through side effects)
         """
 
-        re_sha = re.compile('^\w{40}')
+        re_sha = re.compile(r'^\w{40}')
 
         cmd = GitCommand('blame', ['--porcelain', str(self._path)])
         cmd.run()

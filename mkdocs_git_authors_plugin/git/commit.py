@@ -1,3 +1,4 @@
+import re
 from .repo import AbstractRepoObject, Repo
 from .. import util
 
@@ -32,6 +33,11 @@ class Commit(AbstractRepoObject):
 
         super().__init__(repo)
 
+        # Replace <> 
+        # from '<email@domain.com>'
+        # to   'email@domain.com'
+        author_email = re.sub(r"\<|\>","", author_email)
+         
         self._author = self.repo().author(
             author_name,
             author_email
