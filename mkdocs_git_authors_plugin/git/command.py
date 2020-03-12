@@ -1,4 +1,5 @@
 import subprocess
+from subprocess import PIPE
 
 
 class GitCommandError(Exception):
@@ -60,7 +61,8 @@ class GitCommand(object):
         p = subprocess.run(
             args,
             encoding='utf8',
-            capture_output=True
+            stdout=PIPE,
+            stderr=PIPE
         )
         try:
             p.check_returncode()
