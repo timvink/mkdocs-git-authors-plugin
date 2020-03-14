@@ -128,7 +128,7 @@ def test_empty_file(tmp_path):
     os.chdir(str(tmp_path))
     
     # Create empty file
-    file_name = tmp_path / 'new-file'
+    file_name = str(tmp_path / 'new-file')
     open(file_name, 'a').close()
 
     # Get authors of empty, uncommitted file
@@ -165,7 +165,7 @@ def test_retrieve_authors(tmp_path):
     os.chdir(str(tmp_path))
 
     # Create file
-    file_name = tmp_path / 'new-file'
+    file_name = str(tmp_path / 'new-file')
     with open(file_name, 'w') as the_file:
         the_file.write('Hello\n')
 
