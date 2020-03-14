@@ -96,7 +96,7 @@ def setup_commit_history(testproject_path):
 
         repo.git.add('docs/first_page.md')
         repo.git.commit(message = 'first page', author = author)
-        file_name = os.path.join(testproject_path, 'docs/first_page.md')
+        file_name = testproject_path / 'docs/first_page.md'
         with open(file_name, 'w+') as the_file:
             the_file.write('Hello\n')
         repo.git.add('docs/first_page.md')
@@ -128,7 +128,7 @@ def test_empty_file(tmp_path):
     os.chdir(str(tmp_path))
     
     # Create empty file
-    file_name = os.path.join(tmp_path, 'new-file')
+    file_name = tmp_path / 'new-file'
     open(file_name, 'a').close()
 
     # Get authors of empty, uncommitted file
@@ -165,7 +165,7 @@ def test_retrieve_authors(tmp_path):
     os.chdir(str(tmp_path))
 
     # Create file
-    file_name = os.path.join(tmp_path, 'new-file')
+    file_name = tmp_path / 'new-file'
     with open(file_name, 'w') as the_file:
         the_file.write('Hello\n')
 
