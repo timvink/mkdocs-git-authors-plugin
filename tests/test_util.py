@@ -116,7 +116,8 @@ def setup_commit_history(testproject_path):
     except:
         os.chdir(str(cwd))
         raise
-    
+   
+    os.chdir(cwd)
     return repo
 
 #### Tests ####
@@ -125,6 +126,7 @@ def setup_commit_history(testproject_path):
 def test_empty_file(tmp_path):
 
     # Change working directory
+    cwd = os.getcwd()
     os.chdir(str(tmp_path))
     
     # Create empty file
@@ -151,6 +153,7 @@ def test_empty_file(tmp_path):
     authors = repo_instance.get_authors()
     assert authors == []
     
+    os.chdir(cwd)
     ## TODO 
     # When the first instance of a commit on a page is skipped as an empty line, 
     # the second instance will not have the commit metadata available
@@ -162,6 +165,7 @@ def test_retrieve_authors(tmp_path):
     Args:
         tmp_path (PosixPath): Directory of a tempdir
     """
+    cwd = os.getcwd()
     os.chdir(str(tmp_path))
 
     # Create file
@@ -253,6 +257,7 @@ def test_retrieve_authors(tmp_path):
                     'contribution' : '66.67%',
                     'contribution_all_pages': '66.67%'
                 }]
+    os.chdir(cwd)
 
 def test_summarize_authors():
     """
