@@ -31,6 +31,7 @@ jobs:
         pip install -r tests/test_requirements.txt
         pip install -e .
         pytest --cov=mkdocs_git_authors_plugin --cov-report=xml
+        coverage combine
     - name: Upload coverage to Codecov  
       uses: codecov/codecov-action@v1
       with:
