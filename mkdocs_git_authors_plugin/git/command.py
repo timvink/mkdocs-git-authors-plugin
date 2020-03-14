@@ -1,6 +1,4 @@
-import io
 import subprocess
-
 
 class GitCommandError(Exception):
     """
