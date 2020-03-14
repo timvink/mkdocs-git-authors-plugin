@@ -1,4 +1,5 @@
-[![Actions Status](https://github.com/timvink/mkdocs-git-authors-plugin/workflows/Unit+tests+with+codecov+upload/badge.svg)](https://github.com/timvink/mkdocs-git-authors-plugin/actions)
+[![Actions Status](https://github.com/timvink/mkdocs-git-authors-plugin/workflows/pytest/badge.svg)](https://github.com/timvink/mkdocs-git-authors-plugin/actions)
+
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mkdocs-git-authors-plugin)
 ![PyPI](https://img.shields.io/pypi/v/mkdocs-git-authors-plugin)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-git-authors-plugin)
