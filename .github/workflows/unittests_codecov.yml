@@ -1,4 +1,4 @@
-name: Unit tests with codecov upload
+name: pytest
 on:
   # Trigger the workflow on push or pull request,
   # but only for the master branch
@@ -10,7 +10,7 @@ on:
         - master
 jobs:
   run:
-    name: Run unit tests
+    name: Run unit tests with codecov upload
     runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
