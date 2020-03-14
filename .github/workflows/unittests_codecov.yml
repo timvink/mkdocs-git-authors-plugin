@@ -12,6 +12,8 @@ jobs:
   run:
     name: Run unit tests with codecov upload
     runs-on: ${{ matrix.os }}
+    env:
+      USING_COVERAGE: '3.7'
     strategy:
       matrix: 
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -31,7 +33,8 @@ jobs:
         pip install -r tests/test_requirements.txt
         pip install -e .
         pytest --cov=mkdocs_git_authors_plugin --cov-report=xml
-    - name: Upload coverage to Codecov  
+    - name: Upload coverage to Codecov
+      if: "contains(env.USING_COVERAGE, matrix.python-version)"
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
