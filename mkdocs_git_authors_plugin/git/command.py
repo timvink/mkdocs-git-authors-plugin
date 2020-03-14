@@ -60,7 +60,7 @@ class GitCommand(object):
         args.extend(self._args)
         p = subprocess.run(
             args,
-            encoding='utf8',
+            # encoding='utf8', # Uncomment after dropping support for python 3.5
             stdout=PIPE,
             stderr=PIPE
         )
