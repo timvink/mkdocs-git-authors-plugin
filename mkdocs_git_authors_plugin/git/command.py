@@ -1,5 +1,5 @@
+import io
 import subprocess
-from subprocess import PIPE
 
 
 class GitCommandError(Exception):
@@ -61,8 +61,8 @@ class GitCommand(object):
         p = subprocess.run(
             args,
             # encoding='utf8', # Uncomment after dropping support for python 3.5
-            stdout=PIPE,
-            stderr=PIPE
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
         try:
             p.check_returncode()
@@ -71,16 +71,17 @@ class GitCommand(object):
             msg.append('Command "%s" failed' % ' '.join(args))
             msg.append('Return code: %s' % p.returncode)
             msg.append('Output:')
-            msg.append(p.stdout)
+            msg.append(p.stdout.decode("utf-8"))
             msg.append('Error messages:')
-            msg.append(p.stderr)
+            msg.append(p.stderr.decode("utf-8"))
             raise GitCommandError('\n'.join(msg))
-
-        self._stdout = p.stdout.strip('\'\n').split('\n')
-        self._stderr = p.stderr.strip('\'\n').split('\n')
+        
+        self._stdout = p.stdout.decode("utf-8").strip('\'\n').split('\n')
+        self._stderr = p.stderr.decode("utf-8").strip('\'\n').split('\n')
+        
 
         self._completed = True
-        return p.returncode
+        return int(str(p.returncode))
 
     def set_args(self, args: list):
         """
