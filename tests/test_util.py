@@ -259,6 +259,59 @@ def test_retrieve_authors(tmp_path):
                 }]
     os.chdir(cwd)
 
+def test_mkdocs_in_git_subdir(tmp_path):
+    """
+    Sometimes `mkdocs.yml` is not in the root of the repo.
+    We need to make sure things still work in this edge case.
+
+    tmp_path/testproject
+    website/
+        ├── docs/
+        └── mkdocs.yml
+    """
+    testproject_path = tmp_path / 'testproject'
+    
+    shutil.copytree('tests/basic_setup/docs', testproject_path / 'website' / 'docs')
+    shutil.copyfile("tests/basic_setup/mkdocs.yml", testproject_path / 'website' / 'mkdocs.yml') 
+    
+    cwd = os.getcwd()
+    os.chdir(str(testproject_path))
+
+    # Create file
+    file_name = str(testproject_path / 'website' / 'new-file')
+    with open(file_name, 'w') as the_file:
+        the_file.write('Hello\n')
+
+    # Create git repo and commit file
+    r = gitpython.Repo.init(testproject_path)
+    r.index.add([file_name])
+    author = gitpython.Actor('Tim', 'abc@abc.com')
+    r.index.commit("initial commit", author = author)
+
+    # Test retrieving author
+    repo_instance = repo.Repo()
+    repo_instance.set_config(DEFAULT_CONFIG)
+    repo_instance.page(file_name)
+    
+    authors = repo_instance.get_authors()
+    assert len(authors) == 1
+    # We don't want to test datetime
+    authors = util.page_authors(authors, file_name)
+    authors[0]['last_datetime'] = None
+
+    assert authors == [{
+                    'name' : "Tim",
+                    'email' : "abc@abc.com",
+                    'last_datetime' : None,
+                    'lines' : 1,
+                    'lines_all_pages': 1,
+                    'contribution' : '100.0%',
+                    'contribution_all_pages': '100.0%'
+                }] 
+
+    os.chdir(cwd)
+    
+
 def test_summarize_authors():
     """
     Test summary functions. 
@@ -292,3 +345,4 @@ def test_summarize_authors():
     # # Now contribution is displayed
     # summary = util.Util().summarize(authors, config)
     # assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%), <a href='mailto:efg@efg.org'>Tom</a> (35.77%)</span>"
+

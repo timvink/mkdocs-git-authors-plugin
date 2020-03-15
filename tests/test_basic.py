@@ -21,3 +21,5 @@ def test_basic_working(tmp_path):
     
     contents = index_file.read_text()
     assert re.search("<span class='git-authors'>", contents)
+
+    
