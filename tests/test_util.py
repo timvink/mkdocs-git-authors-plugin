@@ -271,8 +271,8 @@ def test_mkdocs_in_git_subdir(tmp_path):
     """
     testproject_path = tmp_path / 'testproject'
     
-    shutil.copytree('tests/basic_setup/docs', testproject_path / 'website' / 'docs')
-    shutil.copyfile("tests/basic_setup/mkdocs.yml", testproject_path / 'website' / 'mkdocs.yml') 
+    shutil.copytree('tests/basic_setup/docs', str(testproject_path / 'website' / 'docs'))
+    shutil.copyfile("tests/basic_setup/mkdocs.yml", str(testproject_path / 'website' / 'mkdocs.yml'))
     
     cwd = os.getcwd()
     os.chdir(str(testproject_path))
