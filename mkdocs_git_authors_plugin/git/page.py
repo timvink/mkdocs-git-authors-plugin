@@ -90,7 +90,7 @@ class Page(AbstractRepoObject):
                     contrib
                 ))
         authors_summary = ', '.join(authors_summary)
-        return "<span class='git-authors'>%s</span>" % authors_summary
+        return "<span class='git-authors-summary'>%s</span>" % authors_summary
 
     def _process_git_blame(self):
         """

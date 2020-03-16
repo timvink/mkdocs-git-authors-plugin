@@ -74,7 +74,7 @@ class GitAuthorsPlugin(BasePlugin):
 
     def on_page_content(self, html, page, config, files, **kwargs):
         """
-        Replace jinja tag {{ git_authors_list }} in HTML.
+        Replace jinja tag {{ git_site_authors }} in HTML.
 
         The page_content event is called after the Markdown text is
         rendered to HTML (but before being passed to a template) and
@@ -96,7 +96,7 @@ class GitAuthorsPlugin(BasePlugin):
             str: HTML text of page as string
         """
         list_pattern = re.compile(
-            r"\{\{\s*git_authors_list\s*\}\}",
+            r"\{\{\s*git_site_authors\s*\}\}",
             flags=re.IGNORECASE
         )
         if list_pattern.search(html):
