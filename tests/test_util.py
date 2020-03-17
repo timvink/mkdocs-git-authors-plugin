@@ -30,7 +30,7 @@ DEFAULT_CONFIG = {
     'show_contribution': False, 
     'show_line_count': False, 
     'count_empty_lines': True, 
-    'sort_authors_by': 'name', 
+    'sort_authors_by_name': True, 
     'sort_reverse': False
 }
 

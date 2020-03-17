@@ -10,9 +10,7 @@ class GitAuthorsPlugin(BasePlugin):
         ('show_contribution', config_options.Type(bool, default=False)),
         ('show_line_count', config_options.Type(bool, default=False)),
         ('count_empty_lines', config_options.Type(bool, default=True)),
-        ('sort_authors_by', config_options.Choice(
-            ['name', 'contribution'], default='name')
-        ),
+        ('sort_authors_by_name', config_options.Type(bool, default=True)),
         ('sort_reverse', config_options.Type(bool, default=False))
     )
 
