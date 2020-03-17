@@ -136,7 +136,14 @@ class Repo(object):
         Args:
             - plugin_config: dictionary
         """
-        self._config = plugin_config
+        config = plugin_config.copy()
+        if config['sort_authors_by_name'] is True:
+            config['sort_authors_by'] = 'name'
+        else:
+            config['sort_authors_by'] = 'contribution'
+            
+        del config['sort_authors_by_name']
+        self._config = config
 
     def _sort_key(self, author):
         """
