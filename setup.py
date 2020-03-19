@@ -21,7 +21,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'mkdocs>=1.1'
+        'mkdocs>=1.0'
     ],
     packages=find_packages(),
     entry_points={
