@@ -2,6 +2,7 @@ import re
 from .repo import AbstractRepoObject, Repo
 from .. import util
 
+
 class Commit(AbstractRepoObject):
     """
     Information about a single commit.
@@ -20,7 +21,7 @@ class Commit(AbstractRepoObject):
         author_email: str,
         author_time: str,
         author_tz: str,
-        summary: str
+        summary: str,
     ):
         """Initialize a commit from its SHA.
 
@@ -33,15 +34,12 @@ class Commit(AbstractRepoObject):
 
         super().__init__(repo)
 
-        # Replace <> 
+        # Replace <>
         # from '<email@domain.com>'
         # to   'email@domain.com'
-        author_email = re.sub(r"\<|\>","", author_email)
-         
-        self._author = self.repo().author(
-            author_name,
-            author_email
-        )
+        author_email = re.sub(r"\<|\>", "", author_email)
+
+        self._author = self.repo().author(author_name, author_email)
         self._datetime = util.commit_datetime(author_time, author_tz)
         self._datetime_string = util.commit_datetime_string(self._datetime)
         self._summary = summary
