@@ -7,11 +7,11 @@ from .git.repo import Repo
 
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
-        ('show_contribution', config_options.Type(bool, default=False)),
-        ('show_line_count', config_options.Type(bool, default=False)),
-        ('count_empty_lines', config_options.Type(bool, default=True)),
-        ('sort_authors_by_name', config_options.Type(bool, default=True)),
-        ('sort_reverse', config_options.Type(bool, default=False))
+        ("show_contribution", config_options.Type(bool, default=False)),
+        ("show_line_count", config_options.Type(bool, default=False)),
+        ("count_empty_lines", config_options.Type(bool, default=True)),
+        # ('sort_authors_by_name', config_options.Type(bool, default=True)),
+        # ('sort_reverse', config_options.Type(bool, default=False))
     )
 
     def __init__(self):
@@ -67,7 +67,7 @@ class GitAuthorsPlugin(BasePlugin):
         """
         for file in files:
             path = file.abs_src_path
-            if path.endswith('.md'):
+            if path.endswith(".md"):
                 _ = self.repo().page(path)
 
     def on_page_content(self, html, page, config, files, **kwargs):
@@ -94,16 +94,11 @@ class GitAuthorsPlugin(BasePlugin):
             str: HTML text of page as string
         """
         list_pattern = re.compile(
-            r"\{\{\s*git_site_authors\s*\}\}",
-            flags=re.IGNORECASE
+            r"\{\{\s*git_site_authors\s*\}\}", flags=re.IGNORECASE
         )
         if list_pattern.search(html):
             html = list_pattern.sub(
-                util.repo_authors_summary(
-                    self.repo().get_authors(),
-                    self.config
-                ),
-                html
+                util.site_authors_summary(self.repo().get_authors(), self.config), html
             )
         return html
 
@@ -128,19 +123,24 @@ class GitAuthorsPlugin(BasePlugin):
             str: Markdown source text of page as string
         """
 
-        summary_pattern = re.compile(
-            r"\{\{\s*git_authors_summary\s*\}\}",
-            flags=re.IGNORECASE
+        pattern_authors_summary = re.compile(
+            r"\{\{\s*git_authors_summary\s*\}\}", flags=re.IGNORECASE
+        )
+        pattern_page_authors = re.compile(
+            r"\{\{\s*git_page_authors\s*\}\}", flags=re.IGNORECASE
         )
 
-        if not summary_pattern.search(markdown):
+        if not pattern_authors_summary.search(
+            markdown
+        ) and not pattern_page_authors.search(markdown):
             return markdown
 
         page_obj = self.repo().page(page.file.abs_src_path)
-        return summary_pattern.sub(
-            page_obj.authors_summary(),
-            markdown
-        )
+        page_authors = util.page_authors_summary(page_obj, self.config)
+
+        markdown = pattern_authors_summary.sub(page_authors, markdown)
+        markdown = pattern_page_authors.sub(page_authors, markdown)
+        return markdown
 
     def on_page_context(self, context, page, config, nav, **kwargs):
         """
@@ -175,8 +175,15 @@ class GitAuthorsPlugin(BasePlugin):
         # omitting the 'str' argument would result in a
         # datetime.datetime object with tzinfo instead.
         # Should this be formatted differently?
-        context['git_authors'] = util.page_authors(authors, path)
-        context['git_authors_summary'] = page_obj.authors_summary()
+        context["git_info"] = {
+            "page_authors": util.page_authors_summary(page_obj, self.config),
+            "site_authors": util.site_authors_summary(
+                self.repo().get_authors(), self.config
+            ),
+        }
+
+        # For backward compatibility, deprecate in 1.2
+        context["git_authors"] = util.page_authors(authors, path)
 
         return context
 

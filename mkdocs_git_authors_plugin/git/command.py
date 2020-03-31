@@ -1,9 +1,11 @@
 import subprocess
 
+
 class GitCommandError(Exception):
     """
     Exception thrown by a GitCommand.
     """
+
     pass
 
 
@@ -53,30 +55,29 @@ class GitCommand(object):
                 Note: usually the result will be used through the methods.
         """
 
-        args = ['git']
+        args = ["git"]
         args.append(self._command)
         args.extend(self._args)
         p = subprocess.run(
             args,
             # encoding='utf8', # Uncomment after dropping support for python 3.5
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         try:
             p.check_returncode()
         except subprocess.CalledProcessError:
-            msg = ['GitCommand error:']
-            msg.append('Command "%s" failed' % ' '.join(args))
-            msg.append('Return code: %s' % p.returncode)
-            msg.append('Output:')
+            msg = ["GitCommand error:"]
+            msg.append('Command "%s" failed' % " ".join(args))
+            msg.append("Return code: %s" % p.returncode)
+            msg.append("Output:")
             msg.append(p.stdout.decode("utf-8"))
-            msg.append('Error messages:')
+            msg.append("Error messages:")
             msg.append(p.stderr.decode("utf-8"))
-            raise GitCommandError('\n'.join(msg))
-        
-        self._stdout = p.stdout.decode("utf-8").strip('\'\n').split('\n')
-        self._stderr = p.stderr.decode("utf-8").strip('\'\n').split('\n')
-        
+            raise GitCommandError("\n".join(msg))
+
+        self._stdout = p.stdout.decode("utf-8").strip("'\n").split("\n")
+        self._stderr = p.stderr.decode("utf-8").strip("'\n").split("\n")
 
         self._completed = True
         return int(str(p.returncode))
@@ -109,7 +110,7 @@ class GitCommand(object):
             string list
         """
         if not self._completed:
-            raise GitCommandError('Trying to read from uncompleted GitCommand')
+            raise GitCommandError("Trying to read from uncompleted GitCommand")
         return self._stderr
 
     def stdout(self):
@@ -122,5 +123,5 @@ class GitCommand(object):
             string list
         """
         if not self._completed:
-            raise GitCommandError('Trying to read from uncompleted GitCommand')
+            raise GitCommandError("Trying to read from uncompleted GitCommand")
         return self._stdout

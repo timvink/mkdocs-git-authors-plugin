@@ -4,6 +4,7 @@ import logging
 from .repo import Repo, AbstractRepoObject
 from .command import GitCommand, GitCommandError
 
+
 class Page(AbstractRepoObject):
     """
     Results of git blame for a given file.
@@ -30,7 +31,7 @@ class Page(AbstractRepoObject):
             self._process_git_blame()
         except GitCommandError:
             logging.warning(
-                '%s has not been committed yet. Lines are not counted' % path
+                "%s has not been committed yet. Lines are not counted" % path
             )
 
     def add_total_lines(self, cnt: int = 1):
@@ -47,7 +48,7 @@ class Page(AbstractRepoObject):
         Return a sorted list of authors for the page
 
         The list is sorted once upon first request.
-        Sorting is done by author name.
+        Sorting is done by author name or contribution.
 
         Args:
 
@@ -56,41 +57,10 @@ class Page(AbstractRepoObject):
         """
         if not self._sorted:
             repo = self.repo()
-            self._authors = sorted(
-                self._authors,
-                key=repo._sort_key,
-                reverse=repo.config('sort_reverse')
-            )
+            reverse = repo.config("show_line_count") or repo.config("show_contribution")
+            self._authors = sorted(self._authors, key=repo._sort_key, reverse=reverse)
             self._sorted = True
         return self._authors
-
-    def authors_summary(self):
-        """
-        Summarized list of authors to a HTML string
-        TODO: move to util
-
-        Args:
-        Returns:
-            str: HTML text with authors
-        """
-
-        authors = self.get_authors()
-        authors_summary = []
-        for author in authors:
-            contrib = (
-                ' (%s)' % author.contribution(self.path(), str)
-                if self.repo().config('show_contribution')
-                and len(self.get_authors()) > 1
-                else ''
-            )
-            authors_summary.append(
-                "<a href='mailto:%s'>%s</a>%s" % (
-                    author.email(),
-                    author.name(),
-                    contrib
-                ))
-        authors_summary = ', '.join(authors_summary)
-        return "<span class='git-authors-summary'>%s</span>" % authors_summary
 
     def _process_git_blame(self):
         """
@@ -150,42 +120,40 @@ class Page(AbstractRepoObject):
             --- (this method works through side effects)
         """
 
-        re_sha = re.compile(r'^\w{40}')
+        re_sha = re.compile(r"^\w{40}")
 
-        cmd = GitCommand('blame', ['--porcelain', str(self._path)])
+        cmd = GitCommand("blame", ["--porcelain", str(self._path)])
         cmd.run()
 
         commit_data = {}
         for line in cmd.stdout():
-            key = line.split(' ')[0]
+            key = line.split(" ")[0]
             m = re_sha.match(key)
             if m:
-                commit_data = {
-                    'sha': key
-                }
+                commit_data = {"sha": key}
             elif key in [
-                'author',
-                'author-mail',
-                'author-time',
-                'author-tz',
-                'summary'
+                "author",
+                "author-mail",
+                "author-time",
+                "author-tz",
+                "summary",
             ]:
-                commit_data[key] = line[len(key)+1:]
-            elif line.startswith('\t'):
+                commit_data[key] = line[len(key) + 1 :]
+            elif line.startswith("\t"):
                 # assign the line to a commit
                 # and create the Commit object if necessary
                 commit = self.repo().get_commit(
-                    commit_data.get('sha'),
+                    commit_data.get("sha"),
                     # The following values are guaranteed to be present
                     # when a commit is seen for the first time,
                     # so they can be used for creating a Commit object.
-                    author_name=commit_data.get('author'),
-                    author_email=commit_data.get('author-mail'),
-                    author_time=commit_data.get('author-time'),
-                    author_tz=commit_data.get('author-tz'),
-                    summary=commit_data.get('summary')
+                    author_name=commit_data.get("author"),
+                    author_email=commit_data.get("author-mail"),
+                    author_time=commit_data.get("author-time"),
+                    author_tz=commit_data.get("author-tz"),
+                    summary=commit_data.get("summary"),
                 )
-                if len(line) > 1 or self.repo().config('count_empty_lines'):
+                if len(line) > 1 or self.repo().config("count_empty_lines"):
                     author = commit.author()
                     if author not in self._authors:
                         self._authors.append(author)

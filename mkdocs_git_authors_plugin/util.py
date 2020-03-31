@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+
 def commit_datetime(author_time: str, author_tz: str):
     """
     Convert a commit's timestamp to an aware datetime object.
@@ -18,8 +19,7 @@ def commit_datetime(author_time: str, author_tz: str):
     th_minutes = int(author_tz[0] + author_tz[3:])
 
     return datetime.fromtimestamp(
-        int(author_time),
-        timezone(timedelta(hours=tz_hours,minutes=th_minutes))
+        int(author_time), timezone(timedelta(hours=tz_hours, minutes=th_minutes))
     )
 
 
@@ -33,10 +33,37 @@ def commit_datetime_string(dt: datetime):
     Returns:
         string representation (should be localized)
     """
-    return dt.strftime('%c %z')
+    return dt.strftime("%c %z")
 
 
-def repo_authors_summary(authors, config: dict):
+def page_authors_summary(page, config: dict):
+    """
+    A summary of the authors' contributions on a page level
+    
+    Args:
+        page (Page): Page class
+        config (dict): plugin's config dict
+    
+    Returns:
+        str: HTML text with authors
+    """
+
+    authors = page.get_authors()
+    authors_summary = []
+    for author in authors:
+        contrib = (
+            " (%s)" % author.contribution(page.path(), str)
+            if page.repo().config("show_contribution") and len(page.get_authors()) > 1
+            else ""
+        )
+        authors_summary.append(
+            "<a href='mailto:%s'>%s</a>%s" % (author.email(), author.name(), contrib)
+        )
+    authors_summary = ", ".join(authors_summary)
+    return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary
+
+
+def site_authors_summary(authors, config: dict):
     """
     A summary list of the authors' contributions on repo level.
 
@@ -58,32 +85,26 @@ def repo_authors_summary(authors, config: dict):
     Returns:
         Unordered HTML list as a string.
     """
-    show_contribution = config['show_contribution']
-    show_line_count = show_contribution and config['show_line_count']
+    show_contribution = config["show_contribution"]
+    show_line_count = config["show_line_count"]
+
     result = """
 <span class='git-authors'>
     <ul>
         """
     for author in authors:
         contribution = (
-            ' (%s)' % author.contribution(None, str)
-            if show_contribution
-            else ''
+            " (%s)" % author.contribution(None, str) if show_contribution else ""
         )
-        lines = (
-            '%s lines' % author.lines()
-            if show_line_count
-            else ''
-        )
+        lines = ": %s lines" % author.lines() if show_line_count else ""
         result += """
-    <li><a href='mailto:{author_email}'>{author_name}</a>:
-    {lines}{contribution}</li>
+    <li><a href='mailto:{author_email}'>{author_name}</a>{lines}{contribution}</li>
     """.format(
-        author_email=author.email(),
-        author_name=author.name(),
-        lines=lines,
-        contribution=contribution
-    )
+            author_email=author.email(),
+            author_name=author.name(),
+            lines=lines,
+            contribution=contribution,
+        )
     result += """
     </span>
 </ul>
@@ -100,13 +121,15 @@ def page_authors(authors, path):
     """
     if type(path) == str:
         path = Path(path)
-    return [{
-            'name' : author.name(),
-            'email' : author.email(),
-            'last_datetime' : author.datetime(path, str),
-            'lines' : author.lines(path),
-            'lines_all_pages' : author.lines(),
-            'contribution' : author.contribution(path, str),
-            'contribution_all_pages' : author.contribution(None, str)
+    return [
+        {
+            "name": author.name(),
+            "email": author.email(),
+            "last_datetime": author.datetime(path, str),
+            "lines": author.lines(path),
+            "lines_all_pages": author.lines(),
+            "contribution": author.contribution(path, str),
+            "contribution_all_pages": author.contribution(None, str),
         }
-        for author in authors]
+        for author in authors
+    ]

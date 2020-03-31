@@ -43,6 +43,7 @@ class Repo(object):
         """
         if not self._authors.get(email, None):
             from .author import Author
+
             self._authors[email] = Author(self, name, email)
         return self._authors[email]
 
@@ -50,22 +51,23 @@ class Repo(object):
         """
         Sorted list of authors in the repository.
 
-        Default sort order is by ascending names, which can be changed
-        to descending and/or by contribution
+        Default sort order is by ascending names, 
+        and decending when contribution or line count is shown
 
         Args:
 
         Returns:
             List of Author objects
         """
-        return sorted([
-                author for author in self._authors.values()
-            ],
+        reverse = self.config("show_line_count") or self.config("show_contribution")
+
+        return sorted(
+            [author for author in self._authors.values()],
             key=self._sort_key,
-            reverse=self.config('sort_reverse')
+            reverse=reverse,
         )
 
-    def config(self, key: str = ''):
+    def config(self, key: str = ""):
         """
         Return the plugin configuration dictionary or a single config value.
 
@@ -87,7 +89,7 @@ class Repo(object):
         Returns:
             path as a string
         """
-        cmd = GitCommand('rev-parse', ['--show-toplevel'])
+        cmd = GitCommand("rev-parse", ["--show-toplevel"])
         cmd.run()
         return cmd.stdout()[0]
 
@@ -106,6 +108,7 @@ class Repo(object):
         """
         if not self._commits.get(sha):
             from .commit import Commit
+
             self._commits[sha] = Commit(self, sha, **kwargs)
         return self._commits.get(sha)
 
@@ -126,6 +129,7 @@ class Repo(object):
             path = Path(path)
         if not self._pages.get(path):
             from .page import Page
+
             self._pages[path] = Page(self, path)
         return self._pages[path]
 
@@ -136,14 +140,7 @@ class Repo(object):
         Args:
             - plugin_config: dictionary
         """
-        config = plugin_config.copy()
-        if config['sort_authors_by_name'] is True:
-            config['sort_authors_by'] = 'name'
-        else:
-            config['sort_authors_by'] = 'contribution'
-            
-        del config['sort_authors_by_name']
-        self._config = config
+        self._config = plugin_config
 
     def _sort_key(self, author):
         """
@@ -154,9 +151,13 @@ class Repo(object):
 
         Returns:
             comparison key for the sorted() function,
-            determined by the 'sort_authors_by' configuration option
         """
-        func = getattr(author, self.config('sort_authors_by'))
+        if self.config("show_line_count") or self.config("show_contribution"):
+            key = "contribution"
+        else:
+            key = "name"
+
+        func = getattr(author, key)
         return func()
 
     def total_lines(self):

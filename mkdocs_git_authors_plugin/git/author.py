@@ -33,12 +33,12 @@ class Author(AbstractRepoObject):
         """
         path = page.path()
         entry = self.page(path, page)
-        entry['lines'] += lines
-        current_dt = entry.get('datetime')
+        entry["lines"] += lines
+        current_dt = entry.get("datetime")
         commit_dt = commit.datetime()
         if not current_dt or commit_dt > current_dt:
-            entry['datetime'] = commit_dt
-            entry['datetime_str'] = commit.datetime(str)
+            entry["datetime"] = commit_dt
+            entry["datetime_str"] = commit.datetime(str)
 
     def contribution(self, path=None, _type=float):
         """
@@ -59,15 +59,13 @@ class Author(AbstractRepoObject):
         """
         lines = self.lines(path)
         total_lines = (
-            self.page(path)['page'].total_lines()
-            if path
-            else self.repo().total_lines()
+            self.page(path)["page"].total_lines() if path else self.repo().total_lines()
         )
         result = lines / total_lines
         if _type == float:
             return result
         else:
-            return str(round(result * 100, 2)) + '%'
+            return str(round(result * 100, 2)) + "%"
 
     def datetime(self, path, fmt=str):
         """
@@ -81,7 +79,7 @@ class Author(AbstractRepoObject):
             a formatted string (fmt=str)
             or a datetime.datetime object with tzinfo
         """
-        key = 'datetime_str' if fmt == str else 'datetime'
+        key = "datetime_str" if fmt == str else "datetime"
         return self.page(path).get(key)
 
     def email(self):
@@ -107,11 +105,9 @@ class Author(AbstractRepoObject):
             or on the given page.
         """
         if path:
-            return self.page(path)['lines']
+            return self.page(path)["lines"]
         else:
-            return sum([
-                v['lines'] for v in self._pages.values()
-            ])
+            return sum([v["lines"] for v in self._pages.values()])
 
     def name(self):
         """
@@ -149,8 +145,8 @@ class Author(AbstractRepoObject):
         """
         if not self._pages.get(path):
             self._pages[path] = {
-                'page': page or self.repo().page(path),
-                'lines': 0
+                "page": page or self.repo().page(path),
+                "lines": 0
                 # datetime and datetime_str will be populated later
             }
         return self._pages[path]
