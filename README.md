@@ -8,7 +8,7 @@
 
 # mkdocs-git-authors-plugin
 
-[MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
+Lightweight [MkDocs](https://www.mkdocs.org/) plugin to display git authors of a markdown page:
 
 > Authors: Jane Doe, John Doe
 
@@ -16,8 +16,8 @@ The plugin only considers authors of the current lines in the page ('surviving c
 
 Other MkDocs plugins that use information from git:
 
-- [mkdocs-git-committers-plugin](https://github.com/byrnereese/mkdocs-git-committers-plugin) for displaying authors' github user profiles
 - [mkdocs-git-revision-date-localized-plugin](https://github.com/timvink/mkdocs-git-revision-date-localized-plugin) for displaying the last revision date
+- [mkdocs-git-committers-plugin](https://github.com/byrnereese/mkdocs-git-committers-plugin) for displaying authors' github user profiles
 
 ## Setup
 
