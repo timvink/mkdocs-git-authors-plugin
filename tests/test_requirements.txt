@@ -1,6 +1,13 @@
+# testing
 pytest
 pytest-cov
 codecov
+
+# sub-libs
 click
 GitPython
+
+# mkdocs
 mkdocs
+mkdocs-git-revision-date-localized-plugin
+mkdocs-material

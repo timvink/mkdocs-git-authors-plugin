@@ -518,3 +518,7 @@ healthchecksdb
 MigrationBackup/
 # End of https://www.gitignore.io/api/r,macos,python,pycharm,windows,visualstudio,jupyternotebooks
 .vscode/
+
+# VS Code custom
+.venv/
+tests/basic_setup/site
