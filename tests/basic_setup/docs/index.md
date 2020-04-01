@@ -1,3 +1,7 @@
-# Test page
+# Test with plugin tags
 
-Markdown tag: {{ git_authors_summary }}
+Page authors: {{ git_page_authors }}
+
+----
+
+Site authors: {{ git_site_authors }}
