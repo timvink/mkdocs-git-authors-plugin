@@ -67,7 +67,7 @@ Which renders as:
 
 As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-material) you can implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-template-blocks):
 
-1) Create a new file `base.html` in `docs/assets/theme`:
+1) Create a new file `main.html` in `docs/theme`:
 
 ```html
 {% extends "base.html" %}
@@ -87,7 +87,7 @@ As an example, if you use [mkdocs-material](https://github.com/squidfunk/mkdocs-
 ```yml
 theme:
     name: material
-    custom_dir: docs/assets/theme/
+    custom_dir: docs/theme/
 ```
 
 ### In theme templates
