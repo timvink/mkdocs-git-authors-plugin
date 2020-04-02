@@ -114,7 +114,7 @@ def site_authors_summary(authors, config: dict):
 
 def page_authors(authors, path):
     """List of dicts with info on page authors
-    
+    # TODO: rename to something more representative like 'authors_to_dict()' 
     Args:
         authors (list): list with Author classes
         path (str): path to page
