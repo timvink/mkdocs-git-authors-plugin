@@ -3,9 +3,18 @@
 {% block disqus %}
 <div class="md-source-date">
   <small>
-    Authors: {{ git_authors_summary }}
-    <br>
-    Old tag: {{ git_page_authors }}
+    <p>
+      Available template jinja2 tags:
+    </p>
+
+    <mark>{% raw %}{{ git_page_authors }}{% endraw %}</mark>: {{ git_page_authors  }} <br />
+    <mark>{% raw %}{{ git_info }}{% endraw %}</mark>: <small>{{ git_info }}</small><br />
+    <mark>{% raw %}{{ git_site_authors }}{% endraw %}</mark>: {{ git_site_authors  }} <br />
+    <p>
+      Old tags to be deprecated: <br />
+    </p>
+    <mark>{% raw %}{{ git_authors_summary }}{% endraw %}</mark>: {{ git_authors_summary }} <br />
+    <mark>{% raw %}{{ git_authors }}{% endraw %}</mark>: {{ git_authors }}
   </small>
 </div>
 {% include "partials/integrations/disqus.html" %}
