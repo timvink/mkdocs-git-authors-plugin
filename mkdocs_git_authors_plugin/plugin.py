@@ -168,7 +168,7 @@ class GitAuthorsPlugin(BasePlugin):
         path = page.file.abs_src_path
         page_obj = self.repo().page(path)
         authors = page_obj.get_authors()
-        
+
         page_authors = util.page_authors_summary(page_obj, self.config)
         site_authors = util.site_authors_summary(self.repo().get_authors(), self.config)
 
@@ -186,7 +186,7 @@ class GitAuthorsPlugin(BasePlugin):
         # Make available the same markdown tags in jinja context
         context["git_page_authors"] = page_authors
         context["git_site_authors"] = site_authors
-        
+
         # For backward compatibility, deprecate in 1.2
         context["git_authors"] = util.page_authors(authors, path)
         context["git_authors_summary"] = page_authors
