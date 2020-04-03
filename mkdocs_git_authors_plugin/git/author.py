@@ -1,3 +1,5 @@
+import logging
+
 from .repo import AbstractRepoObject, Repo
 from .page import Page
 from .commit import Commit
@@ -61,7 +63,17 @@ class Author(AbstractRepoObject):
         total_lines = (
             self.page(path)["page"].total_lines() if path else self.repo().total_lines()
         )
-        result = lines / total_lines
+
+        try:
+            result = lines / total_lines
+        except ZeroDivisionError as err:
+            logging.error(
+                "Calcultation of contribution for page '{}' ({}/{}) failed: {}".format(
+                    path, lines, total_lines, err
+                )
+            )
+            return float(0)
+
         if _type == float:
             return result
         else:
