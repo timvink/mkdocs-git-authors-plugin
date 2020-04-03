@@ -70,7 +70,7 @@ def test_project_with_no_commits(tmp_path):
     gitpython.Repo.init(testproject_path, bare=False)
 
     result = build_docs_setup(
-        testproject_path / "website/mkdocs.yml", testproject_path / "site"
+        str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
     )
     assert result.exit_code == 0, (
         "'mkdocs build' command failed. Error: %s" % result.stdout
