@@ -61,7 +61,13 @@ class Author(AbstractRepoObject):
         total_lines = (
             self.page(path)["page"].total_lines() if path else self.repo().total_lines()
         )
-        result = lines / total_lines
+
+        # Some pages are empty, that case contribution is 0 by default
+        if total_lines == 0:
+            result = 0
+        else:
+            result = lines / total_lines
+
         if _type == float:
             return result
         else:
