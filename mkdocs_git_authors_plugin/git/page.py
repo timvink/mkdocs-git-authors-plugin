@@ -125,8 +125,14 @@ class Page(AbstractRepoObject):
         cmd = GitCommand("blame", ["--porcelain", str(self._path)])
         cmd.run()
 
+        lines = cmd.stdout()
+
+        # in case of empty, non-committed files, raise error
+        if len(lines) == 0:
+            raise GitCommandError
+
         commit_data = {}
-        for line in cmd.stdout():
+        for line in lines:
             key = line.split(" ")[0]
             m = re_sha.match(key)
             if m:
