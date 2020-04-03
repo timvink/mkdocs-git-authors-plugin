@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="mkdocs-git-authors-plugin",
-    version="0.3.1",
+    version="0.3.2",
     description="Mkdocs plugin to display git authors of a page",
     long_description=long_description,
     long_description_content_type="text/markdown",
