@@ -1,0 +1,9 @@
+site_name: test gitauthors_plugin
+use_directory_urls: true
+
+plugins:
+    - search
+    - git-authors:
+        count_empty_lines: false
+        show_contribution: true
+        show_line_count: true

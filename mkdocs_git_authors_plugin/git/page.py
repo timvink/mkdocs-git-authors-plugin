@@ -16,7 +16,7 @@ class Page(AbstractRepoObject):
 
     def __init__(self, repo: Repo, path: Path):
         """
-        Instantiante a Page object
+        Instantiate a Page object
 
         Args:
             repo: Reference to the global Repo instance
