@@ -77,3 +77,37 @@ def test_project_with_no_commits(tmp_path):
     )
 
     os.chdir(cwd)
+
+
+def test_building_empty_site(tmp_path):
+    """
+    Structure:
+    
+    tmp_path/testproject
+    website/
+        ├── docs/
+        └── mkdocs.yml"""
+    testproject_path = tmp_path / "testproject"
+
+    shutil.copytree(
+        "tests/basic_setup/empty_site", str(testproject_path / "website" / "docs")
+    )
+    shutil.copyfile(
+        "tests/basic_setup/mkdocs_w_contribution.yml",
+        str(testproject_path / "website" / "mkdocs.yml"),
+    )
+
+    cwd = os.getcwd()
+    os.chdir(str(testproject_path))
+
+    # run 'git init'
+    gitpython.Repo.init(testproject_path, bare=False)
+
+    result = build_docs_setup(
+        str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
+    )
+    assert result.exit_code == 0, (
+        "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    os.chdir(cwd)
