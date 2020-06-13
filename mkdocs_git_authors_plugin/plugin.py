@@ -102,7 +102,7 @@ class GitAuthorsPlugin(BasePlugin):
             )
         return html
 
-    def on_page_markdown(self, markdown, page, config, files):
+    def on_page_markdown(self, markdown, page, config, files, **kwargs):
         """
         Replace jinja tags in markdown.
 
