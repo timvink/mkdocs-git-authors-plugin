@@ -136,6 +136,16 @@ Alternatively, you could use the simple pre-formatted `{{ git_page_authors }}` t
 
 ## Options
 
+You can customize the plugin by setting options in `mkdocs.yml`. For example:
+
+```yml
+plugins:
+  - git-authors:
+      show_contribution: true
+      show_line_count: true
+      count_empty_lines: true
+```
+
 ### `show_contribution`
 
 If this option is set to `true` (default: `false`) the contribution of a author is
