@@ -42,3 +42,12 @@ mkdocs serve -f ./tests/basic_setup/mkdocs_complete_material.yml
 Make sure your code *roughly* follows [PEP-8](https://www.python.org/dev/peps/pep-0008/) and keeps things consistent with the rest of the code. I recommended using [black](https://github.com/psf/black) to automatically format your code.
 
 We use google-style docstrings.
+
+
+## Documentation site
+
+Manually deployed by Tim Vink using
+
+```bash
+mkdocs gh-deploy
+```
