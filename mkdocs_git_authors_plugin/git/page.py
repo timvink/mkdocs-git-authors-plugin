@@ -4,6 +4,7 @@ import logging
 from .repo import Repo, AbstractRepoObject
 from .command import GitCommand, GitCommandError
 
+logger = logging.getLogger("mkdocs.plugins")
 
 class Page(AbstractRepoObject):
     """
@@ -30,8 +31,8 @@ class Page(AbstractRepoObject):
         try:
             self._process_git_blame()
         except GitCommandError:
-            logging.warning(
-                "%s has not been committed yet. Lines are not counted" % path
+            logger.warning(
+                "[git-authors-plugin] %s has not been committed yet. Lines are not counted" % path
             )
 
     def add_total_lines(self, cnt: int = 1):
