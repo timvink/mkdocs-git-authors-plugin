@@ -41,7 +41,6 @@ plugins:
 
 See https://timvink.github.io/mkdocs-git-authors-plugin/
 
-
 ## Contributing
 
 Very much open to contributions! Please read [contributing guide](https://timvink.github.io/mkdocs-git-authors-plugin/contributing.html) before putting in any work.
