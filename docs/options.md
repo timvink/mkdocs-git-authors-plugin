@@ -4,7 +4,7 @@ You can customize the plugin by setting options in your `mkdocs.yml` file. Here 
 
 ```yml
 plugins:
-    - print-site:
+    - git-authors:
         show_contribution: true
         show_line_count: true
         count_empty_lines: true

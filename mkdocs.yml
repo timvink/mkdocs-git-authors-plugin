@@ -5,12 +5,15 @@ use_directory_urls: false
 # Theme
 theme:
   name: material
-  custom_dir: docs/theme/
+  custom_dir: docs/overrides
 
 # Plugins
 plugins:
   - search
-  - git-authors
+  - git-authors:
+      show_contribution: true
+      show_line_count: true
+      count_empty_lines: true
 
 nav:
   - index.md
