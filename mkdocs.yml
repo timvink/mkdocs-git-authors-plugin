@@ -24,3 +24,5 @@ nav:
 
 markdown_extensions:
   - markdown.extensions.codehilite
+  - pymdownx.escapeall
+  - pymdownx.superfences

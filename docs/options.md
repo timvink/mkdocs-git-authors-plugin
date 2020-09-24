@@ -2,7 +2,7 @@
 
 You can customize the plugin by setting options in your `mkdocs.yml` file. Here is an example of all the options this plugin offers:
 
-```yml
+```yaml
 plugins:
     - git-authors:
         show_contribution: true

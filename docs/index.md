@@ -12,7 +12,7 @@ pip3 install mkdocs-git-authors-plugin
 
 Next, add the following lines to your `mkdocs.yml`:
 
-```yml
+```yaml
 plugins:
   - search
   - git-authors

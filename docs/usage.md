@@ -41,7 +41,7 @@ If you use the [mkdocs-material](https://github.com/squidfunk/mkdocs-material) t
   {% if git_page_authors %}
     <div class="md-source-date">
       <small>
-          Authors: {{ git_page_authors }}
+          Authors: {{ git_page_authors | default('enable mkdocs-git-authors-plugin') }}
       </small>
     </div>
   {% endif %}
@@ -50,7 +50,7 @@ If you use the [mkdocs-material](https://github.com/squidfunk/mkdocs-material) t
 
 2) In `mkdocs.yml` make sure to specify the custom directory with the theme overrides:
 
-```yml
+```yaml
 theme:
     name: material
     custom_dir: docs/overrides
@@ -77,13 +77,13 @@ https://github.com/mkdocs/mkdocs/blob/master/mkdocs/themes/mkdocs/content.html -
 {{ page.content }}
 
 {% if git_page_authors %}
-  <p><small>Authors: {{ git_page_authors }}</small></p>
+  <p><small>Authors: {{ git_page_authors | default('enable mkdocs-git-authors-plugin') }}</small></p>
 {% endif %}
 ```
 
 2) In `mkdocs.yml` make sure to specify the custom directory with the theme overrides:
 
-```yml
+```yaml
 theme:
     name: mkdocs
     custom_dir: docs/overrides
