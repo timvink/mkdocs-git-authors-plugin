@@ -1,8 +1,10 @@
 import re
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
+
 from . import util
 from .git.repo import Repo
+from mkdocs_git_authors_plugin.ci import raise_ci_warnings
 
 
 class GitAuthorsPlugin(BasePlugin):
@@ -37,6 +39,8 @@ class GitAuthorsPlugin(BasePlugin):
             (updated) configuration object
         """
         self.repo().set_config(self.config)
+
+        raise_ci_warnings(path = self.repo()._root)
 
     def on_files(self, files, config, **kwargs):
         """

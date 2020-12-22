@@ -1,11 +1,20 @@
 site_name: "git-authors Plugin"
 site_description: "Plugin to add git info to MkDocs sites"
+repo_url: https://github.com/timvink/mkdocs-git-authors-plugin
+site_url: https://timvink.github.io/mkdocs-git-authors-plugin/
+site_author: Tim Vink
+copyright: Copyright &copy; 2020 Maintained by <a href="https://github.com/timvink">Tim Vink</a>.
+
 use_directory_urls: false
 
 # Theme
 theme:
   name: material
   custom_dir: docs/overrides
+  palette:
+      scheme: preference
+      primary: blue
+      accent: blue
 
 # Plugins
 plugins:
@@ -26,3 +35,5 @@ markdown_extensions:
   - markdown.extensions.codehilite
   - pymdownx.escapeall
   - pymdownx.superfences
+  - admonition
+  - pymdownx.details
