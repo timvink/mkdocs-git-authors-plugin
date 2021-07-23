@@ -8,6 +8,7 @@ plugins:
         show_contribution: true
         show_line_count: true
         count_empty_lines: true
+        fallback_to_empty: false
 ```
 
 ## `show_contribution`
@@ -28,3 +29,7 @@ If this option is set to `true` (default: `false`) the number of lines per autho
 ## `count_empty_lines`
 
 If this option is set to `true` (default: `false`) empty lines will count towards an authors' contribution.
+
+## `fallback_to_empty`
+
+If this option is set to `true` (default: `false`) the plugin will work even outside of a proper Git environment, prompting a warning when it's the case, and resulting in empty author list.

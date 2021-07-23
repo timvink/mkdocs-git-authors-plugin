@@ -1,5 +1,6 @@
 from mkdocs_git_authors_plugin.git.command import GitCommandError
 import re
+import logging
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
@@ -19,14 +20,8 @@ class GitAuthorsPlugin(BasePlugin):
     )
 
     def __init__(self):
-        try:
-            self._repo = Repo()
-            self._fallback = False
-        except GitCommandError:
-            if self.config["fallback_to_empty"]:
-                self._fallback = True
-            else:
-                raise
+        self._repo = None
+        self._fallback = False
 
     def on_config(self, config, **kwargs):
         """
@@ -47,12 +42,20 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             (updated) configuration object
         """
-        if self._fallback:
-            return
-
-        self.repo().set_config(self.config)
-
-        raise_ci_warnings(path = self.repo()._root)
+        try:
+            self._repo = Repo()
+            self._fallback = False
+            self.repo().set_config(self.config)
+            raise_ci_warnings(path = self.repo()._root)
+        except GitCommandError:
+            if self.config["fallback_to_empty"]:
+                self._fallback = True
+                logging.warning(
+                    "[git-authors-plugin] Unable to find a git directory and/or git is not installed."
+                    " Option 'fallback_to_empty' set to 'true': Falling back to empty authors list"
+                )
+            else:
+                raise
 
     def on_files(self, files, config, **kwargs):
         """

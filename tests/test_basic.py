@@ -127,12 +127,14 @@ def test_fallback(tmp_path):
         "tests/basic_setup/docs", str(testproject_path / "website" / "docs")
     )
     shutil.copyfile(
-        "tests/basic_setup/mkdocs_w_contribution.yml",
+        "tests/basic_setup/mkdocs_fallback.yml",
         str(testproject_path / "website" / "mkdocs.yml"),
     )
 
     cwd = os.getcwd()
     os.chdir(str(testproject_path))
+
+    print(str(testproject_path))
 
     result = build_docs_setup(
         str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
