@@ -108,14 +108,13 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
-        if self._fallback:
-            return html
 
         list_pattern = re.compile(
             r"\{\{\s*git_site_authors\s*\}\}", flags=re.IGNORECASE
         )
         if list_pattern.search(html):
             html = list_pattern.sub(
+                "" if self._fallback else
                 util.site_authors_summary(self.repo().get_authors(), self.config), html
             )
         return html
@@ -140,9 +139,6 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: Markdown source text of page as string
         """
-        if self._fallback:
-            return markdown
-
         pattern_authors_summary = re.compile(
             r"\{\{\s*git_authors_summary\s*\}\}", flags=re.IGNORECASE
         )
@@ -153,6 +149,11 @@ class GitAuthorsPlugin(BasePlugin):
         if not pattern_authors_summary.search(
             markdown
         ) and not pattern_page_authors.search(markdown):
+            return markdown
+
+        if self._fallback:
+            markdown = pattern_authors_summary.sub("", markdown)
+            markdown = pattern_page_authors.sub("", markdown)
             return markdown
 
         page_obj = self.repo().page(page.file.abs_src_path)
