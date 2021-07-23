@@ -1,3 +1,4 @@
+from mkdocs_git_authors_plugin.git.command import GitCommandError
 import re
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -12,12 +13,17 @@ class GitAuthorsPlugin(BasePlugin):
         ("show_contribution", config_options.Type(bool, default=False)),
         ("show_line_count", config_options.Type(bool, default=False)),
         ("count_empty_lines", config_options.Type(bool, default=True)),
+        ("fallback_to_empty_authors", config_options.Type(bool, default=False))
         # ('sort_authors_by_name', config_options.Type(bool, default=True)),
         # ('sort_reverse', config_options.Type(bool, default=False))
     )
 
     def __init__(self):
-        self._repo = Repo()
+        try:
+            self._repo = Repo()
+            self._fallback = False
+        except GitCommandError:
+            self._fallback = True
 
     def on_config(self, config, **kwargs):
         """
@@ -38,6 +44,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             (updated) configuration object
         """
+        if self._fallback:
+            return
+
         self.repo().set_config(self.config)
 
         raise_ci_warnings(path = self.repo()._root)
@@ -69,6 +78,8 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             global files collection
         """
+        if self._fallback:
+            return
         for file in files:
             path = file.abs_src_path
             if path.endswith(".md"):
@@ -97,6 +108,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
+        if self._fallback:
+            return html
+
         list_pattern = re.compile(
             r"\{\{\s*git_site_authors\s*\}\}", flags=re.IGNORECASE
         )
@@ -126,6 +140,8 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: Markdown source text of page as string
         """
+        if self._fallback:
+            return markdown
 
         pattern_authors_summary = re.compile(
             r"\{\{\s*git_authors_summary\s*\}\}", flags=re.IGNORECASE
@@ -168,6 +184,8 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             dict: template context variables
         """
+        if self._fallback:
+            return context
 
         path = page.file.abs_src_path
         page_obj = self.repo().page(path)
