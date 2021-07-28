@@ -22,6 +22,29 @@ import os
 from click.testing import CliRunner
 from mkdocs.__main__ import build_command
 import git as gitpython
+from contextlib import contextmanager
+
+
+@contextmanager
+def working_directory(path):
+    """
+    Temporarily change working directory.
+    A context manager which changes the working directory to the given
+    path, and then changes it back to its previous value on exit.
+    Usage:
+    ```python
+    # Do something in original directory
+    with working_directory('/my/new/path'):
+        # Do something in new directory
+    # Back to old directory
+    ```
+    """
+    prev_cwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)
 
 
 def build_docs_setup(mkdocs_path, output_path):
@@ -63,30 +86,31 @@ def test_project_with_no_commits(tmp_path):
         str(testproject_path / "website" / "mkdocs.yml"),
     )
 
-    cwd = os.getcwd()
-    os.chdir(str(testproject_path))
+    with working_directory(str(testproject_path)):
+        # run 'git init'
+        gitpython.Repo.init(testproject_path, bare=False)
 
-    # run 'git init'
-    gitpython.Repo.init(testproject_path, bare=False)
+        result = build_docs_setup(
+            str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
+        )
+        assert result.exit_code == 0, (
+            "'mkdocs build' command failed. Error: %s" % result.stdout
+        )
 
-    result = build_docs_setup(
-        str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
-    )
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
 
-    os.chdir(cwd)
 
 
 def test_building_empty_site(tmp_path):
     """
     Structure:
     
+    ```
     tmp_path/testproject
     website/
         ├── docs/
-        └── mkdocs.yml"""
+        └── mkdocs.yml
+    ````
+    """
     testproject_path = tmp_path / "testproject"
 
     shutil.copytree(
@@ -97,30 +121,30 @@ def test_building_empty_site(tmp_path):
         str(testproject_path / "website" / "mkdocs.yml"),
     )
 
-    cwd = os.getcwd()
-    os.chdir(str(testproject_path))
+    with working_directory(str(testproject_path)):
+        # run 'git init'
+        gitpython.Repo.init(testproject_path, bare=False)
 
-    # run 'git init'
-    gitpython.Repo.init(testproject_path, bare=False)
+        result = build_docs_setup(
+            str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
+        )
+        assert result.exit_code == 0, (
+            "'mkdocs build' command failed. Error: %s" % result.stdout
+        )
 
-    result = build_docs_setup(
-        str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
-    )
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
-
-    os.chdir(cwd)
 
 
 def test_fallback(tmp_path):
     """
     Structure:
     
+    ```
     tmp_path/testproject
     website/
         ├── docs/
-        └── mkdocs.yml"""
+        └── mkdocs.yml
+    ````
+    """
     testproject_path = tmp_path / "testproject"
 
     shutil.copytree(
@@ -131,16 +155,11 @@ def test_fallback(tmp_path):
         str(testproject_path / "website" / "mkdocs.yml"),
     )
 
-    cwd = os.getcwd()
-    os.chdir(str(testproject_path))
+    with working_directory(str(testproject_path)):
 
-    print(str(testproject_path))
-
-    result = build_docs_setup(
-        str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
-    )
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
-
-    os.chdir(cwd)
+        result = build_docs_setup(
+            str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
+        )
+        assert result.exit_code == 0, (
+            "'mkdocs build' command failed. Error: %s" % result.stdout
+        )
