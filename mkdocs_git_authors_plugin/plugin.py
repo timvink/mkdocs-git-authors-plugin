@@ -8,6 +8,7 @@ from . import util
 from .git.repo import Repo
 from mkdocs_git_authors_plugin.ci import raise_ci_warnings
 
+logger = logging.getLogger("mkdocs.plugins")
 
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
@@ -50,7 +51,7 @@ class GitAuthorsPlugin(BasePlugin):
         except GitCommandError:
             if self.config["fallback_to_empty"]:
                 self._fallback = True
-                logging.warning(
+                logger.warning(
                     "[git-authors-plugin] Unable to find a git directory and/or git is not installed."
                     " Option 'fallback_to_empty' set to 'true': Falling back to empty authors list"
                 )
