@@ -9,6 +9,8 @@ plugins:
         show_line_count: true
         count_empty_lines: true
         fallback_to_empty: false
+        exclude:
+            - index.md
 ```
 
 ## `show_contribution`
@@ -33,3 +35,18 @@ If this option is set to `true` (default: `false`) empty lines will count toward
 ## `fallback_to_empty`
 
 If this option is set to `true` (default: `false`) the plugin will work even outside of a proper Git environment, prompting a warning when it's the case, and resulting in empty author list.
+
+## `exclude`
+
+Default is empty. Specify a list of page source paths (one per line) that should not have author(s) included (excluded from processing by this plugin). This can be useful for example to remove the authors from the front page. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of full source paths. To exclude `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `exclude:` with `- subfolder/page.md`. Some examples:
+
+```yaml
+# mkdocs.yml
+plugins:
+  - git-authors:
+      exclude:
+        - index.md
+        - subfolder/page.md
+        - another_page.md
+        - folder/*
+```

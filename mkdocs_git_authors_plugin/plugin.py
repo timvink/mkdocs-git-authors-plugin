@@ -7,6 +7,7 @@ from mkdocs.plugins import BasePlugin
 from . import util
 from .git.repo import Repo
 from mkdocs_git_authors_plugin.ci import raise_ci_warnings
+from mkdocs_git_authors_plugin.exclude import exclude
 
 logger = logging.getLogger("mkdocs.plugins")
 
@@ -15,7 +16,8 @@ class GitAuthorsPlugin(BasePlugin):
         ("show_contribution", config_options.Type(bool, default=False)),
         ("show_line_count", config_options.Type(bool, default=False)),
         ("count_empty_lines", config_options.Type(bool, default=True)),
-        ("fallback_to_empty", config_options.Type(bool, default=False))
+        ("fallback_to_empty", config_options.Type(bool, default=False)),
+        ("exclude", config_options.Type(list, default=[])),
         # ('sort_authors_by_name', config_options.Type(bool, default=True)),
         # ('sort_reverse', config_options.Type(bool, default=False))
     )
@@ -115,6 +117,11 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
+        # Exclude pages specified in config
+        excluded_pages = self.config.get("exclude", [])
+        if exclude(page.file.src_path, excluded_pages):
+            logging.debug("on_page_html, Excluding page " + page.file.src_path)
+            return html
 
         list_pattern = re.compile(
             r"\{\{\s*git_site_authors\s*\}\}", flags=re.IGNORECASE
@@ -146,6 +153,13 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: Markdown source text of page as string
         """
+
+        # Exclude pages specified in config
+        excluded_pages = self.config.get("exclude", [])
+        if exclude(page.file.src_path, excluded_pages):
+            logging.debug("on_page_markdown, Excluding page " + page.file.src_path)
+            return markdown
+
         pattern_authors_summary = re.compile(
             r"\{\{\s*git_authors_summary\s*\}\}", flags=re.IGNORECASE
         )
@@ -193,6 +207,12 @@ class GitAuthorsPlugin(BasePlugin):
             dict: template context variables
         """
         if self._fallback:
+            return context
+
+        # Exclude pages specified in config
+        excluded_pages = self.config.get("exclude", [])
+        if exclude(page.file.src_path, excluded_pages):
+            logging.debug("on_page_context, Excluding page " + page.file.src_path)
             return context
 
         path = page.file.abs_src_path
