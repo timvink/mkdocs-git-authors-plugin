@@ -81,6 +81,19 @@ def test_exclude_working(tmp_path):
     contents = page_file.read_text()
     assert not re.search("<span class='git-page-authors", contents)
 
+def test_enabled_working(tmp_path):
+
+    result = build_docs_setup("tests/basic_setup/mkdocs_complete_material_disabled.yml", tmp_path)
+    assert result.exit_code == 0, (
+        "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    page_file = tmp_path / "page_with_tag/index.html"
+    assert page_file.exists(), "%s does not exist" % page_file
+
+    contents = page_file.read_text()
+    assert not re.search("<span class='git-page-authors", contents)
+
 
 
 def test_project_with_no_commits(tmp_path):

@@ -11,6 +11,7 @@ plugins:
         fallback_to_empty: false
         exclude:
             - index.md
+        enabled: true
 ```
 
 ## `show_contribution`
@@ -49,4 +50,22 @@ plugins:
         - subfolder/page.md
         - another_page.md
         - folder/*
+```
+
+## `enabled`
+
+Default is `true`. Enables you to deactivate this plugin. A possible use case is local development where you might want faster build times and/or do not have git available. It's recommended to use this option with an environment variable together with a default fallback (introduced in `mkdocs` v1.2.1, see [docs](https://www.mkdocs.org/user-guide/configuration/#environment-variables)). Example:
+
+```yaml
+# mkdocs.yml
+plugins:
+  - git-authors:
+      enabled: !ENV [ENABLED_GIT_AUTHORS, True]
+```
+
+Which enables you do disable the plugin locally using:
+
+```bash
+export ENABLED_GIT_AUTHORS=false
+mkdocs serve
 ```

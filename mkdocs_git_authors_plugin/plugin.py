@@ -18,6 +18,7 @@ class GitAuthorsPlugin(BasePlugin):
         ("count_empty_lines", config_options.Type(bool, default=True)),
         ("fallback_to_empty", config_options.Type(bool, default=False)),
         ("exclude", config_options.Type(list, default=[])),
+        ("enabled", config_options.Type(bool, default=True)),
         # ('sort_authors_by_name', config_options.Type(bool, default=True)),
         # ('sort_reverse', config_options.Type(bool, default=False))
     )
@@ -45,6 +46,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             (updated) configuration object
         """
+        if not self.config.get('enabled'):
+            return config
+        
         try:
             self._repo = Repo()
             self._fallback = False
@@ -87,8 +91,11 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             global files collection
         """
+        if not self.config.get('enabled'):
+            return
         if self._fallback:
             return
+        
         for file in files:
             path = file.abs_src_path
             if path.endswith(".md"):
@@ -117,6 +124,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
+        if not self.config.get('enabled'):
+            return html
+        
         # Exclude pages specified in config
         excluded_pages = self.config.get("exclude", [])
         if exclude(page.file.src_path, excluded_pages):
@@ -153,7 +163,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: Markdown source text of page as string
         """
-
+        if not self.config.get('enabled'):
+            return markdown
+        
         # Exclude pages specified in config
         excluded_pages = self.config.get("exclude", [])
         if exclude(page.file.src_path, excluded_pages):
@@ -206,6 +218,8 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             dict: template context variables
         """
+        if not self.config.get('enabled'):
+            return context
         if self._fallback:
             return context
 

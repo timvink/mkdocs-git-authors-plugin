@@ -1,0 +1,16 @@
+site_name: test gitauthors_plugin with material theme and git-revision-date
+use_directory_urls: true
+
+theme:
+    name: 'material'
+    custom_dir: 'docs/theme'
+    language: nl
+
+plugins:
+    - search
+    - git-authors:
+        count_empty_lines: false
+        show_contribution: true
+        show_line_count: true
+        enabled: false
+    - git-revision-date-localized
