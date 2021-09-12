@@ -37,6 +37,8 @@ plugins:
 
 > If you have no `plugins` entry in your config file yet, you'll likely also want to add the `search` plugin. MkDocs enables it by default if there is no `plugins` entry set.
 
+You can then use the `{{ git_page_authors }}` tag in your markdown document, or choose to customize your mkdocs theme (see [usage](https://timvink.github.io/mkdocs-git-authors-plugin/usage.html) page in the docs).
+
 ### Note when using build environments
 
 This plugin needs access to the last commit that touched a specific file to be able to retrieve the date. By default many build environments only retrieve the last commit, which means you might need to:
@@ -51,7 +53,7 @@ This plugin needs access to the last commit that touched a specific file to be a
 
 ## Documentation
 
-See https://timvink.github.io/mkdocs-git-authors-plugin/
+See [timvink.github.io/mkdocs-git-authors-plugin](https://timvink.github.io/mkdocs-git-authors-plugin/)
 
 ## Contributing
 
