@@ -97,6 +97,12 @@ class GitAuthorsPlugin(BasePlugin):
             return
         
         for file in files:
+
+            # Exclude pages specified in config
+            excluded_pages = self.config.get("exclude", [])
+            if exclude(file.src_path, excluded_pages):
+                continue
+            
             path = file.abs_src_path
             if path.endswith(".md"):
                 _ = self.repo().page(path)
@@ -130,7 +136,6 @@ class GitAuthorsPlugin(BasePlugin):
         # Exclude pages specified in config
         excluded_pages = self.config.get("exclude", [])
         if exclude(page.file.src_path, excluded_pages):
-            logging.debug("on_page_html, Excluding page " + page.file.src_path)
             return html
 
         list_pattern = re.compile(
@@ -169,7 +174,6 @@ class GitAuthorsPlugin(BasePlugin):
         # Exclude pages specified in config
         excluded_pages = self.config.get("exclude", [])
         if exclude(page.file.src_path, excluded_pages):
-            logging.debug("on_page_markdown, Excluding page " + page.file.src_path)
             return markdown
 
         pattern_authors_summary = re.compile(
