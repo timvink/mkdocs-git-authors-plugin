@@ -11,3 +11,6 @@ GitPython
 mkdocs
 mkdocs-git-revision-date-localized-plugin
 mkdocs-material
+
+# compatibility
+mkdocs-gen-files
