@@ -36,8 +36,11 @@ class Commit(AbstractRepoObject):
 
         # Replace <>
         # from '<email@domain.com>'
-        # to   'email@domain.com'
+        # to   'email@domain.com'        
         author_email = re.sub(r"\<|\>", "", author_email)
+        # Lowercase, as emails are not case sensitive.
+        # See https://github.com/timvink/mkdocs-git-authors-plugin/issues/59
+        author_email = author_email.lower()
 
         self._author = self.repo().author(author_name, author_email)
         self._datetime = util.commit_datetime(author_time, author_tz)
