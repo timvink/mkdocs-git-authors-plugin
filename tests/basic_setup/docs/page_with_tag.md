@@ -4,4 +4,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Content
 
-Markdown tag: {{ git_authors_summary }}
+Markdown tag (this tag has been deprecated so should not be replaced): {{ git_authors_summary }}
+
+This one has authors {{ git_page_authors }}
