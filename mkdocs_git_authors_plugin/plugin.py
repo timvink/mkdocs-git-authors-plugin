@@ -138,6 +138,7 @@ class GitAuthorsPlugin(BasePlugin):
         if exclude(page.file.src_path, excluded_pages):
             return html
 
+        # Replace {{ git_site_authors }}
         list_pattern = re.compile(
             r"\{\{\s*git_site_authors\s*\}\}", flags=re.IGNORECASE
         )
@@ -146,59 +147,20 @@ class GitAuthorsPlugin(BasePlugin):
                 "" if self._fallback else
                 util.site_authors_summary(self.repo().get_authors(), self.config), html
             )
-        return html
 
-    def on_page_markdown(self, markdown, page, config, files, **kwargs):
-        """
-        Replace jinja tags in markdown.
-
-        The page_markdown event is called after the page's markdown is loaded
-        from file and can be used to alter the Markdown source text.
-        The meta- data has been stripped off and is available as page.meta
-        at this point.
-
-        https://www.mkdocs.org/user-guide/plugins/#on_page_markdown
-
-        Args:
-            markdown (str): Markdown source text of page as string
-            page: mkdocs.nav.Page instance
-            config: global configuration object
-            site_navigation: global navigation object
-
-        Returns:
-            str: Markdown source text of page as string
-        """
-        if not self.config.get('enabled'):
-            return markdown
-        
-        # Exclude pages specified in config
-        excluded_pages = self.config.get("exclude", [])
-        if exclude(page.file.src_path, excluded_pages):
-            return markdown
-
-        pattern_authors_summary = re.compile(
-            r"\{\{\s*git_authors_summary\s*\}\}", flags=re.IGNORECASE
-        )
-        pattern_page_authors = re.compile(
-            r"\{\{\s*git_page_authors\s*\}\}", flags=re.IGNORECASE
-        )
-
-        if not pattern_authors_summary.search(
-            markdown
-        ) and not pattern_page_authors.search(markdown):
-            return markdown
-
-        if self._fallback:
-            markdown = pattern_authors_summary.sub("", markdown)
-            markdown = pattern_page_authors.sub("", markdown)
-            return markdown
-
+        # Replace {{ git_page_authors }}
         page_obj = self.repo().page(page.file.abs_src_path)
         page_authors = util.page_authors_summary(page_obj, self.config)
 
-        markdown = pattern_authors_summary.sub(page_authors, markdown)
-        markdown = pattern_page_authors.sub(page_authors, markdown)
-        return markdown
+        list_pattern = re.compile(
+            r"\{\{\s*git_page_authors\s*\}\}", flags=re.IGNORECASE
+        )
+        if list_pattern.search(html):
+            html = list_pattern.sub(
+                "" if self._fallback else page_authors, html
+            )
+
+        return html
 
     def on_page_context(self, context, page, config, nav, **kwargs):
         """
@@ -254,10 +216,6 @@ class GitAuthorsPlugin(BasePlugin):
         # Make available the same markdown tags in jinja context
         context["git_page_authors"] = page_authors
         context["git_site_authors"] = site_authors
-
-        # For backward compatibility, deprecate in 1.2
-        context["git_authors"] = util.page_authors(authors, path)
-        context["git_authors_summary"] = page_authors
 
         return context
 
