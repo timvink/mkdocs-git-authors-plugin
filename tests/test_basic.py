@@ -67,6 +67,26 @@ def test_basic_working(tmp_path):
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
+    assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
+
+
+def test_basic_working_macros(tmp_path):
+    """
+    combination with mkdocs-macros-plugin lead to error.
+
+    See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60    
+    """
+    result = build_docs_setup("tests/basic_setup/mkdocs_w_macros.yml", tmp_path)
+    assert result.exit_code == 0, (
+        "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    index_file = tmp_path / "index.html"
+    assert index_file.exists(), "%s does not exist" % index_file
+
+    contents = index_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
 
 
 def test_exclude_working(tmp_path):

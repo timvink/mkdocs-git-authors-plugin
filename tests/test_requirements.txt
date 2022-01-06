@@ -7,6 +7,9 @@ codecov
 click
 GitPython
 
+# other plugins
+mkdocs-macros-plugin
+
 # mkdocs
 mkdocs
 mkdocs-git-revision-date-localized-plugin
