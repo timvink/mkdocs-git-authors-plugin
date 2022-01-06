@@ -3,5 +3,5 @@ use_directory_urls: true
 
 plugins:
     - search
-    - git-authors
     - macros
+    - git-authors

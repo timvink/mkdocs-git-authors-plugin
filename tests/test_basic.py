@@ -19,6 +19,8 @@ os.mkdir(tmp_path)
 import re
 import shutil
 import os
+import pytest
+
 from click.testing import CliRunner
 from mkdocs.__main__ import build_command
 from git import Repo
@@ -54,9 +56,15 @@ def build_docs_setup(mkdocs_path, output_path):
         build_command, ["--config-file", mkdocs_path, "--site-dir", str(output_path)]
     )
 
-
-def test_basic_working(tmp_path):
-
+@pytest.mark.parametrize(
+    "mkdocs_file",
+    ["mkdocs.yml", "mkdocs_w_macros.yml", "mkdocs_w_macros2.yml", "mkdocs_complete_material.yml"],
+)
+def test_basic_working(tmp_path, mkdocs_file):
+    """
+    combination with mkdocs-macros-plugin lead to error.
+    See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60    
+    """
     result = build_docs_setup("tests/basic_setup/mkdocs.yml", tmp_path)
     assert result.exit_code == 0, (
         "'mkdocs build' command failed. Error: %s" % result.stdout
@@ -69,24 +77,6 @@ def test_basic_working(tmp_path):
     assert re.search("<span class='git-page-authors", contents)
     assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
 
-
-def test_basic_working_macros(tmp_path):
-    """
-    combination with mkdocs-macros-plugin lead to error.
-
-    See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60    
-    """
-    result = build_docs_setup("tests/basic_setup/mkdocs_w_macros.yml", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
-
-    index_file = tmp_path / "index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
-
-    contents = index_file.read_text()
-    assert re.search("<span class='git-page-authors", contents)
-    assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
 
 
 def test_exclude_working(tmp_path):
