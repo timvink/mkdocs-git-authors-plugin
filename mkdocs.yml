@@ -11,10 +11,26 @@ use_directory_urls: false
 theme:
   name: material
   custom_dir: docs/overrides
+  icon:
+      logo: material/book-open-page-variant
+      repo: fontawesome/brands/github
+  features:
+      - content.tabs.link
   palette:
-      scheme: preference
-      primary: blue
-      accent: blue
+      - media: "(prefers-color-scheme: light)"
+        scheme: default
+        toggle:
+            icon: material/toggle-switch-off-outline
+            name: Switch to dark mode
+        primary: blue
+        accent: blue
+      - media: "(prefers-color-scheme: dark)"
+        scheme: slate
+        toggle:
+            icon: material/toggle-switch
+            name: Switch to light mode
+        primary: blue
+        accent: blue
 
 # Plugins
 plugins:
