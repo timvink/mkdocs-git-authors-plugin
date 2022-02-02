@@ -149,16 +149,17 @@ class GitAuthorsPlugin(BasePlugin):
             )
 
         # Replace {{ git_page_authors }}
-        page_obj = self.repo().page(page.file.abs_src_path)
-        page_authors = util.page_authors_summary(page_obj, self.config)
+        if self._fallback:
+            page_authors = ""
+        else:
+            page_obj = self.repo().page(page.file.abs_src_path)
+            page_authors = util.page_authors_summary(page_obj, self.config)
 
         list_pattern = re.compile(
             r"\{\{\s*git_page_authors\s*\}\}", flags=re.IGNORECASE
         )
         if list_pattern.search(html):
-            html = list_pattern.sub(
-                "" if self._fallback else page_authors, html
-            )
+            html = list_pattern.sub(page_authors, html)
 
         return html
 
