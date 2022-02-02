@@ -249,6 +249,7 @@ def test_fallback(tmp_path):
         result = build_docs_setup(
             str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
         )
+        # import pdb; pdb.set_trace()
         assert result.exit_code == 0, (
             "'mkdocs build' command failed. Error: %s" % result.stdout
         )
