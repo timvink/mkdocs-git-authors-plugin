@@ -60,9 +60,13 @@ class Page(AbstractRepoObject):
         """
         if not self._sorted:
             repo = self.repo()
-            reverse = repo.config("show_line_count") or repo.config("show_contribution")
+            reverse = repo.config("show_line_count") or repo.config("show_contribution") or repo.config("sort_authors_by") == "contribution"
             self._authors = sorted(self._authors, key=repo._sort_key, reverse=reverse)
             self._sorted = True
+            # TODO - Remove authors with under a certain line percentage
+            author_threshold = repo.config("authorship_threshold_percent")
+            if author_threshold > 0 and len(self._authors) > 1:
+                self._authors = [a for a in self._authors if a.contribution()*100 > author_threshold]
         return self._authors
 
     def _process_git_blame(self):
