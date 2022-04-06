@@ -152,7 +152,7 @@ class Repo(object):
         Returns:
             comparison key for the sorted() function,
         """
-        if self.config("show_line_count") or self.config("show_contribution"):
+        if self.config("show_line_count") or self.config("show_contribution") or self.config("sort_authors_by") == "contribution":
             key = "contribution"
         else:
             key = "name"
