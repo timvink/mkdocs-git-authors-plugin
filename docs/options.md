@@ -9,6 +9,8 @@ plugins:
         show_line_count: true
         count_empty_lines: true
         fallback_to_empty: false
+        sort_authors_by: name
+        authorship_threshold_percent: 10
         exclude:
             - index.md
         enabled: true
@@ -51,6 +53,14 @@ plugins:
         - another_page.md
         - folder/*
 ```
+
+## `sort_authors_by`
+
+Defaults to `name`, can be `contribution` to sort the authors by contribution percentage without needing to show the exact percent.
+
+## `authorship_threshold_percent`
+
+Default is `0%`. This option sets the minimum contribution percentage for an author to be included in the list of authors. This can be useful when you have a large number of single line authors who contributed minor spelling fixes, and not major content. This option does not apply if there is only one author.
 
 ## `enabled`
 
