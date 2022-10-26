@@ -29,6 +29,7 @@ import git as gitpython
 DEFAULT_CONFIG = {
     "show_contribution": False,
     "show_line_count": False,
+    "show_email_address": True,
     "count_empty_lines": True,
     "sort_authors_by_name": True,
     "sort_reverse": False,

@@ -7,6 +7,7 @@ plugins:
     - git-authors:
         show_contribution: true
         show_line_count: true
+        show_email_address: true
         count_empty_lines: true
         fallback_to_empty: false
         exclude:
@@ -28,6 +29,12 @@ Example output:
 ## `show_line_count`
 
 If this option is set to `true` (default: `false`) the number of lines per author is shown.
+
+## `show_email_address`
+
+If this option is set to `true` (default: `true`), then authors' names
+are rendered as a `mailto:` link pointing to their email address. If
+set to `false`, they are shown in plain text.
 
 ## `count_empty_lines`
 

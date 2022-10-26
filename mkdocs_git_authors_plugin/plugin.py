@@ -15,6 +15,7 @@ class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ("show_contribution", config_options.Type(bool, default=False)),
         ("show_line_count", config_options.Type(bool, default=False)),
+        ("show_email_address", config_options.Type(bool, default=True)),
         ("count_empty_lines", config_options.Type(bool, default=True)),
         ("fallback_to_empty", config_options.Type(bool, default=False)),
         ("exclude", config_options.Type(list, default=[])),
