@@ -105,7 +105,7 @@ def site_authors_summary(authors, config: dict):
         lines = ": %s lines" % author.lines() if show_line_count else ""
         author_name = ""
         if show_email_address:
-            author_name = "<a href='mailto:%s'>%s</a>" % (author.email(), author.name())
+            author_name = '<a href="mailto:%s">%s</a>' % (author.email(), author.name())
         else:
             author_name = author.name()
         result += """
