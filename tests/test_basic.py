@@ -75,7 +75,7 @@ def test_basic_working(tmp_path, mkdocs_file):
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
-    assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
+    assert re.search('<a href="mailto:vinktim@gmail.com">Tim Vink</a>', contents)
 
 
 
