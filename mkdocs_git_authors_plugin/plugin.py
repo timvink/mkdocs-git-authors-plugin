@@ -52,6 +52,9 @@ class GitAuthorsPlugin(BasePlugin):
         if not self.config.get('enabled'):
             return config
         
+        assert self.config['authorship_threshold_percent'] >= 0
+        assert self.config['authorship_threshold_percent'] <= 100
+
         try:
             self._repo = Repo()
             self._fallback = False
