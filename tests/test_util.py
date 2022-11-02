@@ -33,6 +33,8 @@ DEFAULT_CONFIG = {
     "count_empty_lines": True,
     "sort_authors_by_name": True,
     "sort_reverse": False,
+    "sort_authors_by": "name",
+    "authorship_threshold_percent": 0,
 }
 
 #### Helpers ####
@@ -331,7 +333,6 @@ def test_mkdocs_in_git_subdir(tmp_path):
 
     os.chdir(cwd)
 
-
 def test_summarize_authors():
     """
     Test summary functions. 
@@ -365,3 +366,5 @@ def test_summarize_authors():
     # # Now contribution is displayed
     # summary = util.Util().summarize(authors, config)
     # assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%), <a href='mailto:efg@efg.org'>Tom</a> (35.77%)</span>"
+
+# TODO: test authors threshold with commits

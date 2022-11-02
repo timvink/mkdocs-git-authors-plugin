@@ -7,3 +7,4 @@ plugins:
         count_empty_lines: false
         show_contribution: true
         show_line_count: true
+        authorship_threshold_percent: 50

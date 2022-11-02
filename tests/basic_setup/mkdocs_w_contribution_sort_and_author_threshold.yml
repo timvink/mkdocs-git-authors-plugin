@@ -4,6 +4,5 @@ use_directory_urls: true
 plugins:
     - search
     - git-authors:
-        count_empty_lines: false
-        show_contribution: true
-        show_line_count: true
+          sort_authors_by: "contribution"
+          authorship_threshold_percent: 50

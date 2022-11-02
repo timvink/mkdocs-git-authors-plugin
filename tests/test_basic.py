@@ -27,6 +27,20 @@ from git import Repo
 import git as gitpython
 from contextlib import contextmanager
 
+SITES_THAT_SHOULD_SUCCEED = [
+    "mkdocs.yml",
+    "mkdocs_complete_material_disabled.yml",
+    "mkdocs_complete_material.yml",
+    "mkdocs_exclude.yml",
+    "mkdocs_fallback.yml",
+    "mkdocs_genfiles.yml",
+    "mkdocs_no_email.yml",
+    "mkdocs_w_contribution_and_author_threshold.yml",
+    "mkdocs_w_contribution_sort_and_author_threshold.yml",
+    "mkdocs_w_contribution.yml",
+    "mkdocs_w_macros.yml",
+    "mkdocs_w_macros2.yml",
+]
 
 @contextmanager
 def working_directory(path):
@@ -58,7 +72,7 @@ def build_docs_setup(mkdocs_path, output_path):
 
 @pytest.mark.parametrize(
     "mkdocs_file",
-    ["mkdocs.yml", "mkdocs_w_macros.yml", "mkdocs_w_macros2.yml", "mkdocs_complete_material.yml"],
+    SITES_THAT_SHOULD_SUCCEED,
 )
 def test_basic_working(tmp_path, mkdocs_file):
     """

@@ -3,6 +3,4 @@ use_directory_urls: true
 
 plugins:
     - search
-    - git-authors:
-          sort_authors_by: "contribution"
-          authorship_threshold_percent: 50
+    - git-authors
