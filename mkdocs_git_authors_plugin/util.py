@@ -50,15 +50,20 @@ def page_authors_summary(page, config: dict):
 
     authors = page.get_authors()
     authors_summary = []
+    author_name = ""
+
     for author in authors:
         contrib = (
             " (%s)" % author.contribution(page.path(), str)
             if page.repo().config("show_contribution") and len(page.get_authors()) > 1
             else ""
         )
-        authors_summary.append(
-            "<a href='mailto:%s'>%s</a>%s" % (author.email(), author.name(), contrib)
-        )
+        if page.repo().config("show_email_address"):
+            author_name = "<a href='mailto:%s'>%s</a>" % (author.email(), author.name())
+        else:
+            author_name = author.name()
+        authors_summary.append("%s%s" % (author_name, contrib))
+
     authors_summary = ", ".join(authors_summary)
     return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary
 
@@ -87,6 +92,7 @@ def site_authors_summary(authors, config: dict):
     """
     show_contribution = config["show_contribution"]
     show_line_count = config["show_line_count"]
+    show_email_address = config["show_email_address"]
 
     result = """
 <span class='git-authors'>
@@ -97,11 +103,15 @@ def site_authors_summary(authors, config: dict):
             " (%s)" % author.contribution(None, str) if show_contribution else ""
         )
         lines = ": %s lines" % author.lines() if show_line_count else ""
+        author_name = ""
+        if show_email_address:
+            author_name = '<a href="mailto:%s">%s</a>' % (author.email(), author.name())
+        else:
+            author_name = author.name()
         result += """
-    <li><a href='mailto:{author_email}'>{author_name}</a>{lines}{contribution}</li>
+    <li>{author_name}{lines}{contribution}</li>
     """.format(
-            author_email=author.email(),
-            author_name=author.name(),
+            author_name=author_name,
             lines=lines,
             contribution=contribution,
         )

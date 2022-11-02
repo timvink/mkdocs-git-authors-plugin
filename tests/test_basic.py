@@ -75,7 +75,23 @@ def test_basic_working(tmp_path, mkdocs_file):
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
-    assert re.search("<li><a href='mailto:vinktim@gmail.com'>Tim Vink</a></li>", contents)
+    assert re.search('<a href="mailto:vinktim@gmail.com">Tim Vink</a>', contents)
+
+
+
+def test_no_email(tmp_path):
+
+    result = build_docs_setup("tests/basic_setup/mkdocs_no_email.yml", tmp_path)
+    assert result.exit_code == 0, (
+        "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    index_file = tmp_path / "index.html"
+    assert index_file.exists(), "%s does not exist" % index_file
+
+    contents = index_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    assert re.search("<li>Tim Vink</li>", contents)
 
 
 
