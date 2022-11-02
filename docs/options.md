@@ -67,7 +67,7 @@ Defaults to `name`, can be `contribution` to sort the authors by contribution pe
 
 ## `authorship_threshold_percent`
 
-Default is `0%`. This option sets the minimum contribution percentage for an author to be included in the list of authors. This can be useful when you have a large number of single line authors who contributed minor spelling fixes, and not major content. This option does not apply if there is only one author.
+Default is `0`, allowed values between `0` and `100`. This option sets the minimum contribution percentage for an author to be included in the list of authors. This can be useful when you have a large number of single line authors who contributed minor spelling fixes, and not major content. This option does not apply if there is only one author.
 
 ## `enabled`
 
