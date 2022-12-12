@@ -39,11 +39,11 @@ def commit_datetime_string(dt: datetime):
 def page_authors_summary(page, config: dict):
     """
     A summary of the authors' contributions on a page level
-    
+
     Args:
         page (Page): Page class
         config (dict): plugin's config dict
-    
+
     Returns:
         str: HTML text with authors
     """
@@ -124,7 +124,7 @@ def site_authors_summary(authors, config: dict):
 
 def page_authors(authors, path):
     """List of dicts with info on page authors
-    # TODO: rename to something more representative like 'authors_to_dict()' 
+    # TODO: rename to something more representative like 'authors_to_dict()'
     Args:
         authors (list): list with Author classes
         path (str): path to page

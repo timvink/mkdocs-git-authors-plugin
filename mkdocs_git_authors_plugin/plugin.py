@@ -11,6 +11,7 @@ from mkdocs_git_authors_plugin.exclude import exclude
 
 logger = logging.getLogger("mkdocs.plugins")
 
+
 class GitAuthorsPlugin(BasePlugin):
     config_scheme = (
         ("show_contribution", config_options.Type(bool, default=False)),
@@ -49,17 +50,17 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             (updated) configuration object
         """
-        if not self.config.get('enabled'):
+        if not self.config.get("enabled"):
             return config
-        
-        assert self.config['authorship_threshold_percent'] >= 0
-        assert self.config['authorship_threshold_percent'] <= 100
+
+        assert self.config["authorship_threshold_percent"] >= 0
+        assert self.config["authorship_threshold_percent"] <= 100
 
         try:
             self._repo = Repo()
             self._fallback = False
             self.repo().set_config(self.config)
-            raise_ci_warnings(path = self.repo()._root)
+            raise_ci_warnings(path=self.repo()._root)
         except GitCommandError:
             if self.config["fallback_to_empty"]:
                 self._fallback = True
@@ -97,18 +98,18 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             global files collection
         """
-        if not self.config.get('enabled'):
+        if not self.config.get("enabled"):
             return
         if self._fallback:
             return
-        
+
         for file in files:
 
             # Exclude pages specified in config
             excluded_pages = self.config.get("exclude", [])
             if exclude(file.src_path, excluded_pages):
                 continue
-            
+
             path = file.abs_src_path
             if path.endswith(".md"):
                 _ = self.repo().page(path)
@@ -136,9 +137,9 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
-        if not self.config.get('enabled'):
+        if not self.config.get("enabled"):
             return html
-        
+
         # Exclude pages specified in config
         excluded_pages = self.config.get("exclude", [])
         if exclude(page.file.src_path, excluded_pages):
@@ -150,8 +151,10 @@ class GitAuthorsPlugin(BasePlugin):
         )
         if list_pattern.search(html):
             html = list_pattern.sub(
-                "" if self._fallback else
-                util.site_authors_summary(self.repo().get_authors(), self.config), html
+                ""
+                if self._fallback
+                else util.site_authors_summary(self.repo().get_authors(), self.config),
+                html,
             )
 
         # Replace {{ git_page_authors }}
@@ -191,7 +194,7 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             dict: template context variables
         """
-        if not self.config.get('enabled'):
+        if not self.config.get("enabled"):
             return context
         if self._fallback:
             return context

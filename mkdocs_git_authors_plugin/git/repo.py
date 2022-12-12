@@ -51,7 +51,7 @@ class Repo(object):
         """
         Sorted list of authors in the repository.
 
-        Default sort order is by ascending names, 
+        Default sort order is by ascending names,
         and decending when contribution or line count is shown
 
         Args:
@@ -152,7 +152,11 @@ class Repo(object):
         Returns:
             comparison key for the sorted() function,
         """
-        if self.config("show_line_count") or self.config("show_contribution") or self.config("sort_authors_by") == "contribution":
+        if (
+            self.config("show_line_count")
+            or self.config("show_contribution")
+            or self.config("sort_authors_by") == "contribution"
+        ):
             key = "contribution"
         else:
             key = "name"

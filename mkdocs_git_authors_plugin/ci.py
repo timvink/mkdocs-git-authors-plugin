@@ -12,6 +12,7 @@ import logging
 
 from mkdocs_git_authors_plugin.git.command import GitCommand
 
+
 @contextmanager
 def working_directory(path):
     """
@@ -46,7 +47,6 @@ def raise_ci_warnings(path: str) -> None:
             return None
 
         n_commits = commit_count()
-
 
     # Gitlab Runners
     if os.getenv("GITLAB_CI") is not None and n_commits < 50:
@@ -109,9 +109,9 @@ def commit_count() -> int:
     Returns:
         count (int): Number of commits.
     """
-    gc = GitCommand('rev-list',['--count','HEAD'])
+    gc = GitCommand("rev-list", ["--count", "HEAD"])
     gc.run()
-    n_commits = int(gc._stdout[0]) # type: ignore
+    n_commits = int(gc._stdout[0])  # type: ignore
     assert n_commits >= 0
     return n_commits
 
