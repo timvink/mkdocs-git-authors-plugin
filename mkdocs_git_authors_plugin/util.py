@@ -64,8 +64,8 @@ def page_authors_summary(page, config: dict):
             author_name = author.name()
         authors_summary.append("%s%s" % (author_name, contrib))
 
-    authors_summary = ", ".join(authors_summary)
-    return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary
+    authors_summary_str = ", ".join(authors_summary)
+    return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary_str
 
 
 def site_authors_summary(authors, config: dict):

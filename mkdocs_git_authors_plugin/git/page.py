@@ -4,6 +4,8 @@ import logging
 from .repo import Repo, AbstractRepoObject
 from .command import GitCommand, GitCommandError
 
+from typing import List
+
 logger = logging.getLogger("mkdocs.plugins")
 
 
@@ -28,7 +30,7 @@ class Page(AbstractRepoObject):
         self._path = path
         self._sorted = False
         self._total_lines = 0
-        self._authors = []
+        self._authors: List[dict] = list()
         try:
             self._process_git_blame()
         except GitCommandError:

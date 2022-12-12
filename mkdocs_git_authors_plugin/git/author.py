@@ -2,6 +2,8 @@ from .repo import AbstractRepoObject, Repo
 from .page import Page
 from .commit import Commit
 
+from typing import Dict
+
 
 class Author(AbstractRepoObject):
     """
@@ -20,7 +22,7 @@ class Author(AbstractRepoObject):
         super().__init__(repo)
         self._name = name
         self._email = email
-        self._pages = {}
+        self._pages: Dict[str, dict] = dict()
 
     def add_lines(self, page: Page, commit: Commit, lines: int = 1):
         """
