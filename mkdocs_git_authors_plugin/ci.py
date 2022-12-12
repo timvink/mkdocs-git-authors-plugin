@@ -7,10 +7,31 @@ Taken from https://github.com/timvink/mkdocs-git-revision-date-localized-plugin/
 """
 
 import os
+from contextlib import contextmanager
 import logging
 
-from pathlib import Path
 from mkdocs_git_authors_plugin.git.command import GitCommand
+
+@contextmanager
+def working_directory(path):
+    """
+    Temporarily change working directory.
+    A context manager which changes the working directory to the given
+    path, and then changes it back to its previous value on exit.
+    Usage:
+    ```python
+    # Do something in original directory
+    with working_directory('/my/new/path'):
+        # Do something in new directory
+    # Back to old directory
+    ```
+    """
+    prev_cwd = os.getcwd()
+    os.chdir(str(path))
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)
 
 
 def raise_ci_warnings(path: str) -> None:
@@ -20,7 +41,7 @@ def raise_ci_warnings(path: str) -> None:
     Args:
         path (str): path to the root of the git repo
     """
-    with Path(path):
+    with working_directory(path):
         if not is_shallow_clone():
             return None
 
@@ -90,7 +111,7 @@ def commit_count() -> int:
     """
     gc = GitCommand('rev-list',['--count','HEAD'])
     gc.run()
-    n_commits = int(gc._stdout[0])
+    n_commits = int(gc._stdout[0]) # type: ignore
     assert n_commits >= 0
     return n_commits
 
