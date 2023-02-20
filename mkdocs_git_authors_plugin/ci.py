@@ -9,12 +9,13 @@ Taken from https://github.com/timvink/mkdocs-git-revision-date-localized-plugin/
 import os
 from contextlib import contextmanager
 import logging
-
+from pathlib import Path
+from typing import Union
 from mkdocs_git_authors_plugin.git.command import GitCommand
 
 
 @contextmanager
-def working_directory(path):
+def working_directory(path: Union[str, Path]):
     """
     Temporarily change working directory.
     A context manager which changes the working directory to the given
@@ -26,13 +27,13 @@ def working_directory(path):
         # Do something in new directory
     # Back to old directory
     ```
-    """
-    prev_cwd = os.getcwd()
-    os.chdir(str(path))
+    """    
+    origin = Path().absolute()
     try:
+        os.chdir(path)
         yield
     finally:
-        os.chdir(prev_cwd)
+        os.chdir(origin)
 
 
 def raise_ci_warnings(path: str) -> None:
