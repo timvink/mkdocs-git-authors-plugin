@@ -23,6 +23,7 @@ class GitAuthorsPlugin(BasePlugin):
         ("enabled", config_options.Type(bool, default=True)),
         ("sort_authors_by", config_options.Type(str, default="name")),
         ("authorship_threshold_percent", config_options.Type(int, default=0)),
+        ("strict", config_options.Type(bool, default=True)),
         # ('sort_authors_by_name', config_options.Type(bool, default=True)),
         # ('sort_reverse', config_options.Type(bool, default=False))
     )
