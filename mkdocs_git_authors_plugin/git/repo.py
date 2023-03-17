@@ -130,7 +130,7 @@ class Repo(object):
         if not self._pages.get(path):
             from .page import Page
 
-            self._pages[path] = Page(self, path)
+            self._pages[path] = Page(self, path, self.config("strict"))
         return self._pages[path]
 
     def set_config(self, plugin_config):
