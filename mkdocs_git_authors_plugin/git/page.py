@@ -18,7 +18,7 @@ class Page(AbstractRepoObject):
     modified by that commit.
     """
 
-    def __init__(self, repo: Repo, path: Path):
+    def __init__(self, repo: Repo, path: Path, strict: bool):
         """
         Instantiate a Page object
 
@@ -31,13 +31,21 @@ class Page(AbstractRepoObject):
         self._sorted = False
         self._total_lines = 0
         self._authors: List[dict] = list()
+        self._strict = strict
+        
         try:
             self._process_git_blame()
         except GitCommandError:
-            logger.warning(
-                "[git-authors-plugin] %s has not been committed yet. Lines are not counted"
-                % path
-            )
+            if self._strict:
+                logger.warning(
+                    "[git-authors-plugin] %s has not been committed yet. Lines are not counted"
+                    % path
+                )
+            else:
+                logger.info(
+                    "[git-authors-plugin] %s has not been committed yet. Lines are not counted"
+                    % path
+                )
 
     def add_total_lines(self, cnt: int = 1):
         """
