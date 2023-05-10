@@ -59,7 +59,9 @@ def page_authors_summary(page, config: dict):
             else ""
         )
         if page.repo().config("show_email_address"):
-            author_name = "<a href='mailto:%s'>%s</a>" % (author.email(), author.name())
+            href = page.repo().config("href").format(email=author.email(),
+                                                     name=author.name())
+            author_name = "<a href='%s'>%s</a>" % (href, author.name())
         else:
             author_name = author.name()
         authors_summary.append("%s%s" % (author_name, contrib))
@@ -105,7 +107,9 @@ def site_authors_summary(authors, config: dict):
         lines = ": %s lines" % author.lines() if show_line_count else ""
         author_name = ""
         if show_email_address:
-            author_name = '<a href="mailto:%s">%s</a>' % (author.email(), author.name())
+            href = config["href"].format(email=author.email(),
+                                         name=author.name())
+            author_name = '<a href="%s">%s</a>' % (href, author.name())
         else:
             author_name = author.name()
         result += """

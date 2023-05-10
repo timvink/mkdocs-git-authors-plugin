@@ -8,6 +8,7 @@ plugins:
         show_contribution: true
         show_line_count: true
         show_email_address: true
+        href: "mailto:{email}"
         count_empty_lines: true
         fallback_to_empty: false
         sort_authors_by: name
@@ -37,8 +38,14 @@ If this option is set to `true` (default: `false`) the number of lines per autho
 ## `show_email_address`
 
 If this option is set to `true` (default: `true`), then authors' names
-are rendered as a `mailto:` link pointing to their email address. If
+are rendered as (by default) a `mailto:{email}` link pointing to their email address. If
 set to `false`, they are shown in plain text.
+
+## `href`
+
+Given `show_email_adress` is set to `true`, you can customize the rendered link with the option `href`
+(default: `mailto:{email}`) using the f-string format (available `{email}` and `{name}`).
+This is useful to link to IM tools i.e. `href: "https://teams.microsoft.com/l/chat/0/0?users={email}"`.
 
 ## `count_empty_lines`
 

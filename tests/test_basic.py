@@ -29,6 +29,7 @@ from contextlib import contextmanager
 
 SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs.yml",
+    "mkdocs_custom_href.yml",
     "mkdocs_complete_material_disabled.yml",
     "mkdocs_complete_material.yml",
     "mkdocs_exclude.yml",
@@ -90,6 +91,27 @@ def test_basic_working(tmp_path, mkdocs_file):
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
     assert re.search('<a href="mailto:vinktim@gmail.com">Tim Vink</a>', contents)
+
+
+def test_custom_href(tmp_path):
+    """
+    """
+    result = build_docs_setup("tests/basic_setup/mkdocs_custom_href.yml", tmp_path)
+    assert result.exit_code == 0, (
+            "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    index_file = tmp_path / "index.html"
+    assert index_file.exists(), "%s does not exist" % index_file
+
+    contents = index_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    # Checking Page Authors
+    assert re.search((r"<p>Page authors:.*<a href='https://teams.microsoft.com/l/chat/0/0\?"
+                      "users=vinktim@gmail.com'>Tim Vink</a>.*<\/p>"), contents)
+    # Checking Site Authors
+    assert re.search(('<li><a href="https://teams.microsoft.com/l/chat/0/0\?'
+                      'users=vinktim@gmail.com">Tim Vink</a><\/li>'), contents)
 
 
 
