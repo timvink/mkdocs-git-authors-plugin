@@ -15,6 +15,7 @@ plugins:
         exclude:
             - index.md
         enabled: true
+        strict: true
 ```
 
 ## `show_contribution`
@@ -86,3 +87,18 @@ Which enables you do disable the plugin locally using:
 export ENABLED_GIT_AUTHORS=false
 mkdocs serve
 ```
+
+## `strict`
+
+Default is `true`. When enabled, the logs will show warnings when something is wrong but a fallback has been used. When disabled, the logger will use the INFO level instead.
+
+- If you want to raise an error when a warning is logged, use [mkdocs strict mode](https://www.mkdocs.org/user-guide/configuration/#strict) (with `mkdocs build --strict`).
+- If you are already using [mkdocs strict mode](https://www.mkdocs.org/user-guide/configuration/#strict), but do not care about these warnings, you can set `strict: false` to ensure no errors are raised.
+
+=== ":octicons-file-code-16: mkdocs.yml"
+
+  ```yaml
+  plugins:
+    - git-authors:
+        strict: true
+  ```
