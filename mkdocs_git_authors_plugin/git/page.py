@@ -82,7 +82,7 @@ class Page(AbstractRepoObject):
                 self._authors = [
                     a
                     for a in self._authors
-                    if a.contribution() * 100 > author_threshold
+                    if a.contribution(self._path) * 100 > author_threshold
                 ]
         return self._authors
 
