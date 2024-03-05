@@ -15,6 +15,7 @@ plugins:
         exclude:
             - index.md
         enabled: true
+        enabled_on_serve: true
         strict: true
 ```
 
@@ -87,6 +88,10 @@ Which enables you do disable the plugin locally using:
 export ENABLED_GIT_AUTHORS=false
 mkdocs serve
 ```
+
+## `enabled_on_serve`
+
+Default is `true`. Allows you to deactivate this plugin when `mkdocs` is called with the command `serve`. A possible use case is local development where you might want faster build times and/or do not have git available.
 
 ## `strict`
 
