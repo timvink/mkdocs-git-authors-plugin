@@ -21,6 +21,7 @@ class GitAuthorsPlugin(BasePlugin):
         ("fallback_to_empty", config_options.Type(bool, default=False)),
         ("exclude", config_options.Type(list, default=[])),
         ("enabled", config_options.Type(bool, default=True)),
+        ("enabled_on_serve", config_options.Type(bool, default=True)),
         ("sort_authors_by", config_options.Type(str, default="name")),
         ("authorship_threshold_percent", config_options.Type(int, default=0)),
         ("strict", config_options.Type(bool, default=True)),
@@ -31,6 +32,10 @@ class GitAuthorsPlugin(BasePlugin):
     def __init__(self):
         self._repo = None
         self._fallback = False
+        self.is_serve = False
+
+    def on_startup(self, command, dirty):
+        self.is_serve = command == "serve"
 
     def on_config(self, config, **kwargs):
         """
@@ -51,7 +56,8 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             (updated) configuration object
         """
-        if not self.config.get("enabled"):
+
+        if not self._is_enabled():
             return config
 
         assert self.config["authorship_threshold_percent"] >= 0
@@ -99,7 +105,7 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             global files collection
         """
-        if not self.config.get("enabled"):
+        if not self._is_enabled():
             return
         if self._fallback:
             return
@@ -138,7 +144,7 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             str: HTML text of page as string
         """
-        if not self.config.get("enabled"):
+        if not self._is_enabled():
             return html
 
         # Exclude pages specified in config
@@ -195,7 +201,7 @@ class GitAuthorsPlugin(BasePlugin):
         Returns:
             dict: template context variables
         """
-        if not self.config.get("enabled"):
+        if not self._is_enabled():
             return context
         if self._fallback:
             return context
@@ -235,3 +241,20 @@ class GitAuthorsPlugin(BasePlugin):
         Reference to the Repo object of the current project.
         """
         return self._repo
+
+    def _is_enabled(self):
+        """
+        Consider this plugin to be disabled in the following two conditions:
+        * config.enabled is false
+        * config.enabled is true and
+          config.enabled_on_serve is false and
+          executed via `serve` command
+        """
+        is_enabled = True
+
+        if not self.config.get("enabled"):
+            is_enabled = False
+        elif self.is_serve and not self.config.get("enabled_on_serve"):
+            is_enabled = False
+
+        return is_enabled
