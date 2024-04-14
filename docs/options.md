@@ -13,6 +13,9 @@ plugins:
         fallback_to_empty: false
         sort_authors_by: name
         authorship_threshold_percent: 10
+        ignore_authors:
+            - john@doe.com
+        ignore_commits: .git-blame-ignore-revs
         exclude:
             - index.md
         enabled: true
@@ -58,6 +61,14 @@ If this option is set to `true` (default: `false`) the plugin will work even out
 ## `exclude`
 
 Default is empty. Specify a list of page source paths (one per line) that should not have author(s) included (excluded from processing by this plugin). This can be useful for example to remove the authors from the front page. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of full source paths. To exclude `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `exclude:` with `- subfolder/page.md`. Some examples:
+
+## `ignore_authors`
+
+Default is empty. Specifies a list of emails for authors whose contributions should be ignored by this plugin.
+
+## `ignore_commits`
+
+Default is empty. Specifies a file containing a list of commit hashes (one per line) that should be ignored.  Changes made in these commits will be attributed to the previous commit that changed the line.
 
 ```yaml
 # mkdocs.yml

@@ -35,6 +35,7 @@ DEFAULT_CONFIG = {
     "sort_reverse": False,
     "sort_authors_by": "name",
     "authorship_threshold_percent": 0,
+    "ignore_authors": [],
 }
 
 #### Helpers ####
@@ -272,6 +273,148 @@ def test_retrieve_authors(tmp_path):
             "contribution_all_pages": "66.67%",
         },
     ]
+    os.chdir(cwd)
+
+
+def test_retrieve_authors_ignoring_commits(tmp_path):
+    """
+    Builds a fake git project with some commits.
+
+    Args:
+        tmp_path (PosixPath): Directory of a tempdir
+    """
+    cwd = os.getcwd()
+    os.chdir(str(tmp_path))
+
+    # Create file
+    file_name = str(tmp_path / "new-file")
+    with open(file_name, "w") as the_file:
+        the_file.write("line 1\n")
+        the_file.write("line 2\n")
+
+    # Create git repo and commit file
+    r = gitpython.Repo.init(tmp_path)
+    r.index.add([file_name])
+    author = gitpython.Actor("Tim", "abc@abc.com")
+    r.index.commit("initial commit", author=author)
+
+    # Update the file
+    with open(file_name, "w") as the_file:
+        the_file.write("line 1.1\n")
+        the_file.write("line 2.1\n")
+    r.index.add([file_name])
+    author = gitpython.Actor("John", "john@abc.com")
+    commit = r.index.commit("second commit", author=author)
+
+    repo_instance = repo.Repo()
+    repo_instance.set_config(DEFAULT_CONFIG)
+    repo_instance.page(file_name)
+    authors = repo_instance.get_authors()
+    authors = util.page_authors(authors, file_name)
+    authors[0]["last_datetime"] = None
+
+    assert authors == [
+        {
+            "name": "John",
+            "email": "john@abc.com",
+            "last_datetime": None,
+            "lines": 2,
+            "lines_all_pages": 2,
+            "contribution": "100.0%",
+            "contribution_all_pages": "100.0%",
+        }
+    ]
+
+    # Get the authors while ignoring the last commit
+    ignored_commits_files = str(tmp_path / "ignored_commits.txt")
+    with open(ignored_commits_files, "w") as the_file:
+        the_file.write(commit.hexsha + "\n")
+    repo_instance = repo.Repo()
+    config = DEFAULT_CONFIG.copy()
+    config['ignore_commits'] = ignored_commits_files
+    repo_instance.set_config(config)
+    repo_instance.page(file_name)
+    authors = repo_instance.get_authors()
+    authors = util.page_authors(authors, file_name)
+    authors[0]["last_datetime"] = None
+
+    assert authors == [
+        {
+            "name": "Tim",
+            "email": "abc@abc.com",
+            "last_datetime": None,
+            "lines": 2,
+            "lines_all_pages": 2,
+            "contribution": "100.0%",
+            "contribution_all_pages": "100.0%",
+        },
+    ]
+
+    os.chdir(cwd)
+
+
+def test_retrieve_authors_ignoring_emails(tmp_path):
+    """
+    Builds a fake git project with some commits.
+
+    Args:
+        tmp_path (PosixPath): Directory of a tempdir
+    """
+    cwd = os.getcwd()
+    os.chdir(str(tmp_path))
+
+    # Create file
+    file_name = str(tmp_path / "new-file")
+    with open(file_name, "w") as the_file:
+        the_file.write("line 1\n")
+        the_file.write("line 2\n")
+
+    # Create git repo and commit file
+    r = gitpython.Repo.init(tmp_path)
+    r.index.add([file_name])
+    author = gitpython.Actor("Tim", "abc@abc.com")
+    r.index.commit("initial commit", author=author)
+
+    # Add more content
+    with open(file_name, "a+") as the_file:
+        the_file.write("line 3\n")
+        the_file.write("line 4\n")
+    r.index.add([file_name])
+    author = gitpython.Actor("John", "john@abc.com")
+    r.index.commit("second commit", author=author)
+
+    # Get the authors while ignoring john@abc.com user
+    repo_instance = repo.Repo()
+    config = DEFAULT_CONFIG.copy()
+    config['ignore_authors'] = ['john@abc.com']
+    repo_instance.set_config(config)
+    repo_instance.page(file_name)
+    authors = repo_instance.get_authors()
+    authors = util.page_authors(authors, file_name)
+    authors[0]["last_datetime"] = None
+    authors[1]["last_datetime"] = None
+
+    assert authors == [
+        {
+            "contribution": "0.0%",
+            "contribution_all_pages": "0.0%",
+            "email": "john@abc.com",
+            "last_datetime": None,
+            "lines": 0,
+            "lines_all_pages": 0,
+            "name": "John"
+        },
+        {
+            "name": "Tim",
+            "email": "abc@abc.com",
+            "last_datetime": None,
+            "lines": 2,
+            "lines_all_pages": 2,
+            "contribution": "100.0%",
+            "contribution_all_pages": "100.0%",
+        },
+    ]
+
     os.chdir(cwd)
 
 
