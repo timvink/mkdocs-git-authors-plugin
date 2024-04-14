@@ -146,7 +146,13 @@ class Page(AbstractRepoObject):
 
         re_sha = re.compile(r"^\w{40}")
 
-        cmd = GitCommand("blame", ["--porcelain", str(self._path)])
+        args = []
+        if self.repo().config("ignore_commits"):
+            args.append("--ignore-revs-file")
+            args.append(self.repo().config("ignore_commits"))
+        args.append("--porcelain")
+        args.append(str(self._path))
+        cmd = GitCommand("blame", args)
         cmd.run()
 
         lines = cmd.stdout()
@@ -155,6 +161,7 @@ class Page(AbstractRepoObject):
         if len(lines) == 0:
             raise GitCommandError
 
+        ignore_authors = self.repo().config("ignore_authors")
         commit_data = {}
         for line in lines:
             key = line.split(" ")[0]
@@ -183,7 +190,7 @@ class Page(AbstractRepoObject):
                     author_tz=commit_data.get("author-tz"),
                     summary=commit_data.get("summary"),
                 )
-                if len(line) > 1 or self.repo().config("count_empty_lines"):
+                if commit.author().email() not in ignore_authors and (len(line) > 1 or self.repo().config("count_empty_lines")):
                     author = commit.author()
                     if author not in self._authors:
                         self._authors.append(author)

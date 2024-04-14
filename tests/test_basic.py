@@ -146,6 +146,23 @@ def test_exclude_working(tmp_path):
 
 
 
+def test_ignore_authors_working(tmp_path):
+
+    result = build_docs_setup("tests/basic_setup/mkdocs_ignore_authors.yml", tmp_path)
+    assert result.exit_code == 0, (
+            "'mkdocs build' command failed. Error: %s" % result.stdout
+    )
+
+    page_file = tmp_path / "page_with_tag/index.html"
+    assert page_file.exists(), "%s does not exist" % page_file
+
+    contents = page_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    assert re.search("<a href='mailto:vinktim@gmail.com'>Tim Vink</a>", contents)
+    assert not re.search("Julien", contents)
+
+
+
 def test_exclude_working_with_genfiles(tmp_path):
     """
     A warning for uncommited files should not show up

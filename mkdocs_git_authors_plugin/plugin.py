@@ -21,6 +21,8 @@ class GitAuthorsPlugin(BasePlugin):
         ("count_empty_lines", config_options.Type(bool, default=True)),
         ("fallback_to_empty", config_options.Type(bool, default=False)),
         ("exclude", config_options.Type(list, default=[])),
+        ("ignore_commits", config_options.Type(str, default=None)),
+        ("ignore_authors", config_options.Type(list, default=[])),
         ("enabled", config_options.Type(bool, default=True)),
         ("enabled_on_serve", config_options.Type(bool, default=True)),
         ("sort_authors_by", config_options.Type(str, default="name")),
