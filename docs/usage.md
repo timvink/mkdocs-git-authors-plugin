@@ -28,7 +28,9 @@ Which renders as:
 
 ### mkdocs-material theme
 
-If you use the [mkdocs-material](https://github.com/squidfunk/mkdocs-material) theme you can implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-blocks):
+The [mkdocs-material](https://github.com/squidfunk/mkdocs-material) theme has [built-in integration](https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/#document-authors) for git-authors starting from version 9.5.0.
+
+If you use mkdocs-material theme version lower than 9.5.0 you can implement git-authors by [overriding a template block](https://squidfunk.github.io/mkdocs-material/customization/#overriding-blocks):
 
 1) Create a new file `main.html` in `docs/overrides`:
 
