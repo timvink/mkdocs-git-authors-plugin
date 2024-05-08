@@ -406,6 +406,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ignore_authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      ignore_authors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore_commits" class="md-nav__link">
+    <span class="md-ellipsis">
+      ignore_commits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sort_authors_by" class="md-nav__link">
     <span class="md-ellipsis">
       sort_authors_by
@@ -588,6 +606,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ignore_authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      ignore_authors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore_commits" class="md-nav__link">
+    <span class="md-ellipsis">
+      ignore_commits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sort_authors_by" class="md-nav__link">
     <span class="md-ellipsis">
       sort_authors_by
@@ -663,6 +699,9 @@
 <span class="w">        </span><span class="nt">fallback_to_empty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">        </span><span class="nt">sort_authors_by</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name</span>
 <span class="w">        </span><span class="nt">authorship_threshold_percent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">ignore_authors</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">john@doe.com</span>
+<span class="w">        </span><span class="nt">ignore_commits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.git-blame-ignore-revs</span>
 <span class="w">        </span><span class="nt">exclude</span><span class="p">:</span>
 <span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
 <span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -694,6 +733,10 @@ This is useful to link to IM tools i.e. <code>href: "https://teams.microsoft.com
 <p>If this option is set to <code>true</code> (default: <code>false</code>) the plugin will work even outside of a proper Git environment, prompting a warning when it's the case, and resulting in empty author list.</p>
 <h2 id="exclude"><code>exclude</code></h2>
 <p>Default is empty. Specify a list of page source paths (one per line) that should not have author(s) included (excluded from processing by this plugin). This can be useful for example to remove the authors from the front page. The source path of a page is relative to your <code>docs/</code> folder. You can also use <a href="https://docs.python.org/3/library/glob.html">globs</a> instead of full source paths. To exclude <code>docs/subfolder/page.md</code> specify in your <code>mkdocs.yml</code> a line under <code>exclude:</code> with <code>- subfolder/page.md</code>. Some examples:</p>
+<h2 id="ignore_authors"><code>ignore_authors</code></h2>
+<p>Default is empty. Specifies a list of emails for authors whose contributions should be ignored by this plugin.</p>
+<h2 id="ignore_commits"><code>ignore_commits</code></h2>
+<p>Default is empty. Specifies a file containing a list of commit hashes (one per line) that should be ignored.  Changes made in these commits will be attributed to the previous commit that changed the line.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># mkdocs.yml</span>
 <span class="nt">plugins</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">git-authors</span><span class="p">:</span>
@@ -754,6 +797,7 @@ mkdocs<span class="w"> </span>serve
     <nav>
       
         <a href="mailto:vinktim@gmail.com">Tim Vink</a>, 
+        <a href="mailto:rcgoncalves.pt@gmail.com">rcg</a>, 
         <a href="mailto:polygonguru@gmail.com">Scott Phillips</a>, 
         <a href="mailto:jose@alonsomoya.com">Jose ALONSO</a>, 
         <a href="mailto:florian@cleura.com">Florian Haas</a>, 
@@ -775,7 +819,7 @@ mkdocs<span class="w"> </span>serve
   
     <div class="md-source-date">
       <small>
-          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (71.55%), <a href='mailto:polygonguru@gmail.com'>Scott Phillips</a> (7.76%), <a href='mailto:jose@alonsomoya.com'>Jose ALONSO</a> (6.9%), <a href='mailto:florian@cleura.com'>Florian Haas</a> (5.17%), <a href='mailto:lucadelu97@gmail.com'>Luca Deluigi</a> (4.31%), <a href='mailto:t.breitner@csl.mpg.de'>Thomas Breitner</a> (4.31%)</span>
+          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (65.35%), <a href='mailto:rcgoncalves.pt@gmail.com'>rcg</a> (8.66%), <a href='mailto:polygonguru@gmail.com'>Scott Phillips</a> (7.09%), <a href='mailto:jose@alonsomoya.com'>Jose ALONSO</a> (6.3%), <a href='mailto:florian@cleura.com'>Florian Haas</a> (4.72%), <a href='mailto:lucadelu97@gmail.com'>Luca Deluigi</a> (3.94%), <a href='mailto:t.breitner@csl.mpg.de'>Thomas Breitner</a> (3.94%)</span>
       </small>
     </div>
   
