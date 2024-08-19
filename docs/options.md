@@ -118,10 +118,9 @@ Default is `true`. When enabled, the logs will show warnings when something is w
 - If you want to raise an error when a warning is logged, use [mkdocs strict mode](https://www.mkdocs.org/user-guide/configuration/#strict) (with `mkdocs build --strict`).
 - If you are already using [mkdocs strict mode](https://www.mkdocs.org/user-guide/configuration/#strict), but do not care about these warnings, you can set `strict: false` to ensure no errors are raised.
 
-=== ":octicons-file-code-16: mkdocs.yml"
-
-  ```yaml
-  plugins:
-    - git-authors:
-        strict: true
-  ```
+```yaml
+# mkdocs.yml
+plugins:
+  - git-authors:
+      strict: true
+```
