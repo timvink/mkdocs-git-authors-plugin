@@ -2,7 +2,7 @@
 
 ## In supported themes
 
-- [mkdocs-material](https://github.com/squidfunk/mkdocs-material):  offers deep integration for this plugin within when using the [Insiders](https://squidfunk.github.io/mkdocs-material/insiders/) version. No additional setup is required, and styling is taken care of also. Sponsoring Mkdocs Material is great way to give support MkDocs and really helps the MkDocs open source ecosystem.
+- [mkdocs-material](https://github.com/squidfunk/mkdocs-material):  offers deep integration for this plugin. No additional setup is required, and styling is taken care of also (see [docs](https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/?h=authors#document-authors). Sponsoring Mkdocs Material is great way to give support MkDocs and really helps the MkDocs open source ecosystem.
 
 ## In markdown pages
 
