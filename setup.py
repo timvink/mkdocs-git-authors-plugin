@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -14,19 +14,19 @@ setup(
     author="Tim Vink",
     author_email="vinktim@gmail.com",
     license="MIT",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=[
         "Operating System :: OS Independent",
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3 :: Only',
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3 :: Only",
         "License :: OSI Approved :: MIT License",
-        'Topic :: Documentation',
-        'Topic :: Text Processing',
+        "Topic :: Documentation",
+        "Topic :: Text Processing",
     ],
     install_requires=["mkdocs>=1.0"],
     packages=find_packages(),
