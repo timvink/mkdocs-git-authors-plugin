@@ -1,46 +1,36 @@
-from mkdocs_git_authors_plugin.git.command import GitCommandError
-import re
 import logging
-from mkdocs.config import config_options
-from mkdocs.plugins import BasePlugin
+import re
+from typing import Literal, Union
 
-from . import util
-from .git.repo import Repo
+from mkdocs.config.defaults import MkDocsConfig
+from mkdocs.plugins import BasePlugin
+from mkdocs.structure.files import Files
+from mkdocs.structure.nav import Navigation
+from mkdocs.structure.pages import Page
+from mkdocs.utils.templates import TemplateContext
+
+from mkdocs_git_authors_plugin import util
 from mkdocs_git_authors_plugin.ci import raise_ci_warnings
+from mkdocs_git_authors_plugin.config import GitAuthorsPluginConfig
 from mkdocs_git_authors_plugin.exclude import exclude
+from mkdocs_git_authors_plugin.git.command import GitCommandError
+from mkdocs_git_authors_plugin.git.repo import Repo
 
 logger = logging.getLogger("mkdocs.plugins")
 
 
-class GitAuthorsPlugin(BasePlugin):
-    config_scheme = (
-        ("show_contribution", config_options.Type(bool, default=False)),
-        ("show_line_count", config_options.Type(bool, default=False)),
-        ("show_email_address", config_options.Type(bool, default=True)),
-        ("href", config_options.Type(str, default='mailto:{email}')),
-        ("count_empty_lines", config_options.Type(bool, default=True)),
-        ("fallback_to_empty", config_options.Type(bool, default=False)),
-        ("exclude", config_options.Type(list, default=[])),
-        ("ignore_commits", config_options.Type(str, default=None)),
-        ("ignore_authors", config_options.Type(list, default=[])),
-        ("enabled", config_options.Type(bool, default=True)),
-        ("enabled_on_serve", config_options.Type(bool, default=True)),
-        ("sort_authors_by", config_options.Type(str, default="name")),
-        ("authorship_threshold_percent", config_options.Type(int, default=0)),
-        ("strict", config_options.Type(bool, default=True)),
-        # ('sort_authors_by_name', config_options.Type(bool, default=True)),
-        # ('sort_reverse', config_options.Type(bool, default=False))
-    )
-
-    def __init__(self):
+class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
+    def __init__(self) -> None:
         self._repo = None
         self._fallback = False
         self.is_serve = False
 
-    def on_startup(self, command, dirty):
+    def on_startup(
+        self, command: Literal["build", "gh-deploy", "serve"], dirty: bool
+    ) -> None:
         self.is_serve = command == "serve"
 
-    def on_config(self, config, **kwargs):
+    def on_config(self, config: MkDocsConfig) -> Union[MkDocsConfig, None]:
         """
         Store the plugin configuration in the Repo object.
 
@@ -63,8 +53,8 @@ class GitAuthorsPlugin(BasePlugin):
         if not self._is_enabled():
             return config
 
-        assert self.config["authorship_threshold_percent"] >= 0
-        assert self.config["authorship_threshold_percent"] <= 100
+        assert self.config.authorship_threshold_percent >= 0
+        assert self.config.authorship_threshold_percent <= 100
 
         try:
             self._repo = Repo()
@@ -72,7 +62,7 @@ class GitAuthorsPlugin(BasePlugin):
             self.repo().set_config(self.config)
             raise_ci_warnings(path=self.repo()._root)
         except GitCommandError:
-            if self.config["fallback_to_empty"]:
+            if self.config.fallback_to_empty:
                 self._fallback = True
                 logger.warning(
                     "[git-authors-plugin] Unable to find a git directory and/or git is not installed."
@@ -81,7 +71,7 @@ class GitAuthorsPlugin(BasePlugin):
             else:
                 raise
 
-    def on_files(self, files, config, **kwargs):
+    def on_files(self, files: Files, /, *, config: MkDocsConfig) -> Union[Files, None]:
         """
         Preprocess all markdown pages in the project.
 
@@ -114,9 +104,8 @@ class GitAuthorsPlugin(BasePlugin):
             return
 
         for file in files:
-
             # Exclude pages specified in config
-            excluded_pages = self.config.get("exclude", [])
+            excluded_pages = self.config.exclude or []
             if exclude(file.src_path, excluded_pages):
                 continue
 
@@ -124,7 +113,9 @@ class GitAuthorsPlugin(BasePlugin):
             if path.endswith(".md"):
                 _ = self.repo().page(path)
 
-    def on_page_content(self, html, page, config, files, **kwargs):
+    def on_page_content(
+        self, html: str, /, *, page: Page, config: MkDocsConfig, files: Files
+    ) -> Union[str, None]:
         """
         Replace jinja tag {{ git_site_authors }} in HTML.
 
@@ -151,7 +142,7 @@ class GitAuthorsPlugin(BasePlugin):
             return html
 
         # Exclude pages specified in config
-        excluded_pages = self.config.get("exclude", [])
+        excluded_pages = self.config.exclude or []
         if exclude(page.file.src_path, excluded_pages):
             return html
 
@@ -182,7 +173,15 @@ class GitAuthorsPlugin(BasePlugin):
 
         return html
 
-    def on_page_context(self, context, page, config, nav, **kwargs):
+    def on_page_context(
+        self,
+        context: TemplateContext,
+        /,
+        *,
+        page: Page,
+        config: MkDocsConfig,
+        nav: Navigation,
+    ) -> Union[TemplateContext, None]:
         """
         Add 'git_authors' and 'git_authors_summary' variables
         to template context.
@@ -210,7 +209,7 @@ class GitAuthorsPlugin(BasePlugin):
             return context
 
         # Exclude pages specified in config
-        excluded_pages = self.config.get("exclude", [])
+        excluded_pages = self.config.exclude or []
         if exclude(page.file.src_path, excluded_pages):
             logging.debug("on_page_context, Excluding page " + page.file.src_path)
             return context
@@ -239,13 +238,13 @@ class GitAuthorsPlugin(BasePlugin):
 
         return context
 
-    def repo(self):
+    def repo(self) -> Union[Repo, None]:
         """
         Reference to the Repo object of the current project.
         """
         return self._repo
 
-    def _is_enabled(self):
+    def _is_enabled(self) -> bool:
         """
         Consider this plugin to be disabled in the following two conditions:
         * config.enabled is false
@@ -255,9 +254,9 @@ class GitAuthorsPlugin(BasePlugin):
         """
         is_enabled = True
 
-        if not self.config.get("enabled"):
+        if not self.config.enabled:
             is_enabled = False
-        elif self.is_serve and not self.config.get("enabled_on_serve"):
+        elif self.is_serve and not self.config.enabled_on_serve:
             is_enabled = False
 
         return is_enabled

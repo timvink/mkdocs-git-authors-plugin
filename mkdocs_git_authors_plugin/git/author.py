@@ -1,8 +1,8 @@
-from .repo import AbstractRepoObject, Repo
-from .page import Page
-from .commit import Commit
+from typing import Dict, Union
 
-from typing import Dict
+from mkdocs_git_authors_plugin.git.commit import Commit
+from mkdocs_git_authors_plugin.git.page import Page
+from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
 
 
 class Author(AbstractRepoObject):
@@ -10,7 +10,7 @@ class Author(AbstractRepoObject):
     Abstraction of an author in the Git repository.
     """
 
-    def __init__(self, repo: Repo, name: str, email: str):
+    def __init__(self, repo: Repo, name: str, email: str) -> None:
         """
         Instantiate an Author.
 
@@ -24,7 +24,7 @@ class Author(AbstractRepoObject):
         self._email = email
         self._pages: Dict[str, dict] = dict()
 
-    def add_lines(self, page: Page, commit: Commit, lines: int = 1):
+    def add_lines(self, page: Page, commit: Commit, lines: int = 1) -> None:
         """
         Add line(s) in a given page/commit to the author's data.
 
@@ -42,7 +42,7 @@ class Author(AbstractRepoObject):
             entry["datetime"] = commit_dt
             entry["datetime_str"] = commit.datetime(str)
 
-    def contribution(self, path=None, _type=float):
+    def contribution(self, path=None, _type=float) -> Union[float, str]:
         """
         The author's relative contribution to a page or the repository.
 
@@ -60,17 +60,17 @@ class Author(AbstractRepoObject):
             formatted string or floating point number
         """
         lines = self.lines(path)
-        total_lines = (
+        total_lines: int = (
             self.page(path)["page"].total_lines() if path else self.repo().total_lines()
         )
 
         # Some pages are empty, that case contribution is 0 by default
         if total_lines == 0:
-            result = 0
+            result = 0.0
         else:
             result = lines / total_lines
 
-        if _type == float:
+        if _type is float:
             return result
         else:
             return str(round(result * 100, 2)) + "%"
@@ -87,10 +87,10 @@ class Author(AbstractRepoObject):
             a formatted string (fmt=str)
             or a datetime.datetime object with tzinfo
         """
-        key = "datetime_str" if fmt == str else "datetime"
+        key = "datetime_str" if fmt is str else "datetime"
         return self.page(path).get(key)
 
-    def email(self):
+    def email(self) -> str:
         """
         The author's email address
 
@@ -101,7 +101,7 @@ class Author(AbstractRepoObject):
         """
         return self._email
 
-    def lines(self, path=None):
+    def lines(self, path=None) -> int:
         """
         The author's total number of lines on a page or in the repository.
 
@@ -117,7 +117,7 @@ class Author(AbstractRepoObject):
         else:
             return sum([v["lines"] for v in self._pages.values()])
 
-    def name(self):
+    def name(self) -> str:
         """
         The author's full name
 
@@ -128,7 +128,7 @@ class Author(AbstractRepoObject):
         """
         return self._name
 
-    def page(self, path, page=None):
+    def page(self, path, page=None) -> dict:
         """
         A dictionary with the author's contribution to a page.
 
@@ -154,7 +154,7 @@ class Author(AbstractRepoObject):
         if not self._pages.get(path):
             self._pages[path] = {
                 "page": page or self.repo().page(path),
-                "lines": 0
+                "lines": 0,
                 # datetime and datetime_str will be populated later
             }
         return self._pages[path]

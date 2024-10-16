@@ -1,6 +1,8 @@
 import re
-from .repo import AbstractRepoObject, Repo
-from .. import util
+from typing import Union
+
+from mkdocs_git_authors_plugin import util
+from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
 
 
 class Commit(AbstractRepoObject):
@@ -58,7 +60,7 @@ class Commit(AbstractRepoObject):
         """
         return self._author
 
-    def datetime(self, _type=str):
+    def datetime(self, _type=str) -> Union[str, util.datetime]:
         """
         The commit's commit time.
 
@@ -71,4 +73,4 @@ class Commit(AbstractRepoObject):
             The commit's commit time, either as a formatted string (_type=str)
             or as a datetime.datetime expression with tzinfo
         """
-        return self._datetime_string if _type == str else self._datetime
+        return self._datetime_string if _type is str else self._datetime

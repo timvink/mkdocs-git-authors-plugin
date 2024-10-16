@@ -6,16 +6,17 @@ This is because often CI runners do not have access to full git history.
 Taken from https://github.com/timvink/mkdocs-git-revision-date-localized-plugin/blob/master/mkdocs_git_revision_date_localized_plugin/ci.py
 """
 
+import logging
 import os
 from contextlib import contextmanager
-import logging
 from pathlib import Path
-from typing import Union
+from typing import Any, Generator, Union
+
 from mkdocs_git_authors_plugin.git.command import GitCommand
 
 
 @contextmanager
-def working_directory(path: Union[str, Path]):
+def working_directory(path: Union[str, Path]) -> Generator[None, Any, None]:
     """
     Temporarily change working directory.
     A context manager which changes the working directory to the given
@@ -27,7 +28,7 @@ def working_directory(path: Union[str, Path]):
         # Do something in new directory
     # Back to old directory
     ```
-    """    
+    """
     origin = Path().absolute()
     try:
         os.chdir(path)

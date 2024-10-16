@@ -1,8 +1,11 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any, Dict, List
+
+from mkdocs_git_authors_plugin.config import GitAuthorsPluginConfig
 
 
-def commit_datetime(author_time: str, author_tz: str):
+def commit_datetime(author_time: str, author_tz: str) -> datetime:
     """
     Convert a commit's timestamp to an aware datetime object.
 
@@ -23,7 +26,7 @@ def commit_datetime(author_time: str, author_tz: str):
     )
 
 
-def commit_datetime_string(dt: datetime):
+def commit_datetime_string(dt: datetime) -> str:
     """
     Return a string representation for a commit's timestamp.
 
@@ -36,7 +39,7 @@ def commit_datetime_string(dt: datetime):
     return dt.strftime("%c %z")
 
 
-def page_authors_summary(page, config: dict):
+def page_authors_summary(page, config: dict) -> str:
     """
     A summary of the authors' contributions on a page level
 
@@ -59,8 +62,11 @@ def page_authors_summary(page, config: dict):
             else ""
         )
         if page.repo().config("show_email_address"):
-            href = page.repo().config("href").format(email=author.email(),
-                                                     name=author.name())
+            href = (
+                page.repo()
+                .config("href")
+                .format(email=author.email(), name=author.name())
+            )
             author_name = "<a href='%s'>%s</a>" % (href, author.name())
         else:
             author_name = author.name()
@@ -70,7 +76,7 @@ def page_authors_summary(page, config: dict):
     return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary_str
 
 
-def site_authors_summary(authors, config: dict):
+def site_authors_summary(authors, config: GitAuthorsPluginConfig) -> str:
     """
     A summary list of the authors' contributions on repo level.
 
@@ -92,23 +98,18 @@ def site_authors_summary(authors, config: dict):
     Returns:
         Unordered HTML list as a string.
     """
-    show_contribution = config["show_contribution"]
-    show_line_count = config["show_line_count"]
-    show_email_address = config["show_email_address"]
-
     result = """
 <span class='git-authors'>
     <ul>
         """
     for author in authors:
         contribution = (
-            " (%s)" % author.contribution(None, str) if show_contribution else ""
+            " (%s)" % author.contribution(None, str) if config.show_contribution else ""
         )
-        lines = ": %s lines" % author.lines() if show_line_count else ""
+        lines = ": %s lines" % author.lines() if config.show_line_count else ""
         author_name = ""
-        if show_email_address:
-            href = config["href"].format(email=author.email(),
-                                         name=author.name())
+        if config.show_email_address:
+            href = config["href"].format(email=author.email(), name=author.name())
             author_name = '<a href="%s">%s</a>' % (href, author.name())
         else:
             author_name = author.name()
@@ -126,14 +127,14 @@ def site_authors_summary(authors, config: dict):
     return result
 
 
-def page_authors(authors, path):
+def page_authors(authors: List, path: str) -> List[Dict[str, Any]]:
     """List of dicts with info on page authors
     # TODO: rename to something more representative like 'authors_to_dict()'
     Args:
         authors (list): list with Author classes
         path (str): path to page
     """
-    if type(path) == str:
+    if isinstance(path, str):
         path = Path(path)
     return [
         {
