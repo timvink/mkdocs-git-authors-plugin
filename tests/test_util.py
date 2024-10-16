@@ -1,5 +1,5 @@
 """
-Note that pytest offers a `tmp_path`. 
+Note that pytest offers a `tmp_path`.
 You can reproduce locally with
 
 ```python
@@ -16,15 +16,16 @@ os.mkdir(tmp_path)
 ```
 """
 
+import logging
 import os
 import shutil
-import logging
-
-from mkdocs_git_authors_plugin import util
-from mkdocs_git_authors_plugin.git import repo
+from typing import Any
 
 # GitPython
 import git as gitpython
+
+from mkdocs_git_authors_plugin import util
+from mkdocs_git_authors_plugin.git import repo
 
 DEFAULT_CONFIG = {
     "show_contribution": False,
@@ -41,18 +42,18 @@ DEFAULT_CONFIG = {
 #### Helpers ####
 
 
-def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
+def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path) -> Any:
     """
     Sets up a clean mkdocs directory
-    
+
     outputpath/testproject
     ├── docs/
     └── mkdocs.yml
-    
+
     Args:
         mkdocs_yml_path (Path): Path of mkdocs.yml file to use
         output_path (Path): Path of folder in which to create mkdocs project
-        
+
     Returns:
         testproject_path (Path): Path to test project
     """
@@ -77,14 +78,14 @@ def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
 def setup_commit_history(testproject_path):
     """
     Initializes and creates a git commit history
-    in a new mkdocs testproject. 
-    
-    We commit the pages one by one in order 
+    in a new mkdocs testproject.
+
+    We commit the pages one by one in order
     to create some git depth.
-    
+
     Args:
         testproject_path (Path): Path to test project
-        
+
     Returns:
         repo (repo): git.Repo object
     """
@@ -131,8 +132,7 @@ def setup_commit_history(testproject_path):
 #### Tests ####
 
 
-def test_empty_file(tmp_path):
-
+def test_empty_file(tmp_path) -> None:
     # Change working directory
     cwd = os.getcwd()
     os.chdir(str(tmp_path))
@@ -331,7 +331,7 @@ def test_retrieve_authors_ignoring_commits(tmp_path):
         the_file.write(commit.hexsha + "\n")
     repo_instance = repo.Repo()
     config = DEFAULT_CONFIG.copy()
-    config['ignore_commits'] = ignored_commits_files
+    config["ignore_commits"] = ignored_commits_files
     repo_instance.set_config(config)
     repo_instance.page(file_name)
     authors = repo_instance.get_authors()
@@ -386,7 +386,7 @@ def test_retrieve_authors_ignoring_emails(tmp_path):
     # Get the authors while ignoring john@abc.com user
     repo_instance = repo.Repo()
     config = DEFAULT_CONFIG.copy()
-    config['ignore_authors'] = ['john@abc.com']
+    config["ignore_authors"] = ["john@abc.com"]
     repo_instance.set_config(config)
     repo_instance.page(file_name)
     authors = repo_instance.get_authors()
@@ -402,7 +402,7 @@ def test_retrieve_authors_ignoring_emails(tmp_path):
             "last_datetime": None,
             "lines": 0,
             "lines_all_pages": 0,
-            "name": "John"
+            "name": "John",
         },
         {
             "name": "Tim",
@@ -476,9 +476,10 @@ def test_mkdocs_in_git_subdir(tmp_path):
 
     os.chdir(cwd)
 
+
 def test_summarize_authors():
     """
-    Test summary functions. 
+    Test summary functions.
     TODO
     """
     pass
@@ -509,5 +510,6 @@ def test_summarize_authors():
     # # Now contribution is displayed
     # summary = util.Util().summarize(authors, config)
     # assert summary == "<span class='git-authors'><a href='mailto:abc@abc.com'>Tim</a> (64.23%), <a href='mailto:efg@efg.org'>Tom</a> (35.77%)</span>"
+
 
 # TODO: test authors threshold with commits

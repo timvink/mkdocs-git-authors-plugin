@@ -1,5 +1,5 @@
 """
-Note that pytest offers a `tmp_path`. 
+Note that pytest offers a `tmp_path`.
 You can reproduce locally with
 
 ```python
@@ -16,16 +16,17 @@ os.mkdir(tmp_path)
 ```
 """
 
+import os
 import re
 import shutil
-import os
-import pytest
-
-from click.testing import CliRunner
-from mkdocs.__main__ import build_command
-from git import Repo
-import git as gitpython
 from contextlib import contextmanager
+from typing import Any, Generator
+
+import git as gitpython
+import pytest
+from click.testing import CliRunner, Result
+from git import Repo
+from mkdocs.__main__ import build_command
 
 SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs.yml",
@@ -43,8 +44,9 @@ SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs_w_macros2.yml",
 ]
 
+
 @contextmanager
-def working_directory(path):
+def working_directory(path) -> Generator[None, Any, None]:
     """
     Temporarily change working directory.
     A context manager which changes the working directory to the given
@@ -65,20 +67,21 @@ def working_directory(path):
         os.chdir(prev_cwd)
 
 
-def build_docs_setup(mkdocs_path, output_path):
+def build_docs_setup(mkdocs_path, output_path) -> Result:
     runner = CliRunner()
     return runner.invoke(
         build_command, ["--config-file", mkdocs_path, "--site-dir", str(output_path)]
     )
 
+
 @pytest.mark.parametrize(
     "mkdocs_file",
     SITES_THAT_SHOULD_SUCCEED,
 )
-def test_basic_working(tmp_path, mkdocs_file):
+def test_basic_working(tmp_path, mkdocs_file: str) -> None:
     """
     combination with mkdocs-macros-plugin lead to error.
-    See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60    
+    See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60
     """
     result = build_docs_setup("tests/basic_setup/mkdocs.yml", tmp_path)
     assert result.exit_code == 0, (
@@ -93,12 +96,11 @@ def test_basic_working(tmp_path, mkdocs_file):
     assert re.search('<a href="mailto:vinktim@gmail.com">Tim Vink</a>', contents)
 
 
-def test_custom_href(tmp_path):
-    """
-    """
+def test_custom_href(tmp_path) -> None:
+    """ """
     result = build_docs_setup("tests/basic_setup/mkdocs_custom_href.yml", tmp_path)
     assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
+        "'mkdocs build' command failed. Error: %s" % result.stdout
     )
 
     index_file = tmp_path / "index.html"
@@ -107,16 +109,20 @@ def test_custom_href(tmp_path):
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
     # Checking Page Authors
-    assert re.search((r"<p>Page authors:.*<a href='https://teams.microsoft.com/l/chat/0/0\?"
-                      "users=vinktim@gmail.com'>Tim Vink</a>.*<\/p>"), contents)
+    assert re.search(
+        r"<p>Page authors:.*<a href='https://teams.microsoft.com/l/chat/0/0\?"
+        r"users=vinktim@gmail.com'>Tim Vink</a>.*</p>",
+        contents,
+    )
     # Checking Site Authors
-    assert re.search(('<li><a href="https://teams.microsoft.com/l/chat/0/0\?'
-                      'users=vinktim@gmail.com">Tim Vink</a><\/li>'), contents)
+    assert re.search(
+        r'<li><a href="https://teams.microsoft.com/l/chat/0/0\?'
+        r'users=vinktim@gmail.com">Tim Vink</a></li>',
+        contents,
+    )
 
 
-
-def test_no_email(tmp_path):
-
+def test_no_email(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_no_email.yml", tmp_path)
     assert result.exit_code == 0, (
         "'mkdocs build' command failed. Error: %s" % result.stdout
@@ -130,9 +136,7 @@ def test_no_email(tmp_path):
     assert re.search("<li>Tim Vink</li>", contents)
 
 
-
-def test_exclude_working(tmp_path):
-
+def test_exclude_working(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_exclude.yml", tmp_path)
     assert result.exit_code == 0, (
         "'mkdocs build' command failed. Error: %s" % result.stdout
@@ -145,12 +149,10 @@ def test_exclude_working(tmp_path):
     assert not re.search("<span class='git-page-authors", contents)
 
 
-
-def test_ignore_authors_working(tmp_path):
-
+def test_ignore_authors_working(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_ignore_authors.yml", tmp_path)
     assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
+        "'mkdocs build' command failed. Error: %s" % result.stdout
     )
 
     page_file = tmp_path / "page_with_tag/index.html"
@@ -162,18 +164,15 @@ def test_ignore_authors_working(tmp_path):
     assert not re.search("Julien", contents)
 
 
-
-def test_exclude_working_with_genfiles(tmp_path):
+def test_exclude_working_with_genfiles(tmp_path) -> None:
     """
     A warning for uncommited files should not show up
     when those uncommited files are excluded.
     """
-    
+
     testproject_path = tmp_path / "testproject_genfiles"
 
-    shutil.copytree(
-        "tests/basic_setup/docs", str(testproject_path / "docs")
-    )
+    shutil.copytree("tests/basic_setup/docs", str(testproject_path / "docs"))
     shutil.copyfile(
         "tests/basic_setup/mkdocs_genfiles.yml",
         str(testproject_path / "mkdocs.yml"),
@@ -202,18 +201,21 @@ def test_exclude_working_with_genfiles(tmp_path):
             str(testproject_path / "mkdocs.yml"), str(testproject_path / "site")
         )
         assert result.exit_code == 0, (
-                "'mkdocs build' command failed. Error: %s" % result.stdout
+            "'mkdocs build' command failed. Error: %s" % result.stdout
         )
 
         # files generated ourselves right before build but not committed, should not generate warnings
         assert "manually_created.md has not been committed yet." not in result.stdout
-        assert "manually_created_infolder.md has not been committed yet." not in result.stdout
+        assert (
+            "manually_created_infolder.md has not been committed yet."
+            not in result.stdout
+        )
 
 
-
-def test_enabled_working(tmp_path):
-
-    result = build_docs_setup("tests/basic_setup/mkdocs_complete_material_disabled.yml", tmp_path)
+def test_enabled_working(tmp_path) -> None:
+    result = build_docs_setup(
+        "tests/basic_setup/mkdocs_complete_material_disabled.yml", tmp_path
+    )
     assert result.exit_code == 0, (
         "'mkdocs build' command failed. Error: %s" % result.stdout
     )
@@ -225,11 +227,10 @@ def test_enabled_working(tmp_path):
     assert not re.search("<span class='git-page-authors", contents)
 
 
-
-def test_project_with_no_commits(tmp_path):
+def test_project_with_no_commits(tmp_path) -> None:
     """
     Structure:
-    
+
     tmp_path/testproject
     website/
         ├── docs/
@@ -256,12 +257,10 @@ def test_project_with_no_commits(tmp_path):
         )
 
 
-
-
-def test_building_empty_site(tmp_path):
+def test_building_empty_site(tmp_path) -> None:
     """
     Structure:
-    
+
     ```
     tmp_path/testproject
     website/
@@ -291,11 +290,10 @@ def test_building_empty_site(tmp_path):
         )
 
 
-
-def test_fallback(tmp_path):
+def test_fallback(tmp_path) -> None:
     """
     Structure:
-    
+
     ```
     tmp_path/testproject
     website/
@@ -314,7 +312,6 @@ def test_fallback(tmp_path):
     )
 
     with working_directory(str(testproject_path)):
-
         result = build_docs_setup(
             str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
         )
