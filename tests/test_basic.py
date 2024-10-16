@@ -35,7 +35,6 @@ SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs_exclude.yml",
     "mkdocs_fallback.yml",
     "mkdocs_genfiles.yml",
-    "mkdocs_no_email.yml",
     "mkdocs_w_contribution_and_author_threshold.yml",
     "mkdocs_w_contribution_sort_and_author_threshold.yml",
     "mkdocs_w_contribution.yml",
