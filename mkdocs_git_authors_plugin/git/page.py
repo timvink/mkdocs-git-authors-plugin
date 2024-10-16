@@ -1,10 +1,10 @@
-from pathlib import Path
-import re
 import logging
-from .repo import Repo, AbstractRepoObject
-from .command import GitCommand, GitCommandError
-
+import re
+from pathlib import Path
 from typing import List
+
+from mkdocs_git_authors_plugin.git.command import GitCommand, GitCommandError
+from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
 
 logger = logging.getLogger("mkdocs.plugins")
 
@@ -18,7 +18,7 @@ class Page(AbstractRepoObject):
     modified by that commit.
     """
 
-    def __init__(self, repo: Repo, path: Path, strict: bool):
+    def __init__(self, repo: Repo, path: Path, strict: bool) -> None:
         """
         Instantiate a Page object
 
@@ -32,7 +32,7 @@ class Page(AbstractRepoObject):
         self._total_lines = 0
         self._authors: List[dict] = list()
         self._strict = strict
-        
+
         try:
             self._process_git_blame()
         except GitCommandError:
@@ -47,7 +47,7 @@ class Page(AbstractRepoObject):
                     % path
                 )
 
-    def add_total_lines(self, cnt: int = 1):
+    def add_total_lines(self, cnt: int = 1) -> None:
         """
         Add line(s) to the count of total lines for the page.
 
@@ -56,7 +56,7 @@ class Page(AbstractRepoObject):
         """
         self._total_lines += cnt
 
-    def get_authors(self):
+    def get_authors(self) -> List[dict]:
         """
         Return a sorted list of authors for the page
 
@@ -86,7 +86,7 @@ class Page(AbstractRepoObject):
                 ]
         return self._authors
 
-    def _process_git_blame(self):
+    def _process_git_blame(self) -> None:
         """
         Execute git blame and parse the results.
 
@@ -190,7 +190,9 @@ class Page(AbstractRepoObject):
                     author_tz=commit_data.get("author-tz"),
                     summary=commit_data.get("summary"),
                 )
-                if commit.author().email() not in ignore_authors and (len(line) > 1 or self.repo().config("count_empty_lines")):
+                if commit.author().email() not in ignore_authors and (
+                    len(line) > 1 or self.repo().config("count_empty_lines")
+                ):
                     author = commit.author()
                     if author not in self._authors:
                         self._authors.append(author)
@@ -198,7 +200,7 @@ class Page(AbstractRepoObject):
                     self.add_total_lines()
                     self.repo().add_total_lines()
 
-    def path(self):
+    def path(self) -> Path:
         """
         The path to the markdown file.
 
@@ -209,7 +211,7 @@ class Page(AbstractRepoObject):
         """
         return self._path
 
-    def total_lines(self):
+    def total_lines(self) -> int:
         """
         Total number of lines in the markdown source file.
 

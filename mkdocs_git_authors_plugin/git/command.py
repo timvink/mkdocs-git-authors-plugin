@@ -1,4 +1,5 @@
 import subprocess
+from typing import List, Union
 
 
 class GitCommandError(Exception):
@@ -24,7 +25,7 @@ class GitCommand(object):
     In case of an error a verbose GitCommandError is raised.
     """
 
-    def __init__(self, command: str, args: list = []):
+    def __init__(self, command: str, args: List = []) -> None:
         """
         Initialize the GitCommand.
 
@@ -40,7 +41,7 @@ class GitCommand(object):
         self._stderr = None
         self._completed = False
 
-    def run(self):
+    def run(self) -> int:
         """
         Execute the configured Git command.
 
@@ -82,7 +83,7 @@ class GitCommand(object):
         self._completed = True
         return int(str(p.returncode))
 
-    def set_args(self, args: list):
+    def set_args(self, args: List) -> None:
         """
         Change the command arguments.
 
@@ -91,7 +92,7 @@ class GitCommand(object):
         """
         self._args = args
 
-    def set_command(self, command: str):
+    def set_command(self, command: str) -> None:
         """
         Change the Git command.
 
@@ -100,7 +101,7 @@ class GitCommand(object):
         """
         self._command = command
 
-    def stderr(self):
+    def stderr(self) -> Union[None, List[str]]:
         """
         Return the stderr output of the command as a string list.
 
@@ -113,7 +114,7 @@ class GitCommand(object):
             raise GitCommandError("Trying to read from uncompleted GitCommand")
         return self._stderr
 
-    def stdout(self):
+    def stdout(self) -> Union[None, List[str]]:
         """
         Return the stdout output of the command as a string list.
 

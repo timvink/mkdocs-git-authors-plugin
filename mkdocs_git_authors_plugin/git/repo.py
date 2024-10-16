@@ -1,5 +1,7 @@
 from pathlib import Path
-from .command import GitCommand
+from typing import Any, Union
+
+from mkdocs_git_authors_plugin.git.command import GitCommand
 
 
 class Repo(object):
@@ -7,7 +9,7 @@ class Repo(object):
     Abstraction of a Git repository (i.e. the MkDocs project).
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._root = self.find_repo_root()
         self._total_lines = 0
 
@@ -18,7 +20,7 @@ class Repo(object):
         # Store Author objects, indexed by email
         self._authors = {}
 
-    def add_total_lines(self, cnt: int = 1):
+    def add_total_lines(self, cnt: int = 1) -> None:
         """
         Add line(s) to the number of total lines in the repository.
 
@@ -47,7 +49,7 @@ class Repo(object):
             self._authors[email] = Author(self, name, email)
         return self._authors[email]
 
-    def get_authors(self):
+    def get_authors(self) -> list:
         """
         Sorted list of authors in the repository.
 
@@ -67,7 +69,7 @@ class Repo(object):
             reverse=reverse,
         )
 
-    def config(self, key: str = ""):
+    def config(self, key: str = "") -> Any:
         """
         Return the plugin configuration dictionary or a single config value.
 
@@ -76,7 +78,7 @@ class Repo(object):
         """
         return self._config.get(key) if key else self._config
 
-    def find_repo_root(self):
+    def find_repo_root(self) -> str:
         """
         Determine the root directory of the Git repository,
         in case the current working directory is different from that.
@@ -91,9 +93,11 @@ class Repo(object):
         """
         cmd = GitCommand("rev-parse", ["--show-toplevel"])
         cmd.run()
-        return cmd.stdout()[0]
+        stdout = cmd.stdout()
+        assert stdout is not None
+        return stdout[0]
 
-    def get_commit(self, sha: str, **kwargs):
+    def get_commit(self, sha: str, **kwargs) -> Union[Any, None]:
         """
         Return the (cached) Commit object for given sha.
 
@@ -125,7 +129,7 @@ class Repo(object):
         Returns:
             Page object
         """
-        if type(path) == str:
+        if isinstance(path, str):
             path = Path(path)
         if not self._pages.get(path):
             from .page import Page
@@ -133,7 +137,7 @@ class Repo(object):
             self._pages[path] = Page(self, path, self.config("strict"))
         return self._pages[path]
 
-    def set_config(self, plugin_config):
+    def set_config(self, plugin_config) -> None:
         """
         Store the plugin configuration in the Repo instance.
 
@@ -142,7 +146,7 @@ class Repo(object):
         """
         self._config = plugin_config
 
-    def _sort_key(self, author):
+    def _sort_key(self, author) -> Any:
         """
         Return a sort key for an author.
 
@@ -182,10 +186,10 @@ class AbstractRepoObject(object):
     Base class for objects that live with a repository context.
     """
 
-    def __init__(self, repo: Repo):
+    def __init__(self, repo: Repo) -> None:
         self._repo = repo
 
-    def repo(self):
+    def repo(self) -> Repo:
         """
         Return a reference to the Repo object.
 
