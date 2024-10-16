@@ -72,7 +72,7 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
                 raise
 
     def on_files(
-        self, files: Files, /, *, config: MkDocsConfig, **kwargs
+        self, files: Files, *, config: MkDocsConfig, **kwargs
     ) -> Union[Files, None]:
         """
         Preprocess all markdown pages in the project.
@@ -116,7 +116,7 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
                 _ = self.repo().page(path)
 
     def on_page_content(
-        self, html: str, /, *, page: Page, config: MkDocsConfig, files: Files, **kwargs
+        self, html: str, *, page: Page, config: MkDocsConfig, files: Files, **kwargs
     ) -> Union[str, None]:
         """
         Replace jinja tag {{ git_site_authors }} in HTML.
@@ -178,7 +178,6 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
     def on_page_context(
         self,
         context: TemplateContext,
-        /,
         *,
         page: Page,
         config: MkDocsConfig,
