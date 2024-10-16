@@ -18,7 +18,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.python"
+				"ms-python.python",
+				"charliermarsh.ruff"
 			]
 		}
 	}
