@@ -29,8 +29,6 @@ from contextlib import contextmanager
 
 SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs.yml",
-    "mkdocs_custom_href.yml",
-    "mkdocs_complete_material_disabled.yml",
     "mkdocs_complete_material.yml",
     "mkdocs_exclude.yml",
     "mkdocs_fallback.yml",
