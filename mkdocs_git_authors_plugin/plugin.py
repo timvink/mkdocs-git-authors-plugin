@@ -26,11 +26,11 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         self.is_serve = False
 
     def on_startup(
-        self, command: Literal["build", "gh-deploy", "serve"], dirty: bool
+        self, command: Literal["build", "gh-deploy", "serve"], dirty: bool, **kwargs
     ) -> None:
         self.is_serve = command == "serve"
 
-    def on_config(self, config: MkDocsConfig) -> Union[MkDocsConfig, None]:
+    def on_config(self, config: MkDocsConfig, **kwargs) -> Union[MkDocsConfig, None]:
         """
         Store the plugin configuration in the Repo object.
 
@@ -71,7 +71,9 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
             else:
                 raise
 
-    def on_files(self, files: Files, /, *, config: MkDocsConfig) -> Union[Files, None]:
+    def on_files(
+        self, files: Files, /, *, config: MkDocsConfig, **kwargs
+    ) -> Union[Files, None]:
         """
         Preprocess all markdown pages in the project.
 
@@ -114,7 +116,7 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
                 _ = self.repo().page(path)
 
     def on_page_content(
-        self, html: str, /, *, page: Page, config: MkDocsConfig, files: Files
+        self, html: str, /, *, page: Page, config: MkDocsConfig, files: Files, **kwargs
     ) -> Union[str, None]:
         """
         Replace jinja tag {{ git_site_authors }} in HTML.
@@ -181,6 +183,7 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         page: Page,
         config: MkDocsConfig,
         nav: Navigation,
+        **kwargs,
     ) -> Union[TemplateContext, None]:
         """
         Add 'git_authors' and 'git_authors_summary' variables
