@@ -16,4 +16,4 @@ mkdocs-git-revision-date-localized-plugin
 mkdocs-material
 
 # mkapi
-mkapi
+mkapi>=3
