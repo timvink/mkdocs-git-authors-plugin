@@ -69,7 +69,8 @@ class GitCommand(object):
             p.check_returncode()
         except subprocess.CalledProcessError:
             msg = ["GitCommand error:"]
-            msg.append(f'Command "{' '.join(args)}" failed')
+            joined_args = " ".join(args)
+            msg.append(f'Command "{joined_args}" failed')
             msg.append(f"Return code: {p.returncode}")
             msg.append("Output:")
             msg.append(p.stdout.decode("utf-8"))
