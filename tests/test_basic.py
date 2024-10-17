@@ -328,6 +328,7 @@ def test_fallback(tmp_path) -> None:
     reason="Requires mkdocs 1.6 or higher",
 )
 def test_mkapi_v3(tmp_path) -> None:
+    """Test mkapi v2.1.0 and higher, basically only v3"""
     result = build_docs_setup("tests/basic_setup/mkdocs_mkapi.yml", tmp_path)
     assert (
         result.exit_code == 0
@@ -340,5 +341,36 @@ def test_mkapi_v3(tmp_path) -> None:
     assert re.search("<span class='git-page-authors", contents)
     assert re.search(
         '<a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>',
+        contents,
+    )
+
+
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="Requires Python 3.12 or higher")
+@pytest.mark.skip("mkapi v2.0.X requires a currently unsupported Python version")
+def test_mkapi_v20x(tmp_path) -> None:
+    assert True
+
+
+@pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher")
+@pytest.mark.skipif(
+    not (
+        LooseVersion(mkdocs.__version__) < LooseVersion("2")
+        and LooseVersion(mkdocs.__version__) >= LooseVersion("1.1.2")
+    ),
+    reason="Requires mkdocs  >= 1.1.2, < 2",
+)
+def test_mkapi_v1(tmp_path) -> None:
+    result = build_docs_setup("tests/basic_setup/mkdocs_mkapi.yml", tmp_path)
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
+
+    index_file = tmp_path / "index.html"
+    assert index_file.exists(), f"{index_file} does not exist"
+
+    contents = index_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    assert re.search(
+        r'<a href="\$api:src/mkdocs_git_authors_plugin.*" class="nav-link">API</a>',
         contents,
     )
