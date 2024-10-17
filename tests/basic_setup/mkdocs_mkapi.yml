@@ -1,0 +1,10 @@
+site_name: test gitauthors_plugin
+
+nav:
+  - Home: index.md
+  - API: $api:src/mkdocs_git_authors_plugin.*
+
+plugins:
+    - search
+    - mkapi
+    - git-authors
