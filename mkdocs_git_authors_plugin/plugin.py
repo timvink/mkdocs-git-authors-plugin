@@ -93,6 +93,13 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         So in any on_page_XXX event the contributions of an author
         to the current page *and* the repository as a whole are available.
 
+        Note:
+            Since MkDocs 1.6 a file may alternatively be stored in memory - `content_string`/`content_bytes`.
+            `src_dir` *should* be populated for real files and should be `None` for generated files.
+
+        See:
+            https://www.mkdocs.org/dev-guide/api/#mkdocs.structure.files.File
+
         Args:
             files: global files collection
             config: global configuration object
@@ -111,9 +118,18 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
             if exclude(file.src_path, excluded_pages):
                 continue
 
-            path = file.abs_src_path
-            if path.endswith(".md"):
-                _ = self.repo().page(path)
+            if file.src_dir is None:
+                logger.debug(
+                    f"[git-authors-plugin] Unable to find path for file {file.src_path}. "
+                    "Generated, in-memory files won't have a git history."
+                )
+            elif path := file.abs_src_path:
+                if path.endswith(".md"):
+                    _ = self.repo().page(path)
+            else:
+                logger.warning(
+                    "[git-authors-plugin] Unexpected behaviour. Unable to find path for {file.src_path}."
+                )
 
     def on_page_content(
         self, html: str, *, page: Page, config: MkDocsConfig, files: Files, **kwargs
