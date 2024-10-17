@@ -69,8 +69,8 @@ class GitCommand(object):
             p.check_returncode()
         except subprocess.CalledProcessError:
             msg = ["GitCommand error:"]
-            msg.append('Command "%s" failed' % " ".join(args))
-            msg.append("Return code: %s" % p.returncode)
+            msg.append(f'Command "{' '.join(args)}" failed')
+            msg.append(f"Return code: {p.returncode}")
             msg.append("Output:")
             msg.append(p.stdout.decode("utf-8"))
             msg.append("Error messages:")

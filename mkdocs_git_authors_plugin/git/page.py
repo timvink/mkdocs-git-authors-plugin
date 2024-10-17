@@ -38,13 +38,11 @@ class Page(AbstractRepoObject):
         except GitCommandError:
             if self._strict:
                 logger.warning(
-                    "[git-authors-plugin] %s has not been committed yet. Lines are not counted"
-                    % path
+                    f"[git-authors-plugin] {path} has not been committed yet. Lines are not counted"
                 )
             else:
                 logger.info(
-                    "[git-authors-plugin] %s has not been committed yet. Lines are not counted"
-                    % path
+                    f"[git-authors-plugin] {path} has not been committed yet. Lines are not counted"
                 )
 
     def add_total_lines(self, cnt: int = 1) -> None:
