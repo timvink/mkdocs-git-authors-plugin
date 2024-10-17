@@ -19,13 +19,10 @@ os.mkdir(tmp_path)
 import os
 import re
 import shutil
-import sys
 from contextlib import contextmanager
-from distutils.version import LooseVersion
 from typing import Any, Generator
 
 import git as gitpython
-import mkdocs
 import pytest
 from click.testing import CliRunner, Result
 from git import Repo
@@ -321,13 +318,7 @@ def test_fallback(tmp_path) -> None:
         ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
 
-# https://github.com/daizutabi/mkapi#:~:text=Python%203.10%20or,1.6%20or%20higher
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="Requires Python 3.10 or higher")
-@pytest.mark.skipif(
-    LooseVersion(mkdocs.__version__) < LooseVersion("1.6"),
-    reason="Requires mkdocs 1.6 or higher",
-)
-def test_mkapi_v3(tmp_path) -> None:
+def test_mkapi(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_mkapi.yml", tmp_path)
     assert (
         result.exit_code == 0
