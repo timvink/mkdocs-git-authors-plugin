@@ -81,12 +81,12 @@ def test_basic_working(tmp_path, mkdocs_file: str) -> None:
     See https://github.com/timvink/mkdocs-git-authors-plugin/issues/60
     """
     result = build_docs_setup(f"tests/basic_setup/{mkdocs_file}", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     index_file = tmp_path / "index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
+    assert index_file.exists(), f"{index_file} does not exist"
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
@@ -96,12 +96,12 @@ def test_basic_working(tmp_path, mkdocs_file: str) -> None:
 def test_custom_href(tmp_path) -> None:
     """ """
     result = build_docs_setup("tests/basic_setup/mkdocs_custom_href.yml", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     index_file = tmp_path / "index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
+    assert index_file.exists(), f"{index_file} does not exist"
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
@@ -121,12 +121,12 @@ def test_custom_href(tmp_path) -> None:
 
 def test_no_email(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_no_email.yml", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     index_file = tmp_path / "index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
+    assert index_file.exists(), f"{index_file} does not exist"
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
@@ -135,12 +135,12 @@ def test_no_email(tmp_path) -> None:
 
 def test_exclude_working(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_exclude.yml", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     page_file = tmp_path / "page_with_tag/index.html"
-    assert page_file.exists(), "%s does not exist" % page_file
+    assert page_file.exists(), f"{page_file} does not exist"
 
     contents = page_file.read_text()
     assert not re.search("<span class='git-page-authors", contents)
@@ -148,12 +148,12 @@ def test_exclude_working(tmp_path) -> None:
 
 def test_ignore_authors_working(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_ignore_authors.yml", tmp_path)
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     page_file = tmp_path / "page_with_tag/index.html"
-    assert page_file.exists(), "%s does not exist" % page_file
+    assert page_file.exists(), f"{page_file} does not exist"
 
     contents = page_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
@@ -197,9 +197,9 @@ def test_exclude_working_with_genfiles(tmp_path) -> None:
         result = build_docs_setup(
             str(testproject_path / "mkdocs.yml"), str(testproject_path / "site")
         )
-        assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
-        )
+        assert (
+            result.exit_code == 0
+        ), f"'mkdocs build' command failed. Error: { result.stdout}"
 
         # files generated ourselves right before build but not committed, should not generate warnings
         assert "manually_created.md has not been committed yet." not in result.stdout
@@ -213,12 +213,12 @@ def test_enabled_working(tmp_path) -> None:
     result = build_docs_setup(
         "tests/basic_setup/mkdocs_complete_material_disabled.yml", tmp_path
     )
-    assert result.exit_code == 0, (
-        "'mkdocs build' command failed. Error: %s" % result.stdout
-    )
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
     page_file = tmp_path / "page_with_tag/index.html"
-    assert page_file.exists(), "%s does not exist" % page_file
+    assert page_file.exists(), f"{page_file} does not exist"
 
     contents = page_file.read_text()
     assert not re.search("<span class='git-page-authors", contents)
@@ -249,9 +249,9 @@ def test_project_with_no_commits(tmp_path) -> None:
         result = build_docs_setup(
             str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
         )
-        assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
-        )
+        assert (
+            result.exit_code == 0
+        ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
 
 def test_building_empty_site(tmp_path) -> None:
@@ -282,9 +282,9 @@ def test_building_empty_site(tmp_path) -> None:
         result = build_docs_setup(
             str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
         )
-        assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
-        )
+        assert (
+            result.exit_code == 0
+        ), f"'mkdocs build' command failed. Error: {result.stdout}"
 
 
 def test_fallback(tmp_path) -> None:
@@ -313,6 +313,6 @@ def test_fallback(tmp_path) -> None:
             str(testproject_path / "website/mkdocs.yml"), str(testproject_path / "site")
         )
         # import pdb; pdb.set_trace()
-        assert result.exit_code == 0, (
-            "'mkdocs build' command failed. Error: %s" % result.stdout
-        )
+        assert (
+            result.exit_code == 0
+        ), f"'mkdocs build' command failed. Error: {result.stdout}"

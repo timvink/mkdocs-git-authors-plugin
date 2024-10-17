@@ -57,7 +57,7 @@ def page_authors_summary(page, config: dict) -> str:
 
     for author in authors:
         contrib = (
-            " (%s)" % author.contribution(page.path(), str)
+            f" ({author.contribution(page.path(), str)})"
             if page.repo().config("show_contribution") and len(page.get_authors()) > 1
             else ""
         )
@@ -67,13 +67,13 @@ def page_authors_summary(page, config: dict) -> str:
                 .config("href")
                 .format(email=author.email(), name=author.name())
             )
-            author_name = "<a href='%s'>%s</a>" % (href, author.name())
+            author_name = f"<a href='{href}'>{author.name()}</a>"
         else:
             author_name = author.name()
-        authors_summary.append("%s%s" % (author_name, contrib))
+        authors_summary.append(f"{author_name}{contrib}")
 
     authors_summary_str = ", ".join(authors_summary)
-    return "<span class='git-page-authors git-authors'>%s</span>" % authors_summary_str
+    return f"<span class='git-page-authors git-authors'>{authors_summary_str}</span>"
 
 
 def site_authors_summary(authors, config: GitAuthorsPluginConfig) -> str:
@@ -104,13 +104,13 @@ def site_authors_summary(authors, config: GitAuthorsPluginConfig) -> str:
         """
     for author in authors:
         contribution = (
-            " (%s)" % author.contribution(None, str) if config.show_contribution else ""
+            f" ({author.contribution(None, str)})" if config.show_contribution else ""
         )
-        lines = ": %s lines" % author.lines() if config.show_line_count else ""
+        lines = f": {author.lines()} lines" if config.show_line_count else ""
         author_name = ""
         if config.show_email_address:
             href = config["href"].format(email=author.email(), name=author.name())
-            author_name = '<a href="%s">%s</a>' % (href, author.name())
+            author_name = f'<a href="{href}">{author.name()}</a>'
         else:
             author_name = author.name()
         result += """
