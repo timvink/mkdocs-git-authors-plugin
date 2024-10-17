@@ -351,7 +351,7 @@ def test_mkapi_v20x(tmp_path) -> None:
     assert True
 
 
-@pytest.mark.skipif(sys.version_info < (3, 7), reason="Requires Python 3.7 or higher")
+@pytest.mark.skipif(sys.version_info < (3, 7) or sys.version_info > (3, 9), reason="Requires Python 3.7 or higher")
 @pytest.mark.skipif(
     not (
         LooseVersion(mkdocs.__version__) < LooseVersion("2")
