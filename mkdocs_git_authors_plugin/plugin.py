@@ -112,6 +112,10 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
                 continue
 
             path = file.abs_src_path
+
+            if path is None:
+                continue
+
             if path.endswith(".md"):
                 _ = self.repo().page(path)
 
@@ -154,9 +158,13 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         )
         if list_pattern.search(html):
             html = list_pattern.sub(
-                ""
-                if self._fallback
-                else util.site_authors_summary(self.repo().get_authors(), self.config),
+                (
+                    ""
+                    if self._fallback
+                    else util.site_authors_summary(
+                        self.repo().get_authors(), self.config
+                    )
+                ),
                 html,
             )
 
