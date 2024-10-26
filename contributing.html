@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.35f28582.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.0253249f.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
@@ -521,6 +521,10 @@
 <span class="n">pytest</span> <span class="o">--</span><span class="n">cov</span><span class="o">=</span><span class="n">mkdocs_git_authors_plugin</span> <span class="o">--</span><span class="n">cov</span><span class="o">-</span><span class="n">report</span> <span class="n">term</span><span class="o">-</span><span class="n">missing</span> <span class="n">tests</span>
 </code></pre></div>
 <p>If it makes sense, writing tests for your PRs is always appreciated and will help get them merged.</p>
+<p>In addition, this project uses pyflakes for static code checking:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="n">pyflakes</span>
+<span class="n">pyflakes</span> <span class="n">tests</span><span class="o">/</span> <span class="n">mkdocs_git_authors_plugin</span><span class="o">/</span>
+</code></pre></div>
 <h2 id="manual-testing">Manual testing</h2>
 <p>To quickly serve a website with your latest changes to the plugin use the sites in our tests suite. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_requirements</span><span class="o">.</span><span class="n">txt</span>
@@ -528,7 +532,7 @@
 <span class="n">mkdocs</span> <span class="n">serve</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">tests</span><span class="o">/</span><span class="n">basic_setup</span><span class="o">/</span><span class="n">mkdocs_complete_material</span><span class="o">.</span><span class="n">yml</span>
 </code></pre></div>
 <h2 id="code-style">Code Style</h2>
-<p>Make sure your code <em>roughly</em> follows <a href="https://www.python.org/dev/peps/pep-0008/">PEP-8</a> and keeps things consistent with the rest of the code. I recommended using <a href="https://github.com/astral-sh/ruff">ruff</a> to automatically format your code.</p>
+<p>Make sure your code <em>roughly</em> follows <a href="https://www.python.org/dev/peps/pep-0008/">PEP-8</a> and keeps things consistent with the rest of the code. I recommended using <a href="https://github.com/psf/black">black</a> to automatically format your code.</p>
 <p>We use google-style docstrings.</p>
 <h2 id="documentation-site">Documentation site</h2>
 <p>Manually deployed by Tim Vink using</p>
@@ -557,8 +561,7 @@
     <nav>
       
         <a href="mailto:vinktim@gmail.com">Tim Vink</a>, 
-        <a href="mailto:git@ursliska.de">Urs Liska</a>, 
-        <a href="mailto:not.committed.yet">Not Committed Yet</a>
+        <a href="mailto:git@ursliska.de">Urs Liska</a>
     </nav>
   </span>
 
@@ -575,7 +578,7 @@
   
     <div class="md-source-date">
       <small>
-          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (95.65%), <a href='mailto:git@ursliska.de'>Urs Liska</a> (2.17%), <a href='mailto:not.committed.yet'>Not Committed Yet</a> (2.17%)</span>
+          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (98.11%), <a href='mailto:git@ursliska.de'>Urs Liska</a> (1.89%)</span>
       </small>
     </div>
   
@@ -619,10 +622,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["content.tabs.link"], "search": "assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.tabs.link"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.56dfad97.min.js"></script>
+      <script src="assets/javascripts/bundle.83f73b43.min.js"></script>
       
     
   </body>
