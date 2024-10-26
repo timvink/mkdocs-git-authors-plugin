@@ -21,7 +21,7 @@ import re
 import shutil
 import sys
 from contextlib import contextmanager
-from distutils.version import LooseVersion
+from packaging.version import Version
 from typing import Any, Generator
 
 import git as gitpython
@@ -324,7 +324,7 @@ def test_fallback(tmp_path) -> None:
 # https://github.com/daizutabi/mkapi#:~:text=Python%203.10%20or,1.6%20or%20higher
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="Requires Python 3.10 or higher")
 @pytest.mark.skipif(
-    LooseVersion(mkdocs.__version__) < LooseVersion("1.6"),
+    Version(mkdocs.__version__) < Version("1.6"),
     reason="Requires mkdocs 1.6 or higher",
 )
 def test_mkapi_v3(tmp_path) -> None:
@@ -354,10 +354,9 @@ def test_mkapi_v20x(tmp_path) -> None:
 @pytest.mark.skipif(sys.version_info < (3, 7) or sys.version_info > (3, 9), reason="Requires Python 3.7 or higher")
 @pytest.mark.skipif(
     not (
-        LooseVersion(mkdocs.__version__) < LooseVersion("2")
-        and LooseVersion(mkdocs.__version__) >= LooseVersion("1.1.2")
+        Version(mkdocs.__version__) < Version("1.6")
     ),
-    reason="Requires mkdocs  >= 1.1.2, < 2",
+    reason="Requires mkdocs  >= 1.6",
 )
 def test_mkapi_v1(tmp_path) -> None:
     result = build_docs_setup("tests/basic_setup/mkdocs_mkapi.yml", tmp_path)
