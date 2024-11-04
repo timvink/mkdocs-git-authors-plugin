@@ -118,7 +118,7 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
             if exclude(file.src_path, excluded_pages):
                 continue
 
-            if file.src_dir is None:
+            if not hasattr(file, 'src_dir') or file.src_dir is None:
                 logger.debug(
                     f"[git-authors-plugin] Unable to find path for file {file.src_path}. "
                     "Generated, in-memory files won't have a git history."
