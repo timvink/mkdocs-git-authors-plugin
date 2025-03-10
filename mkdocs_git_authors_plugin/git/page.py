@@ -149,6 +149,7 @@ class Page(AbstractRepoObject):
             args.append("--ignore-revs-file")
             args.append(self.repo().config("ignore_commits"))
         args.append("--porcelain")
+        args.append("-w") # Ignore whitespace changes
         args.append(str(self._path))
         cmd = GitCommand("blame", args)
         cmd.run()
