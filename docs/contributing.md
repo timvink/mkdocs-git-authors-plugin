@@ -10,31 +10,20 @@ Thanks for considering to contribute to this project! Some guidelines:
 
 ## Unit Tests
 
-Make sure to install an editable version before running tests:
+We use `uv`.
 
 ```python
-pip install -r tests/test_requirements.txt
-pip install -e .
-pytest --cov=mkdocs_git_authors_plugin --cov-report term-missing tests
+uv run pytest --cov=mkdocs_git_authors_plugin --cov-report term-missing tests
 ```
 
 If it makes sense, writing tests for your PRs is always appreciated and will help get them merged.
-
-In addition, this project uses pyflakes for static code checking:
-
-```python
-pip install pyflakes
-pyflakes tests/ mkdocs_git_authors_plugin/
-```
 
 ## Manual testing
 
 To quickly serve a website with your latest changes to the plugin use the sites in our tests suite. For example:
 
 ```python
-pip install -r tests/test_requirements.txt
-pip install -e .
-mkdocs serve -f ./tests/basic_setup/mkdocs_complete_material.yml
+uv run mkdocs serve -f ./tests/basic_setup/mkdocs_complete_material.yml
 ```
 
 ## Code Style
@@ -43,11 +32,10 @@ Make sure your code *roughly* follows [PEP-8](https://www.python.org/dev/peps/pe
 
 We use google-style docstrings.
 
-
 ## Documentation site
 
 Manually deployed by Tim Vink using
 
 ```bash
-mkdocs gh-deploy
+uv run mkdocs gh-deploy
 ```
