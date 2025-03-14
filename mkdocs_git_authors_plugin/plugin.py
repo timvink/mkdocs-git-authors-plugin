@@ -15,6 +15,8 @@ from mkdocs_git_authors_plugin.config import GitAuthorsPluginConfig
 from mkdocs_git_authors_plugin.exclude import exclude
 from mkdocs_git_authors_plugin.git.command import GitCommandError
 from mkdocs_git_authors_plugin.git.repo import Repo
+from mkdocs_git_authors_plugin.util import working_directory
+
 
 logger = logging.getLogger("mkdocs.plugins")
 
@@ -57,7 +59,8 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         assert self.config.authorship_threshold_percent <= 100
 
         try:
-            self._repo = Repo()
+            with working_directory(config.get("docs_dir",".")):
+                self._repo = Repo()
             self._fallback = False
             self.repo().set_config(self.config)
             raise_ci_warnings(path=self.repo()._root)
