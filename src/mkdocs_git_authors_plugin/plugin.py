@@ -58,21 +58,32 @@ class GitAuthorsPlugin(BasePlugin[GitAuthorsPluginConfig]):
         assert self.config.authorship_threshold_percent >= 0
         assert self.config.authorship_threshold_percent <= 100
 
+        self._fallback = False
+        # Find the git repository in the current working directory
         try:
-            with working_directory(config.get("docs_dir",".")):
-                self._repo = Repo()
-            self._fallback = False
+            self._repo = Repo()
+        except GitCommandError:
+            self._repo = None
+        
+        # Try finding the git repository inside the documentation directory
+        if self._repo is None:
+            try:
+                with working_directory(config.get("docs_dir", ".")):
+                    self._repo = Repo()
+            except GitCommandError:
+                if self.config.fallback_to_empty:
+                    self._fallback = True
+                    logger.warning(
+                        "[git-authors-plugin] Unable to find a git directory and/or git is not installed."
+                        " Option 'fallback_to_empty' set to 'true': Falling back to empty authors list"
+                    )
+                else:
+                    raise
+        
+        if self._repo is not None:
             self.repo().set_config(self.config)
             raise_ci_warnings(path=self.repo()._root)
-        except GitCommandError:
-            if self.config.fallback_to_empty:
-                self._fallback = True
-                logger.warning(
-                    "[git-authors-plugin] Unable to find a git directory and/or git is not installed."
-                    " Option 'fallback_to_empty' set to 'true': Falling back to empty authors list"
-                )
-            else:
-                raise
+        
 
     def on_files(
         self, files: Files, *, config: MkDocsConfig, **kwargs
