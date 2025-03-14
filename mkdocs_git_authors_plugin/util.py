@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
+import os
+from contextlib import contextmanager
+from typing import Any, Generator
+from pathlib import Path
 
 from mkdocs_git_authors_plugin.config import GitAuthorsPluginConfig
 
@@ -148,3 +152,26 @@ def page_authors(authors: List, path: str) -> List[Dict[str, Any]]:
         }
         for author in authors
     ]
+
+
+
+@contextmanager
+def working_directory(path) -> Generator[None, Any, None]:
+    """
+    Temporarily change working directory.
+    A context manager which changes the working directory to the given
+    path, and then changes it back to its previous value on exit.
+    Usage:
+    ```python
+    # Do something in original directory
+    with working_directory('/my/new/path'):
+        # Do something in new directory
+    # Back to old directory
+    ```
+    """
+    prev_cwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)

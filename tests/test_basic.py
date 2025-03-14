@@ -20,9 +20,7 @@ import os
 import re
 import shutil
 import sys
-from contextlib import contextmanager
 from packaging.version import Version
-from typing import Any, Generator
 
 import git as gitpython
 import mkdocs
@@ -30,6 +28,8 @@ import pytest
 from click.testing import CliRunner, Result
 from git import Repo
 from mkdocs.__main__ import build_command
+
+from mkdocs_git_authors_plugin.util import working_directory
 
 SITES_THAT_SHOULD_SUCCEED = [
     "mkdocs.yml",
@@ -45,26 +45,6 @@ SITES_THAT_SHOULD_SUCCEED = [
 ]
 
 
-@contextmanager
-def working_directory(path) -> Generator[None, Any, None]:
-    """
-    Temporarily change working directory.
-    A context manager which changes the working directory to the given
-    path, and then changes it back to its previous value on exit.
-    Usage:
-    ```python
-    # Do something in original directory
-    with working_directory('/my/new/path'):
-        # Do something in new directory
-    # Back to old directory
-    ```
-    """
-    prev_cwd = os.getcwd()
-    os.chdir(path)
-    try:
-        yield
-    finally:
-        os.chdir(prev_cwd)
 
 
 def build_docs_setup(mkdocs_path, output_path) -> Result:
@@ -373,3 +353,31 @@ def test_mkapi_v1(tmp_path) -> None:
         r'<a href="\$api:src/mkdocs_git_authors_plugin.*" class="nav-link">API</a>',
         contents,
     )
+
+def test_custom_docs_dir(tmp_path):
+
+    testproject_path = tmp_path / "testproject"
+    shutil.copytree("tests/custom_docs_dir", testproject_path)
+
+
+    # init git inside the docs directory
+    with working_directory(str(testproject_path / "documentation")):
+        # setup git history
+        repo = Repo.init(".")
+        assert not repo.bare
+        repo.git.add(all=True)
+        repo.index.commit("first commit")
+
+    with working_directory(str(testproject_path)):
+        result = build_docs_setup("mkdocs.yml", str(tmp_path / "site"))
+
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
+
+    index_file = tmp_path / "site" / "index.html"
+    assert index_file.exists(), f"{index_file} does not exist"
+
+    contents = index_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+
