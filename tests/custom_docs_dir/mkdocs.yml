@@ -1,0 +1,8 @@
+site_name: test gitauthors_plugin
+use_directory_urls: true
+
+docs_dir: documentation
+
+plugins:
+    - search
+    - git-authors
