@@ -12,7 +12,7 @@ authors = [
 ]
 keywords = ["mkdocs", "git", "contributors", "committers", "authors", "plugin"]
 urls = {Homepage = "https://github.com/timvink/mkdocs-git-authors-plugin"}
-version = "0.9.3"
+version = "0.9.4"
 requires-python = ">=3.8"
 dependencies = ["mkdocs>=1.0"]
 classifiers = [
@@ -33,6 +33,9 @@ classifiers = [
 
 [project.entry-points."mkdocs.plugins"]
 git-authors = "mkdocs_git_authors_plugin.plugin:GitAuthorsPlugin"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [dependency-groups]
 dev = [
