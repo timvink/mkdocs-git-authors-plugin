@@ -1,7 +1,7 @@
 import logging
 import re
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from mkdocs_git_authors_plugin.git.command import GitCommand, GitCommandError
 from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
@@ -73,7 +73,7 @@ class Page(AbstractRepoObject):
                 or repo.config("show_contribution")
                 or repo.config("sort_authors_by") == "contribution"
             )
-            self._authors = sorted(self._authors, key=repo._sort_key, reverse=reverse)
+            self._authors = sorted(self._authors, key=self._sort_key, reverse=reverse)
             self._sorted = True
             author_threshold = repo.config("authorship_threshold_percent")
             if author_threshold > 0 and len(self._authors) > 1:
@@ -209,6 +209,26 @@ class Page(AbstractRepoObject):
             Absolute path as Path object.
         """
         return self._path
+
+    def _sort_key(self, author) -> Any:
+        """
+        Return a sort key for an author.
+
+        Args:
+            author: an Author object
+
+        Returns:
+            comparison key for the sorted() function,
+        """
+        repo = self.repo()
+        if (
+            repo.config("show_line_count")
+            or repo.config("show_contribution")
+            or repo.config("sort_authors_by") == "contribution"
+        ):
+            return getattr(author, "contribution")(self.path())
+        else:
+            return getattr(author, "name")()
 
     def total_lines(self) -> int:
         """
