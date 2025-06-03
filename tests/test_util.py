@@ -42,8 +42,8 @@ DEFAULT_CONFIG = {
     "sort_authors_by": "name",
     "authorship_threshold_percent": 0,
     "strict": True,
-    #"sort_authors_by_name": True,
-    #"sort_reverse": False,
+    # "sort_authors_by_name": True,
+    # "sort_reverse": False,
 }
 
 #### Helpers ####
@@ -128,7 +128,10 @@ def setup_commit_history(testproject_path):
         repo.git.add("docs/page_with_tag.md")
         repo.git.commit(message="homepage", author=author)
         repo.git.add("docs/page_with_co_authors.md")
-        repo.git.commit(message="co-authors commit\nCo-authored-by: Test Person <testtest@gmail.com>\nCo-authored-by: John Doe <jdoe@john.com>", author=author)
+        repo.git.commit(
+            message="co-authors commit\nCo-authored-by: Test Person <testtest@gmail.com>\nCo-authored-by: John Doe <jdoe@john.com>",
+            author=author,
+        )
         os.chdir(str(cwd))
     except:
         os.chdir(str(cwd))
@@ -142,7 +145,7 @@ def commit_lines(r, file_name, author_name, author_email, num_of_lines=1):
     with open(file_name, "a") as the_file:
         for i in range(num_of_lines):
             the_file.write("Hello\n")
-    
+
     r.index.add([file_name])
     author = gitpython.Actor(author_name, author_email)
     r.index.commit("some commit", author=author)
@@ -514,17 +517,18 @@ def test_page_authors_summary(tmp_path):
 
     # Initial commit
     commit_lines(r, file_name, "Tim", "abc@abc.com")
-    
+
     repo_instance = repo.Repo()
     repo_instance.set_config(config)
     page_instance = repo_instance.page(file_name)
 
     authors_summary = util.page_authors_summary(page_instance, config)
 
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:abc@abc.com'>Tim</a>"\
-                            "</span>"
-
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:abc@abc.com'>Tim</a>"
+        "</span>"
+    )
 
     # Now add a line to the file
     # From a second author with same email
@@ -536,10 +540,11 @@ def test_page_authors_summary(tmp_path):
 
     authors_summary = util.page_authors_summary(page_instance, config)
 
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:abc@abc.com'>Tim</a>"\
-                            "</span>"
-
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:abc@abc.com'>Tim</a>"
+        "</span>"
+    )
 
     # Then a third commit from a new author
     commit_lines(r, file_name, "John", "john@abc.com")
@@ -550,10 +555,12 @@ def test_page_authors_summary(tmp_path):
 
     authors_summary = util.page_authors_summary(page_instance, config)
 
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:john@abc.com'>John</a>, "\
-                            "<a href='mailto:abc@abc.com'>Tim</a>"\
-                            "</span>"
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:john@abc.com'>John</a>, "
+        "<a href='mailto:abc@abc.com'>Tim</a>"
+        "</span>"
+    )
 
     os.chdir(cwd)
 
@@ -577,7 +584,7 @@ def test_page_authors_summary_showing_contribution(tmp_path):
 
     # Initial commit
     commit_lines(r, file_name, "Tim", "abc@abc.com")
-    
+
     repo_instance = repo.Repo()
     repo_instance.set_config(config)
     page_instance = repo_instance.page(file_name)
@@ -585,10 +592,11 @@ def test_page_authors_summary_showing_contribution(tmp_path):
     authors_summary = util.page_authors_summary(page_instance, config)
 
     # Contribution is not shown if there is only single Author
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:abc@abc.com'>Tim</a>"\
-                            "</span>"
-
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:abc@abc.com'>Tim</a>"
+        "</span>"
+    )
 
     # Now add a line to the file
     # From a second author with same email
@@ -601,10 +609,11 @@ def test_page_authors_summary_showing_contribution(tmp_path):
     authors_summary = util.page_authors_summary(page_instance, config)
 
     # Contribution is not shown if there is only single Author
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:abc@abc.com'>Tim</a>"\
-                            "</span>"
-
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:abc@abc.com'>Tim</a>"
+        "</span>"
+    )
 
     # Then a third commit from a new author
     commit_lines(r, file_name, "John", "john@abc.com")
@@ -616,15 +625,19 @@ def test_page_authors_summary_showing_contribution(tmp_path):
     authors_summary = util.page_authors_summary(page_instance, config)
 
     # Contribution is shown if there are multiple authors, ordered by contribution
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:abc@abc.com'>Tim</a> (66.67%), "\
-                            "<a href='mailto:john@abc.com'>John</a> (33.33%)"\
-                            "</span>"
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:abc@abc.com'>Tim</a> (66.67%), "
+        "<a href='mailto:john@abc.com'>John</a> (33.33%)"
+        "</span>"
+    )
 
     os.chdir(cwd)
 
 
-def test_page_authors_summary_showing_contribution_ordering_by_page_contribution(tmp_path):
+def test_page_authors_summary_showing_contribution_ordering_by_page_contribution(
+    tmp_path,
+):
     """
     Builds a fake git project with some commits.
 
@@ -650,7 +663,7 @@ def test_page_authors_summary_showing_contribution_ordering_by_page_contribution
     commit_lines(r, file_name2, "Tim", "tim@abc.com", 4)
     commit_lines(r, file_name2, "John", "john@abc.com", 16)
     commit_lines(r, file_name2, "Thomas", "thomas@abc.com", 8)
-    
+
     repo_instance = repo.Repo()
     repo_instance.set_config(config)
     page_instance = repo_instance.page(file_name)
@@ -659,19 +672,23 @@ def test_page_authors_summary_showing_contribution_ordering_by_page_contribution
     authors_summary = util.page_authors_summary(page_instance, config)
 
     # Contribution is shown if there are multiple authors, ordered by contribution on page
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:tim@abc.com'>Tim</a> (57.14%), "\
-                            "<a href='mailto:john@abc.com'>John</a> (28.57%), "\
-                            "<a href='mailto:thomas@abc.com'>Thomas</a> (14.29%)"\
-                            "</span>"
-    
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:tim@abc.com'>Tim</a> (57.14%), "
+        "<a href='mailto:john@abc.com'>John</a> (28.57%), "
+        "<a href='mailto:thomas@abc.com'>Thomas</a> (14.29%)"
+        "</span>"
+    )
+
     authors_summary = util.page_authors_summary(page_instance2, config)
 
-    assert authors_summary == "<span class='git-page-authors git-authors'>"\
-                            "<a href='mailto:john@abc.com'>John</a> (57.14%), "\
-                            "<a href='mailto:thomas@abc.com'>Thomas</a> (28.57%), "\
-                            "<a href='mailto:tim@abc.com'>Tim</a> (14.29%)"\
-                            "</span>"
+    assert (
+        authors_summary == "<span class='git-page-authors git-authors'>"
+        "<a href='mailto:john@abc.com'>John</a> (57.14%), "
+        "<a href='mailto:thomas@abc.com'>Thomas</a> (28.57%), "
+        "<a href='mailto:tim@abc.com'>Tim</a> (14.29%)"
+        "</span>"
+    )
 
     os.chdir(cwd)
 
