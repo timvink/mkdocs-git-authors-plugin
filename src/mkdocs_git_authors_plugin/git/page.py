@@ -256,7 +256,7 @@ class Page(AbstractRepoObject):
                 # skip author as already available in Commit object
                 continue
 
-            result = re.search(r"Co-authored-by:(.*) <(.*)>", line)
+            result = re.search(r"Co-authored-by: (.*) <(.*)>", line)
             if result is not None and result.group(1) != "" and result.group(2) != "":
                 # Extract co-authors from the commit
                 co_author = self.repo().author(result.group(1), result.group(2))
