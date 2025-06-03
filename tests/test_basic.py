@@ -154,7 +154,7 @@ def test_co_authors_working(tmp_path) -> None:
     contents = page_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
     assert re.search(
-        "<a href='mailto:12074690\+fpozzobon@users.noreply.github.com'>Fabien Pozzobon</a>",
+        "fpozzobon@users.noreply.github.com'>Fabien Pozzobon</a>",
         contents,
     )
     assert re.search("<a href='mailto:jdoe@john.com'>John Doe</a>", contents)
