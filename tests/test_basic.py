@@ -45,8 +45,6 @@ SITES_THAT_SHOULD_SUCCEED = [
 ]
 
 
-
-
 def build_docs_setup(mkdocs_path, output_path) -> Result:
     runner = CliRunner()
     return runner.invoke(
@@ -141,6 +139,25 @@ def test_ignore_authors_working(tmp_path) -> None:
     contents = page_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
     assert re.search("<a href='mailto:vinktim@gmail.com'>Tim Vink</a>", contents)
+    assert not re.search("Julien", contents)
+
+
+def test_co_authors_working(tmp_path) -> None:
+    result = build_docs_setup("tests/basic_setup/mkdocs_ignore_authors.yml", tmp_path)
+    assert (
+        result.exit_code == 0
+    ), f"'mkdocs build' command failed. Error: {result.stdout}"
+
+    page_file = tmp_path / "page_with_co_authors/index.html"
+    assert page_file.exists(), f"{page_file} does not exist"
+
+    contents = page_file.read_text()
+    assert re.search("<span class='git-page-authors", contents)
+    assert re.search(
+        "<a href='mailto:12074690\+fpozzobon@users.noreply.github.com'>Fabien Pozzobon</a>",
+        contents,
+    )
+    assert re.search("<a href='mailto:jdoe@john.com'>John Doe</a>", contents)
     assert not re.search("Julien", contents)
 
 
@@ -331,11 +348,12 @@ def test_mkapi_v20x(tmp_path) -> None:
     assert True
 
 
-@pytest.mark.skipif(sys.version_info < (3, 7) or sys.version_info > (3, 9), reason="Requires Python 3.7 or higher")
 @pytest.mark.skipif(
-    not (
-        Version(mkdocs.__version__) < Version("1.6")
-    ),
+    sys.version_info < (3, 7) or sys.version_info > (3, 9),
+    reason="Requires Python 3.7 or higher",
+)
+@pytest.mark.skipif(
+    not (Version(mkdocs.__version__) < Version("1.6")),
     reason="Requires mkdocs  >= 1.6",
 )
 def test_mkapi_v1(tmp_path) -> None:
@@ -354,11 +372,11 @@ def test_mkapi_v1(tmp_path) -> None:
         contents,
     )
 
+
 def test_custom_docs_dir(tmp_path):
 
     testproject_path = tmp_path / "testproject"
     shutil.copytree("tests/custom_docs_dir", testproject_path)
-
 
     # init git inside the docs directory
     with working_directory(str(testproject_path / "documentation")):
@@ -380,4 +398,3 @@ def test_custom_docs_dir(tmp_path):
 
     contents = index_file.read_text()
     assert re.search("<span class='git-page-authors", contents)
-

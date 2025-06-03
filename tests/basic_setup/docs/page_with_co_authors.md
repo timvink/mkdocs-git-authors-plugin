@@ -1,7 +1,3 @@
-# Test with co-authors
+# Test with co-authors mentioned
 
 Page authors: {{ git_page_authors }}
-
-----
-
-Site authors: {{ git_site_authors }}
