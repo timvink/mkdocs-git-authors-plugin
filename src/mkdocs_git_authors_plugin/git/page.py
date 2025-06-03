@@ -189,15 +189,82 @@ class Page(AbstractRepoObject):
                     author_tz=commit_data.get("author-tz"),
                     summary=commit_data.get("summary"),
                 )
-                if commit.author().email() not in ignore_authors and (
-                    len(line) > 1 or self.repo().config("count_empty_lines")
-                ):
-                    author = commit.author()
-                    if author not in self._authors:
-                        self._authors.append(author)
-                    author.add_lines(self, commit)
-                    self.add_total_lines()
-                    self.repo().add_total_lines()
+                if len(line) > 1 or self.repo().config("count_empty_lines"):
+                    if commit.author().email() not in ignore_authors:
+                        author = commit.author()
+                        if author not in self._authors:
+                            self._authors.append(author)
+                        author.add_lines(self, commit)
+                        self.add_total_lines()
+                        self.repo().add_total_lines()
+                    # Process co-authors if present
+                    self._process_git_log(commit_data.get("sha"), commit)
+
+    def _process_git_log(self, sha, commit) -> None:
+        """
+        Execute git log and parse the results.
+
+        This retrieves [co-authors](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors) from comment.
+        Each line will be associated with a Commit object and counted
+        to its co-author's "account".
+        Whether empty lines are counted is determined by the
+        count_empty_lines configuration option.
+
+        git log -1 <sha> will produce output like the following
+        for each line in a file:
+
+        When a commit does not contain co-authors:
+            commit ca8b32b24af1ce97fb29c5139b2f80e0c2ad9d1c
+            Author: John Doe <jdoe@john.com>
+            Date:   Sun Dec 22 11:10:32 2019 +0100
+
+                add plugin skeleton
+
+        When a commit contains co-authors:
+            commit ca8b32b24af1ce97fb29c5139b2f80e0c2ad9d1c
+            Author: John Doe <jdoe@john.com>
+            Date:   Sun Dec 22 11:10:32 2019 +0100
+
+                add plugin skeleton
+
+                Co-authored-by: John Doe <jdoe@john.com>
+                Co-authored-by: Rock Smith <rsmith@smith.com>
+
+        In this case we skip the original author as redundant using email address to detect it.
+
+        Args:
+            sha: the SHA of the commit to process
+        Returns:
+            --- (this method works through side effects)
+        """
+
+        args = []
+        args.append("-1") # Only existing sha
+        args.append(sha)
+        cmd = GitCommand("log", args)
+        cmd.run()
+
+        lines = cmd.stdout()
+
+        # in case of empty, non-committed files, raise error
+        if len(lines) == 0:
+            raise GitCommandError
+
+        ignore_authors = self.repo().config("ignore_authors")
+        for line in lines:
+            if line.startswith("Author: "):
+                # skip author as already available in Commit object
+                continue
+
+            result = re.search(r"Co-authored-by:(.*) <(.*)>", line)
+            if result is not None and result.group(1) != "" and result.group(2) != "":
+                # Extract co-authors from the commit
+                co_author = self.repo().author(result.group(1), result.group(2))
+                if co_author.email() not in ignore_authors and co_author.email() != commit.author().email():
+                    # Create the co-author
+                    if co_author not in self._authors:
+                        self._authors.append(co_author)
+                    co_author.add_lines(self, commit)
 
     def path(self) -> Path:
         """
