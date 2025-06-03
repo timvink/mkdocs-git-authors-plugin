@@ -127,6 +127,8 @@ def setup_commit_history(testproject_path):
         repo.git.commit(message="homepage", author=author)
         repo.git.add("docs/page_with_tag.md")
         repo.git.commit(message="homepage", author=author)
+        repo.git.add("docs/page_with_co_authors.md")
+        repo.git.commit(message="co-authors commit\nCo-authored-by: Test Person <testtest@gmail.com>\nCo-authored-by: John Doe <jdoe@john.com>", author=author)
         os.chdir(str(cwd))
     except:
         os.chdir(str(cwd))
