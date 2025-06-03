@@ -149,7 +149,7 @@ class Page(AbstractRepoObject):
             args.append("--ignore-revs-file")
             args.append(self.repo().config("ignore_commits"))
         args.append("--porcelain")
-        args.append("-w") # Ignore whitespace changes
+        args.append("-w")  # Ignore whitespace changes
         args.append(str(self._path))
         cmd = GitCommand("blame", args)
         cmd.run()
@@ -239,7 +239,7 @@ class Page(AbstractRepoObject):
         """
 
         args = []
-        args.append("-1") # Only existing sha
+        args.append("-1")  # Only existing sha
         args.append(sha)
         cmd = GitCommand("log", args)
         cmd.run()
@@ -260,7 +260,10 @@ class Page(AbstractRepoObject):
             if result is not None and result.group(1) != "" and result.group(2) != "":
                 # Extract co-authors from the commit
                 co_author = self.repo().author(result.group(1), result.group(2))
-                if co_author.email() not in ignore_authors and co_author.email() != commit.author().email():
+                if (
+                    co_author.email() not in ignore_authors
+                    and co_author.email() != commit.author().email()
+                ):
                     # Create the co-author
                     if co_author not in self._authors:
                         self._authors.append(co_author)
