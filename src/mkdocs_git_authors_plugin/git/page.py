@@ -32,6 +32,8 @@ class Page(AbstractRepoObject):
         self._total_lines = 0
         self._authors: List[dict] = list()
         self._strict = strict
+        # Cache Logs, indexed by 40 char SHA
+        self._cached_logs = {}
 
         try:
             self._process_git_blame()
@@ -238,18 +240,29 @@ class Page(AbstractRepoObject):
             --- (this method works through side effects)
         """
 
-        args = []
-        args.append("-1")  # Only existing sha
-        args.append(sha)
-        cmd = GitCommand("log", args)
-        cmd.run()
+        co_authors = self._get_git_log(sha, commit)
+        for co_author in co_authors:
+            # Create the co-author
+            if co_author not in self._authors:
+                self._authors.append(co_author)
+            co_author.add_lines(self, commit)
 
-        lines = cmd.stdout()
+    def _get_git_log(self, sha, commit):
+        if self._cached_logs.get(sha) is None:
+            args = ["-1", sha]
+            cmd = GitCommand("log", args)
+            cmd.run()
 
-        # in case of empty, non-committed files, raise error
-        if len(lines) == 0:
-            raise GitCommandError
+            lines = cmd.stdout()
 
+            # in case of empty, non-committed files, raise error
+            if len(lines) == 0:
+                raise GitCommandError
+            self._cached_logs[sha] = self._parse_git_log(lines, commit)
+        return self._cached_logs.get(sha)
+
+    def _parse_git_log(self, lines, commit):
+        parsed_logs = []
         ignore_authors = self.repo().config("ignore_authors")
         for line in lines:
             if line.startswith("Author: "):
@@ -264,10 +277,8 @@ class Page(AbstractRepoObject):
                     co_author.email() not in ignore_authors
                     and co_author.email() != commit.author().email()
                 ):
-                    # Create the co-author
-                    if co_author not in self._authors:
-                        self._authors.append(co_author)
-                    co_author.add_lines(self, commit)
+                    parsed_logs.append(co_author)
+        return parsed_logs
 
     def path(self) -> Path:
         """
