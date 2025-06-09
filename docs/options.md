@@ -8,7 +8,7 @@ plugins:
         show_contribution: true
         show_line_count: true
         show_email_address: true
-        add_co_authors: true
+        add_co_authors: false
         href: "mailto:{email}"
         count_empty_lines: true
         fallback_to_empty: false
@@ -44,6 +44,12 @@ If this option is set to `true` (default: `false`) the number of lines per autho
 If this option is set to `true` (default: `true`), then authors' names
 are rendered as (by default) a `mailto:{email}` link pointing to their email address. If
 set to `false`, they are shown in plain text.
+
+## `add_co_authors`
+
+If this option is set to `true` (default: `false`), then 
+[co-authors](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors)' names
+are rendered in addition to the commit author.
 
 ## `href`
 
