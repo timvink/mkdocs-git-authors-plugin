@@ -200,9 +200,13 @@ class Page(AbstractRepoObject):
                     # Process co-authors if present
                     for co_author in commit.co_authors():
                         # Create the co-author
-                        if co_author not in self._authors:
-                            self._authors.append(co_author)
-                        co_author.add_lines(self, commit)
+                        if (
+                            co_author.email() not in ignore_authors
+                            and co_author.email() != commit.author().email()
+                        ):
+                            if co_author not in self._authors:
+                                self._authors.append(co_author)
+                            co_author.add_lines(self, commit)
 
     def path(self) -> Path:
         """

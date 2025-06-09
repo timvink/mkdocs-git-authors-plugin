@@ -116,11 +116,11 @@ class Repo(object):
         if not self._commits.get(sha):
             from .commit import Commit
 
-            kwargs["co_authors"] = self._get_co_authors(sha, kwargs.get("author_email"))
+            kwargs["co_authors"] = self._get_co_authors(sha)
             self._commits[sha] = Commit(self, sha, **kwargs)
         return self._commits.get(sha)
 
-    def _get_co_authors(self, sha, author_email) -> List[Any]:
+    def _get_co_authors(self, sha) -> List[Any]:
         """
         Execute git log and parse the results.
 
@@ -168,7 +168,6 @@ class Repo(object):
         if len(lines) == 0:
             raise GitCommandError
         co_authors = []
-        ignore_authors = self.config("ignore_authors")
 
         for line in lines:
             if line.startswith("Author: "):
@@ -179,11 +178,7 @@ class Repo(object):
             if result is not None and result.group(1) != "" and result.group(2) != "":
                 # Extract co-authors from the commit
                 co_author = self.author(result.group(1), result.group(2))
-                if (
-                    co_author.email() not in ignore_authors
-                    and co_author.email() != author_email
-                ):
-                    co_authors.append(co_author)
+                co_authors.append(co_author)
         return co_authors
 
     def page(self, path):
