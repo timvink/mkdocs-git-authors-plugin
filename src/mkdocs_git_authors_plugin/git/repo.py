@@ -116,7 +116,10 @@ class Repo(object):
         if not self._commits.get(sha):
             from .commit import Commit
 
-            kwargs["co_authors"] = self._get_co_authors(sha)
+            if self.config("add_co_authors"):
+                kwargs["co_authors"] = self._get_co_authors(sha)
+            else:
+                kwargs["co_authors"] = []
             self._commits[sha] = Commit(self, sha, **kwargs)
         return self._commits.get(sha)
 
