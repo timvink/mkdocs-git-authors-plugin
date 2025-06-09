@@ -1,5 +1,5 @@
 import re
-from typing import Any, Union
+from typing import Any, Union, List
 
 from mkdocs_git_authors_plugin import util
 from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
@@ -24,7 +24,7 @@ class Commit(AbstractRepoObject):
         author_time: str,
         author_tz: str,
         summary: str,
-        co_authors: list[Any],
+        co_authors: List[Any],
     ):
         """Initialize a commit from its SHA.
 
