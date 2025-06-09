@@ -1,5 +1,5 @@
 import re
-from typing import Union
+from typing import Any, Union
 
 from mkdocs_git_authors_plugin import util
 from mkdocs_git_authors_plugin.git.repo import AbstractRepoObject, Repo
@@ -24,6 +24,7 @@ class Commit(AbstractRepoObject):
         author_time: str,
         author_tz: str,
         summary: str,
+        co_authors: list[Any],
     ):
         """Initialize a commit from its SHA.
 
@@ -48,6 +49,7 @@ class Commit(AbstractRepoObject):
         self._datetime = util.commit_datetime(author_time, author_tz)
         self._datetime_string = util.commit_datetime_string(self._datetime)
         self._summary = summary
+        self._co_authors = co_authors
 
     def author(self):
         """
@@ -59,6 +61,17 @@ class Commit(AbstractRepoObject):
             Author object
         """
         return self._author
+
+    def co_authors(self):
+        """
+        The commit's co-author.
+
+        Args:
+
+        Returns:
+            Co-Authors list
+        """
+        return self._co_authors
 
     def datetime(self, _type=str) -> Union[str, util.datetime]:
         """
