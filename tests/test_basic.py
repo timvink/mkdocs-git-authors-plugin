@@ -143,7 +143,7 @@ def test_ignore_authors_working(tmp_path) -> None:
 
 
 def test_co_authors_working(tmp_path) -> None:
-    result = build_docs_setup("tests/basic_setup/mkdocs_ignore_authors.yml", tmp_path)
+    result = build_docs_setup("tests/basic_setup/mkdocs_add_co_authors.yml", tmp_path)
     assert (
         result.exit_code == 0
     ), f"'mkdocs build' command failed. Error: {result.stdout}"

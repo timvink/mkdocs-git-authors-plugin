@@ -6,6 +6,7 @@ class GitAuthorsPluginConfig(Config):
     show_contribution = config_options.Type(bool, default=False)
     show_line_count = config_options.Type(bool, default=False)
     show_email_address = config_options.Type(bool, default=True)
+    add_co_authors = config_options.Type(bool, default=False)
     href = config_options.Type(str, default="mailto:{email}")
     count_empty_lines = config_options.Type(bool, default=True)
     fallback_to_empty = config_options.Type(bool, default=False)

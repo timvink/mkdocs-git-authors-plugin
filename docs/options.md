@@ -8,6 +8,7 @@ plugins:
         show_contribution: true
         show_line_count: true
         show_email_address: true
+        add_co_authors: true
         href: "mailto:{email}"
         count_empty_lines: true
         fallback_to_empty: false
