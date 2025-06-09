@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Union, List
 
 from mkdocs_git_authors_plugin.git.command import GitCommand
 
@@ -52,7 +52,7 @@ class Repo(object):
             self._authors[email] = Author(self, name, email)
         return self._authors[email]
 
-    def get_authors(self) -> list:
+    def get_authors(self) -> List[Any]:
         """
         Sorted list of authors in the repository.
 
@@ -120,7 +120,7 @@ class Repo(object):
             self._commits[sha] = Commit(self, sha, **kwargs)
         return self._commits.get(sha)
 
-    def _get_co_authors(self, sha, author_email) -> list[Any]:
+    def _get_co_authors(self, sha, author_email) -> List[Any]:
         """
         Execute git log and parse the results.
 
