@@ -12,7 +12,7 @@ authors = [
 ]
 keywords = ["mkdocs", "git", "contributors", "committers", "authors", "plugin"]
 urls = {Homepage = "https://github.com/timvink/mkdocs-git-authors-plugin"}
-version = "0.9.6"
+version = "0.10.0"
 requires-python = ">=3.8"
 dependencies = ["mkdocs>=1.0"]
 classifiers = [
