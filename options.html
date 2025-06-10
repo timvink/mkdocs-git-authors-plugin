@@ -374,6 +374,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add_co_authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_co_authors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#href" class="md-nav__link">
     <span class="md-ellipsis">
       href
@@ -576,6 +585,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add_co_authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_co_authors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#href" class="md-nav__link">
     <span class="md-ellipsis">
       href
@@ -701,6 +719,7 @@
 <span class="w">        </span><span class="nt">show_contribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">show_line_count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">show_email_address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">add_co_authors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">        </span><span class="nt">href</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mailto:{email}&quot;</span>
 <span class="w">        </span><span class="nt">count_empty_lines</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">fallback_to_empty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -730,6 +749,10 @@ suppressed if there is only <em>one</em> author for a page.</p>
 <p>If this option is set to <code>true</code> (default: <code>true</code>), then authors' names
 are rendered as (by default) a <code>mailto:{email}</code> link pointing to their email address. If
 set to <code>false</code>, they are shown in plain text.</p>
+<h2 id="add_co_authors"><code>add_co_authors</code></h2>
+<p>If this option is set to <code>true</code> (default: <code>false</code>), then 
+<a href="https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors">co-authors</a>' names
+are rendered in addition to the commit author.</p>
 <h2 id="href"><code>href</code></h2>
 <p>Given <code>show_email_adress</code> is set to <code>true</code>, you can customize the rendered link with the option <code>href</code>
 (default: <code>mailto:{email}</code>) using the f-string format (available <code>{email}</code> and <code>{name}</code>).
@@ -807,6 +830,7 @@ mkdocs<span class="w"> </span>serve
         <a href="mailto:rcgoncalves.pt@gmail.com">rcg</a>, 
         <a href="mailto:polygonguru@gmail.com">Scott Phillips</a>, 
         <a href="mailto:jose@alonsomoya.com">Jose ALONSO</a>, 
+        <a href="mailto:12074690+fpozzobon@users.noreply.github.com">Fabien Pozzobon</a>, 
         <a href="mailto:florian@cleura.com">Florian Haas</a>, 
         <a href="mailto:lucadelu97@gmail.com">Luca Deluigi</a>, 
         <a href="mailto:t.breitner@csl.mpg.de">Thomas Breitner</a>, 
@@ -827,7 +851,7 @@ mkdocs<span class="w"> </span>serve
   
     <div class="md-source-date">
       <small>
-          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (64.29%), <a href='mailto:rcgoncalves.pt@gmail.com'>rcg</a> (8.73%), <a href='mailto:polygonguru@gmail.com'>Scott Phillips</a> (7.14%), <a href='mailto:jose@alonsomoya.com'>Jose ALONSO</a> (6.35%), <a href='mailto:florian@cleura.com'>Florian Haas</a> (4.76%), <a href='mailto:lucadelu97@gmail.com'>Luca Deluigi</a> (3.97%), <a href='mailto:t.breitner@csl.mpg.de'>Thomas Breitner</a> (3.97%), <a href='mailto:5740913+schneekluth@users.noreply.github.com'>schneekluth</a> (0.79%)</span>
+          Authors: <span class='git-page-authors git-authors'><a href='mailto:vinktim@gmail.com'>Tim Vink</a> (60.9%), <a href='mailto:rcgoncalves.pt@gmail.com'>rcg</a> (8.27%), <a href='mailto:polygonguru@gmail.com'>Scott Phillips</a> (6.77%), <a href='mailto:jose@alonsomoya.com'>Jose ALONSO</a> (6.02%), <a href='mailto:12074690+fpozzobon@users.noreply.github.com'>Fabien Pozzobon</a> (5.26%), <a href='mailto:florian@cleura.com'>Florian Haas</a> (4.51%), <a href='mailto:lucadelu97@gmail.com'>Luca Deluigi</a> (3.76%), <a href='mailto:t.breitner@csl.mpg.de'>Thomas Breitner</a> (3.76%), <a href='mailto:5740913+schneekluth@users.noreply.github.com'>schneekluth</a> (0.75%)</span>
       </small>
     </div>
   
